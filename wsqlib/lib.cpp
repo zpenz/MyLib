@@ -50,9 +50,9 @@ bool My_Window::Create()
 	wndcls.style        = CS_HREDRAW|CS_VREDRAW;
 	RegisterClassEx(&wndcls);
 	//Init
-	this->Init();
+	Init();
 	//调整窗口大小
-	this->ChangeSize();
+	ChangeSize();
 	hBaseWnd = CreateWindowEx(mWindowStyleEx,m_classname,mwindowname,mWindowStyle,this->mLeftTop.x,mLeftTop.y,m_width,m_height,NULL,NULL,NULL,this);
 	if(!hBaseWnd)
 	{
@@ -63,8 +63,7 @@ bool My_Window::Create()
 	SetWindowLong(hBaseWnd,GWL_USERDATA,(LONG)this);
 	ShowWindow(hBaseWnd,SW_SHOWNORMAL);
 	UpdateWindow(hBaseWnd);
-	//AfterCreate
-	this->AfterCreate();
+	AfterCreate();
 	MessageLoop();
 	return true;
 }
