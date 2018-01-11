@@ -6,15 +6,16 @@
 
 int main()
 { 
-
 	DrawManager.InitManager();
-	DrawManager.SetRenderTarget(FindWindow(L"Notepad",L"新建文本文档.txt - 记事本"));
 	RECT rc;
-	rc.bottom = 100;
+	rc.top = 0;
 	rc.left = 0;
 	rc.right = 100;
 	rc.bottom = 100;
-	DrawManager.DrawRectangle(rc);
+	DrawManager.SetRenderTarget(FindWindow(L"Notepad",L"新建文本文档.txt - 记事本"),&rc);
+	auto bs = DrawManager.CreateBrush(MyColor::Red);
+	while(1)
+	DrawManager.DrawRectangle(rc,bs);
     return 0;
 }
 

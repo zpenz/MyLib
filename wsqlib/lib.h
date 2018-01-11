@@ -19,17 +19,6 @@ typedef struct { int x; int y; }Point;
 			static classname  cInstance;\
 			return cInstance;}
 
-void ShowLastError()
-{
-	auto error_message = GetLastError(); 
-	wchar_t error_buf[256];
-	wsprintfW(error_buf, L"%d", error_message);
-	OutputDebugStringW(error_buf);
-}
-
-
-
-//°´¼üÀà
 class Keys
 {
 private:

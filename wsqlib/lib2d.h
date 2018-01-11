@@ -28,6 +28,7 @@ public:
 };
 
 #define DrawManager My2DDraw::getInstance() 
+#define MyColor D2D1::ColorF
 
 //ŒªÕº‰÷»æΩ·ππ
 typedef struct rp
