@@ -3,6 +3,7 @@
 # include <d2d1.h>
 # include <wincodec.h>
 # include <vector>
+#include <iostream>
 using namespace std;
 # pragma comment(lib,"d2d1.lib")
 # pragma comment(lib,"windowscodecs.lib")
@@ -10,6 +11,24 @@ using namespace std;
 # pragma warning(disable:4172)
 //转换
 D2D1_RECT_F & recto2(RECT & rc);
+
+class My2DDraw
+{
+	SINGLE_INSTANCE(My2DDraw);
+private:
+	ID2D1Factory * mFactory;
+	ID2D1HwndRenderTarget * mRenderTarget;
+public:
+	int a;
+	void test() { std::cout << a<<std::endl; }
+	bool InitManager();
+	bool SetRenderTarget(_In_ HWND hTargetWindowHwnd,RECT * pRect=NULL);
+	ID2D1SolidColorBrush * CreateBrush(D2D1::ColorF BrushColor = D2D1::ColorF::Black);
+	bool DrawRectangle(_In_ RECT Rect, ID2D1SolidColorBrush * pSoildBrush = NULL);
+};
+
+#define DrawManager My2DDraw::getInstance() 
+
 //位图渲染结构
 typedef struct rp
 {
@@ -37,21 +56,17 @@ typedef struct rp
 	ID2D1Bitmap * pBitmap;
 	rp();
 	~rp();
+
 }Render_Bitmap;
 
 class lib2d : public My_Window
 {
 private:
-	//工厂
 	ID2D1Factory * pFactory;
-	//渲染目标
 	ID2D1HwndRenderTarget * pRenderTarget;
-	//画刷
 	ID2D1SolidColorBrush       * pBrush;
-	//位图
 	ID2D1Bitmap         * pBitmap;
 	IWICImagingFactory *  pWICFactory;
-	//使用vector 维护一系列的位图
 	vector<Render_Bitmap> * v_bitmap;
 	//释放资源
 	void cleanup();
@@ -74,7 +89,6 @@ public:
 	virtual void OnCreate();
 	virtual void Init();
 	virtual void OnDraw() ;
-	//绘图操作写在这里
 	virtual void Draw();
 	virtual void AfterCreate();
 	virtual void  Clear();
@@ -91,6 +105,7 @@ public:
 	virtual void DrawBitmap();
 	virtual void DrawBitmap(wchar_t * pic_name, int pos_x, int pos_y, int des_width, int des_height);
 	virtual void DrawBitmap2(wchar_t * pic_name, int pos_x, int pos_y, int des_width, int des_height);
+
 	virtual HRESULT LoadBitmapFromFile(
 		ID2D1RenderTarget *pRenderTarget,
 		IWICImagingFactory *pIWICFactory,

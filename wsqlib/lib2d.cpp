@@ -10,7 +10,6 @@ D2D1_RECT_F & recto2(RECT & rc)
 	df.right = rc.right;
 	return df;
 }
-
 rp::rp()
 {
 	this->left_pos = 0;
@@ -540,4 +539,51 @@ void lib2d::DrawBitmap()
 lib2d::~lib2d()
 {
 
+}
+
+bool My2DDraw::InitManager()
+{
+	mFactory = NULL;
+	ShowLastError();
+	auto hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &mFactory);
+	ShowLastError();
+	if (!hr) return false;
+}
+
+bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
+{
+	if (hTargetWindowHwnd == NULL) return false;
+	auto tempRect = pRect;
+	if (tempRect == NULL) 
+	{ 
+		tempRect = new RECT();
+		GetWindowRect(hTargetWindowHwnd, tempRect);
+	}
+	mRenderTarget = NULL;
+	auto hr=mFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_HARDWARE),
+		D2D1::HwndRenderTargetProperties(
+			hTargetWindowHwnd,D2D1::SizeU(tempRect->right- tempRect->left, tempRect->bottom - tempRect->top)
+		), &mRenderTarget);
+	if (!hr) return false;
+	return true;
+}
+
+ID2D1SolidColorBrush * My2DDraw::CreateBrush(D2D1::ColorF penColor)
+{
+	ID2D1SolidColorBrush * pSolidBrush = NULL;
+	auto hr = mRenderTarget->CreateSolidColorBrush(penColor, &pSolidBrush);
+	if (SUCCEEDED(hr)) return pSolidBrush;
+	return NULL;
+}
+
+bool My2DDraw::DrawRectangle(RECT Rect,ID2D1SolidColorBrush * pSolidBrush)
+{
+	//create brush
+	auto tempSolidBrush = pSolidBrush;
+	if(tempSolidBrush ==NULL)
+		tempSolidBrush = CreateBrush();
+	mRenderTarget->BeginDraw();
+	mRenderTarget->DrawRectangle(recto2(Rect), tempSolidBrush);
+	auto hr = mRenderTarget->EndDraw();
+	return SUCCEEDED(hr);
 }

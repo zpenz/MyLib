@@ -9,7 +9,25 @@
 #define MAX_KEYS 256
 # define SAFE_Release(a) if(!a){a->Release(); a=NULL;}
 extern void Error_Box(const char * _error);
-typedef struct {int x;int y;}Point;
+typedef struct { int x; int y; }Point;
+
+#define SINGLE_INSTANCE(classname) \
+		private: \
+			classname(){} \
+		public:\
+		inline static classname & getInstance(){\
+			static classname  cInstance;\
+			return cInstance;}
+
+void ShowLastError()
+{
+	auto error_message = GetLastError(); 
+	wchar_t error_buf[256];
+	wsprintfW(error_buf, L"%d", error_message);
+	OutputDebugStringW(error_buf);
+}
+
+
 
 //按键类
 class Keys
@@ -52,7 +70,6 @@ private:
 	Point mousePos;
 	//改变窗口位置
 	void ChangeSize();
-	  
 public:
 	const char * mwindowname;
 	//仅仅无效化客户区 使其重绘
@@ -115,9 +132,8 @@ public:
 };
 
 //===================
-//All need project 
+//All need 
 //   start with '$' or '#'
-//   others need to fly out.
 //===================
 class FileLoad
 {
@@ -134,6 +150,8 @@ public:
 	~FileLoad(){free(pfile);}
 	bool SearchToken(const char * _token);
 };
+
+
 
 # ifdef LIB3D9
 # include "libD3D.h"
