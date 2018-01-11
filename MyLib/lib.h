@@ -7,7 +7,7 @@
 #define WIDTH  GetSystemMetrics(SM_CXSCREEN)
 #define HEIGHT GetSystemMetrics(SM_CYSCREEN)
 #define MAX_KEYS 256
-# define SAFE_Release(a) if(!a){a->Release(); a=NULL;}
+# define SAFE_RELEASE(a) if(a){a->Release(); a=NULL;}
 extern void Error_Box(const char * _error);
 typedef struct { int x; int y; }Point;
 
@@ -19,6 +19,13 @@ typedef struct { int x; int y; }Point;
 			static classname  cInstance;\
 			return cInstance;}
 
+#define IS_RETURN_ERROR(condition,returnValue,error_message)\
+		if(condition)\
+		{\
+		OutputDebugStringA(error_message);\
+		return returnValue;\
+		}
+		
 class Keys
 {
 private:

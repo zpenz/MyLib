@@ -6,7 +6,7 @@
 int main()
 { 
 	DrawManager.InitManager();
-	auto hw = FindWindow(L"MSPaintView", L"");
+	auto hw = FindWindow(L"Notepad", L"新建文本文档.txt - 记事本");
 	RECT rc,rcClient;
 	GetClientRect(hw, &rcClient);
 	rc.top = 40+rcClient.top;
