@@ -28,10 +28,10 @@ public:
 	bool InitManager();
 	bool SetRenderTarget(_In_ HWND hTargetWindowHwnd,RECT * pRect=NULL);
 	ID2D1SolidColorBrush * CreateBrush(D2D1::ColorF BrushColor = D2D1::ColorF::Black);
-	ComPtr<ID2D1Bitmap> CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth, UINT dstHeight);
+	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth=0, UINT dstHeight=0);
 	bool DrawRectangle(_In_ RECT Rect, ID2D1SolidColorBrush * pSoildBrush = NULL);
 	bool DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush = NULL);
-	bool DrawPicture(wchar_t * filename);
+	bool DrawPicture(ID2D1Bitmap * pBitmap,RECT srcRect,RECT decRect);
 };
 
 #define DrawManager My2DDraw::getInstance() 

@@ -589,7 +589,7 @@ ID2D1SolidColorBrush * My2DDraw::CreateBrush(D2D1::ColorF penColor)
 	return NULL;
 }
 
-ComPtr<ID2D1Bitmap> My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth,UINT dstHeight)
+ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth,UINT dstHeight)
 {
 	ID2D1Bitmap * pD2DBitmap= nullptr;
 	CoInitialize(NULL);
@@ -598,9 +598,10 @@ ComPtr<ID2D1Bitmap> My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidt
 	IS_RETURN_ERROR(FAILED(hr), nullptr, "创建IWICImagingFactory接口Instance失败!");
 
 	IWICBitmapDecoder * pDecoder=nullptr;
-	hr = pImagingFactory->CreateDecoderFromFilename(BitmapFileName, &GUID_WICPixelFormat32bppRGBA,
-		GENERIC_READ | GENERIC_WRITE,
-		WICDecodeMetadataCacheOnDemand,
+	hr = pImagingFactory->CreateDecoderFromFilename(BitmapFileName, 
+		NULL,
+		GENERIC_READ, //no need write
+		WICDecodeMetadataCacheOnLoad,
 		&pDecoder);
 	IS_RETURN_ERROR(FAILED(hr),nullptr,"从图片文件创建解码器失败!");
 
@@ -620,7 +621,7 @@ ComPtr<ID2D1Bitmap> My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidt
 	if (dstHeight == 0 && dstWidth == 0)
 	{
 		hr = pFormatConverter->Initialize(pBitmapDecode,
-			GUID_WICPixelFormat32bppRGBA,
+			GUID_WICPixelFormat32bppPBGRA,
 			WICBitmapDitherTypeNone,
 			NULL,
 			0.f,
@@ -632,7 +633,7 @@ ComPtr<ID2D1Bitmap> My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidt
 		IS_RETURN_ERROR(FAILED(hr), nullptr, "创建缩放Scaler失败!");
 
 		hr = pFormatConverter->Initialize(pScaler,
-			GUID_WICPixelFormat32bppRGBA,
+			GUID_WICPixelFormat32bppPBGRA,
 			WICBitmapDitherTypeNone,
 			NULL,
 			0.f,
@@ -640,7 +641,7 @@ ComPtr<ID2D1Bitmap> My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidt
 	}
 	IS_RETURN_ERROR(FAILED(hr), nullptr, "转换图片失败!");
 
-	hr = mRenderTarget->CreateBitmapFromWicBitmap(pFormatConverter, &pD2DBitmap);
+	hr = mRenderTarget->CreateBitmapFromWicBitmap(pFormatConverter,NULL, &pD2DBitmap);
 	if (SUCCEEDED(hr))
 	{
 		SAFE_RELEASE(pScaler);
@@ -675,5 +676,14 @@ bool My2DDraw::DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush
 	mRenderTarget->DrawLine(PointToD2DPointF(src), PointToD2DPointF(des),tempSolidBrush);
 	auto hr = mRenderTarget->EndDraw();
 	return SUCCEEDED(hr);
+	return false;
+}
+
+bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT srcRect, RECT decRect)
+{
+	IS_RETURN_ERROR(pBitmap==NULL,false,"位图结构为空");
+	mRenderTarget->BeginDraw();
+	mRenderTarget->DrawBitmap(pBitmap, RectToD2DRectF(decRect));
+	auto hr = mRenderTarget->EndDraw();
 	return false;
 }

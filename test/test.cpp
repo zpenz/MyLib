@@ -15,8 +15,9 @@ int main()
 	rc.bottom = rcClient.bottom-40;
 	DrawManager.SetRenderTarget(hw,&rc);
 	auto bs = DrawManager.CreateBrush(MyColor::Pink);
-	while(1)
-	DrawManager.DrawRectangle(rc,bs);
+	auto pBitmap = DrawManager.CreateBitmap(L"2.png");
+	DrawManager.DrawPicture(pBitmap,rc,rc);
+
     return 0;
 }
 

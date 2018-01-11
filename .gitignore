@@ -4,3 +4,5 @@
 
 /test/Debug/test.tlog/test.lastbuildstate
 /lib.VC.VC.opendb
+*.jpg
+*.png
