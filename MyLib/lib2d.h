@@ -4,6 +4,8 @@
 # include <wincodec.h>
 # include <vector>
 #include <iostream>
+//ComPtr
+#include <wrl.h>
 using namespace std;
 # pragma comment(lib,"d2d1.lib")
 # pragma comment(lib,"windowscodecs.lib")
@@ -24,7 +26,10 @@ public:
 	bool InitManager();
 	bool SetRenderTarget(_In_ HWND hTargetWindowHwnd,RECT * pRect=NULL);
 	ID2D1SolidColorBrush * CreateBrush(D2D1::ColorF BrushColor = D2D1::ColorF::Black);
+	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName);
 	bool DrawRectangle(_In_ RECT Rect, ID2D1SolidColorBrush * pSoildBrush = NULL);
+	bool DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush = NULL);
+	bool DrawPicture(wchar_t * filename);
 };
 
 #define DrawManager My2DDraw::getInstance() 

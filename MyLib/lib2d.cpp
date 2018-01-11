@@ -1,6 +1,14 @@
 #include "stdafx.h"
 #include "lib2d.h"
 
+D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
+{
+	D2D1_POINT_2F du;
+	du.x = pt.x;
+	du.y = pt.y;
+	return du;
+}
+
 D2D1_RECT_F & RectToD2DRectF(RECT & rc)
 {
 	D2D1_RECT_F df;
@@ -297,8 +305,9 @@ bool lib2d::InitResource()
 		CLSID_WICImagingFactory1,
 		NULL,
 		CLSCTX_INPROC_SERVER,
-		IID_IWICImagingFactory,
-		reinterpret_cast<void **>(&pWICFactory)
+		IID_PPV_ARGS(&pWICFactory)
+		//IID_IWICImagingFactory,
+		//reinterpret_cast<void **>(&pWICFactory)
 		);
 
 	if (FAILED(hs))
@@ -309,10 +318,7 @@ bool lib2d::InitResource()
 	return true;
 }
 
-//
-// Creates a Direct2D bitmap from the specified
-// file name.
-//
+// Creates a Direct2D bitmap from the specified file name.
 HRESULT lib2d::LoadBitmapFromFile(
 	ID2D1RenderTarget *pRenderTarget,
 	IWICImagingFactory *pIWICFactory,
@@ -339,7 +345,6 @@ HRESULT lib2d::LoadBitmapFromFile(
 		);
 	if (SUCCEEDED(hr))
 	{
-
 		// Create the initial frame.
 		hr = pDecoder->GetFrame(0, &pSource);
 	}
@@ -584,6 +589,13 @@ ID2D1SolidColorBrush * My2DDraw::CreateBrush(D2D1::ColorF penColor)
 	return NULL;
 }
 
+ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName)
+{
+	ID2D1Bitmap * pBitmap = NULL;
+	return nullptr;
+}
+
+
 bool My2DDraw::DrawRectangle(RECT Rect,ID2D1SolidColorBrush * pSolidBrush)
 {
 	//create brush
@@ -594,4 +606,16 @@ bool My2DDraw::DrawRectangle(RECT Rect,ID2D1SolidColorBrush * pSolidBrush)
 	mRenderTarget->DrawRectangle(RectToD2DRectF(Rect), tempSolidBrush);
 	auto hr = mRenderTarget->EndDraw();
 	return SUCCEEDED(hr);
+}
+
+bool My2DDraw::DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush)
+{
+	auto tempSolidBrush = pSoildBrush;
+	if (tempSolidBrush == NULL)
+		tempSolidBrush = CreateBrush();
+	mRenderTarget->BeginDraw();
+	mRenderTarget->DrawLine(PointToD2DPointF(src), PointToD2DPointF(des),tempSolidBrush);
+	auto hr = mRenderTarget->EndDraw();
+	return SUCCEEDED(hr);
+	return false;
 }
