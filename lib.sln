@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wsqlib", "wsqlib\wsqlib.vcxproj", "{772B6FDC-4B65-4789-B850-56AA7E923EFC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyLib", "MyLib\lib.vcxproj", "{772B6FDC-4B65-4789-B850-56AA7E923EFC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{CB7029A5-5004-46EF-BCB4-9A5700BA9E2C}"
 EndProject
