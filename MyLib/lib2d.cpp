@@ -556,16 +556,14 @@ lib2d::~lib2d()
 bool My2DDraw::InitManager()
 {
 	mFactory = NULL;
-	ShowLastError();
 	auto hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &mFactory);
-	ShowLastError();
-	if (!hr) return false;
+	IS_RETURN_ERROR(FAILED(hr), false, "CreateFactory ß∞‹");
 	return true;
 }
 
 bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 {
-	if (hTargetWindowHwnd == NULL) return false;
+	IS_RETURN_ERROR(!hTargetWindowHwnd,false,"hTargetWindowHwnd≤ª¥Ê‘⁄");
 	auto tempRect = pRect;
 	if (tempRect == NULL) 
 	{ 

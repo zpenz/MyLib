@@ -23,6 +23,7 @@ typedef struct { int x; int y; }Point;
 		if(condition)\
 		{\
 		OutputDebugStringA(error_message);\
+		OutputDebugStringA("\n");\
 		return returnValue;\
 		}
 		

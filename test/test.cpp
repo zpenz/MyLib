@@ -13,7 +13,7 @@ int main()
 	rc.left = 40+rcClient.left;
 	rc.right = rcClient.right-40;
 	rc.bottom = rcClient.bottom-40;
-	DrawManager.SetRenderTarget(hw,&rc);
+	if(!DrawManager.SetRenderTarget(hw,&rc)) return 0;
 	auto bs = DrawManager.CreateBrush(MyColor::Pink);
 	auto pBitmap = DrawManager.CreateBitmap(L"2.png");
 	DrawManager.DrawPicture(pBitmap,rc,rc);
