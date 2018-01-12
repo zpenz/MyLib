@@ -2,22 +2,39 @@
 #include "../MyLib/lib2d.h"
 #pragma comment(lib,"../Debug/lib.lib")
 
+class a :public lib2d
+{
+	void Draw()
+	{
+		AddBitmap(L"2.png",600,800,0,0);
+	}
+};
+
 
 int main()
 { 
+	//a aa;
+	//aa.Create();
+
 	DrawManager.InitManager();
 	auto hw = FindWindow(L"Notepad", L"新建文本文档.txt - 记事本");
 	RECT rc,rcClient;
 	GetClientRect(hw, &rcClient);
-	rc.top = 40+rcClient.top;
-	rc.left = 40+rcClient.left;
-	rc.right = rcClient.right-40;
-	rc.bottom = rcClient.bottom-40;
-	if(!DrawManager.SetRenderTarget(hw,&rc)) return 0;
-	auto bs = DrawManager.CreateBrush(MyColor::Pink);
-	auto pBitmap = DrawManager.CreateBitmap(L"2.png");
-	DrawManager.DrawPicture(pBitmap,rc,rc);
-
+	if (!DrawManager.SetRenderTarget(hw)) return 0;
+	rc.top = 0;
+	rc.left = 0;
+	rc.right = 100;
+	rc.bottom = 100;
+	auto pBitmap = DrawManager.CreateBitmap(L"1.jpg",100,100);
+	DrawManager.DrawPicture(pBitmap,rc);
+	//DrawManager.DrawRectangle(rc,DrawManager.CreateBrush(MyColor::Pink));
+	//auto instance1 = DrawManager;
+	//auto RenderTarget = DrawManager.getRenderTarget();
+	//auto pBitmap = DrawManager.CreateBitmap(L"1.jpg", 100, 100);
+	//auto instance2 = DrawManager;
+	//RenderTarget->BeginDraw();
+ // 	RenderTarget->Clear(MyColor(MyColor::Pink));
+	//RenderTarget->EndDraw();
     return 0;
 }
 

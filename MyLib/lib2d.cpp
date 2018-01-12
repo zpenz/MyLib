@@ -1,6 +1,113 @@
 #include "stdafx.h"
 #include "lib2d.h"
 
+//test
+bool LoadBitmapFromFile(
+	ID2D1RenderTarget *pRenderTarget,
+	IWICImagingFactory *pIWICFactory,
+	PCWSTR uri,
+	UINT destinationWidth,
+	UINT destinationHeight,
+	ID2D1Bitmap **ppBitmap
+)
+{
+	HRESULT hr = S_OK;
+	IWICBitmapDecoder *pDecoder = NULL;
+	IWICBitmapFrameDecode *pSource = NULL;
+	IWICFormatConverter *pConverter = NULL;
+	IWICBitmapScaler *pScaler = NULL;
+
+	hr = pIWICFactory->CreateDecoderFromFilename(
+		uri,
+		NULL,
+		GENERIC_READ,
+		WICDecodeMetadataCacheOnLoad,
+		&pDecoder
+	);
+	if (SUCCEEDED(hr))
+	{
+		// Create the initial frame.
+		hr = pDecoder->GetFrame(0, &pSource);
+	}
+
+	if (SUCCEEDED(hr))
+	{
+		// Convert the image format to 32bppPBGRA
+		// (DXGI_FORMAT_B8G8R8A8_UNORM + D2D1_ALPHA_MODE_PREMULTIPLIED).
+		hr = pIWICFactory->CreateFormatConverter(&pConverter);
+	}
+	if (SUCCEEDED(hr))
+	{
+		// If a new width or height was specified, create an
+		// IWICBitmapScaler and use it to resize the image.
+		if (destinationWidth != 0 || destinationHeight != 0)
+		{
+			UINT originalWidth, originalHeight;
+			hr = pSource->GetSize(&originalWidth, &originalHeight);
+			if (SUCCEEDED(hr))
+			{
+				if (destinationWidth == 0)
+				{
+					FLOAT scalar = static_cast<FLOAT>(destinationHeight) / static_cast<FLOAT>(originalHeight);
+					destinationWidth = static_cast<UINT>(scalar * static_cast<FLOAT>(originalWidth));
+				}
+				else if (destinationHeight == 0)
+				{
+					FLOAT scalar = static_cast<FLOAT>(destinationWidth) / static_cast<FLOAT>(originalWidth);
+					destinationHeight = static_cast<UINT>(scalar * static_cast<FLOAT>(originalHeight));
+				}
+
+				hr = pIWICFactory->CreateBitmapScaler(&pScaler);
+				if (SUCCEEDED(hr))
+				{
+					hr = pScaler->Initialize(
+						pSource,
+						destinationWidth,
+						destinationHeight,
+						WICBitmapInterpolationModeCubic
+					);
+				}
+				if (SUCCEEDED(hr))
+				{
+					hr = pConverter->Initialize(
+						pScaler,
+						GUID_WICPixelFormat32bppPBGRA,
+						WICBitmapDitherTypeNone,
+						NULL,
+						0.f,
+						WICBitmapPaletteTypeMedianCut
+					);
+				}
+			}
+		}
+		else // Don't scale the image.
+		{
+			hr = pConverter->Initialize(
+				pSource,
+				GUID_WICPixelFormat32bppPBGRA,
+				WICBitmapDitherTypeNone,
+				NULL,
+				0.f,
+				WICBitmapPaletteTypeMedianCut
+			);
+		}
+	}
+	if (SUCCEEDED(hr))
+	{
+		// Create a Direct2D bitmap from the WIC bitmap.
+		hr = pRenderTarget->CreateBitmapFromWicBitmap(
+			pConverter,
+			NULL,
+			ppBitmap
+		);
+	}
+	SAFE_RELEASE(pDecoder);
+	SAFE_RELEASE(pSource);
+	SAFE_RELEASE(pConverter);
+	SAFE_RELEASE(pScaler);
+	return hr;
+}
+
 D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
 {
 	D2D1_POINT_2F du;
@@ -18,13 +125,7 @@ D2D1_RECT_F & RectToD2DRectF(RECT & rc)
 	df.right = rc.right;
 	return df;
 }
-void ShowLastError()
-{
-	auto error_message = GetLastError();
-	wchar_t error_buf[256];
-	wsprintfW(error_buf, L"%d", error_message);
-	OutputDebugStringW(error_buf);
-}
+
 rp::rp()
 {
 	this->left_pos = 0;
@@ -56,7 +157,7 @@ lib2d::lib2d() :My_Window()
 	this->pBrush = NULL;
 	this->pFactory = NULL;
 	this->pRenderTarget = NULL;
-	this->mwindowname = "wsqD2D";
+	this->mwindowname = "LIB2D";
 	//清零 默认为黑色
 	ZeroMemory(&brushcolor,sizeof(D2D1_COLOR_F));
 	this->v_bitmap = new vector<Render_Bitmap>();
@@ -221,14 +322,13 @@ void lib2d::OnDraw()
 	this->InitResource();
 	this->LoadBitmapResource();
 	this->pRenderTarget->BeginDraw();
-	this->Clear();
+	//this->Clear();
 	this->DrawBitmap();
 	hs = this->pRenderTarget->EndDraw();
 	if (FAILED(hs))
 	{
 		Error_Box("Draw Error!");
 	}
-	
 }
 
 void lib2d::Clear()
@@ -275,7 +375,7 @@ bool lib2d::InitResource()
 	}
 
 	RECT rc;
-	if (!GetClientRect(_hwnd, &rc))
+	if (!GetWindowRect(_hwnd, &rc))
 	{
 		Error_Box("Get Client Rect Failed!");
 		return false;
@@ -329,10 +429,8 @@ HRESULT lib2d::LoadBitmapFromFile(
 	)
 {
 	HRESULT hr = S_OK;
-
 	IWICBitmapDecoder *pDecoder = NULL;
 	IWICBitmapFrameDecode *pSource = NULL;
-	IWICStream *pStream = NULL;
 	IWICFormatConverter *pConverter = NULL;
 	IWICBitmapScaler *pScaler = NULL;
 
@@ -422,7 +520,6 @@ HRESULT lib2d::LoadBitmapFromFile(
 	}
 	SAFE_RELEASE(pDecoder);
 	SAFE_RELEASE(pSource);
-	SAFE_RELEASE(pStream);
 	SAFE_RELEASE(pConverter);
 	SAFE_RELEASE(pScaler);
 	return hr;
@@ -456,14 +553,6 @@ void lib2d::DrawBitmap(wchar_t * pic_name, int pos_x, int pos_y, int des_width =
 		des_width,
 		des_height,
 		&pBp);
-
-	hs = LoadBitmapFromFile(
-		pRenderTarget,
-		pWICFactory,
-		L"1.jpg",
-		des_width,
-		des_height,
-		&pBp2);
 
 	if (FAILED(hs))
 	{
@@ -500,8 +589,6 @@ void lib2d::DrawBitmap2(wchar_t * pic_name, int pos_x, int pos_y, int des_width 
 {
 	//加入图形列表
 	this->AddBitmap(pic_name,des_width,des_height,pos_x,pos_y);
-
-	
 }
 
 //一次性加载所有的位图资源
@@ -571,11 +658,15 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 		GetClientRect(hTargetWindowHwnd, tempRect);
 	}
 	mRenderTarget = NULL;
-	auto hr=mFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_HARDWARE),
+	auto tp = D2D1::RenderTargetProperties();
+	tp.dpiX = 96;
+	tp.dpiY = 96;
+	auto hr=mFactory->CreateHwndRenderTarget(
+		tp,
 		D2D1::HwndRenderTargetProperties(
 			hTargetWindowHwnd,D2D1::SizeU(tempRect->right- tempRect->left, tempRect->bottom - tempRect->top)
 		), &mRenderTarget);
-	if (!hr) return false;
+	if (FAILED(hr)) return false;
 	return true;
 }
 
@@ -592,11 +683,18 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth,UINT
 	ID2D1Bitmap * pD2DBitmap= nullptr;
 	CoInitialize(NULL);
 	IWICImagingFactory * pImagingFactory = nullptr;
-	auto hr = CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pImagingFactory));
+	auto hr = CoCreateInstance(CLSID_WICImagingFactory1, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pImagingFactory));
 	IS_RETURN_ERROR(FAILED(hr), nullptr, "创建IWICImagingFactory接口Instance失败!");
 
+	//test
+	LoadBitmapFromFile(mRenderTarget, pImagingFactory,
+		BitmapFileName, dstWidth, dstHeight, &pD2DBitmap);
+	return pD2DBitmap;
+	//test end
+
 	IWICBitmapDecoder * pDecoder=nullptr;
-	hr = pImagingFactory->CreateDecoderFromFilename(BitmapFileName, 
+	hr = pImagingFactory->CreateDecoderFromFilename(
+		BitmapFileName, 
 		NULL,
 		GENERIC_READ, //no need write
 		WICDecodeMetadataCacheOnLoad,
@@ -604,12 +702,12 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth,UINT
 	IS_RETURN_ERROR(FAILED(hr),nullptr,"从图片文件创建解码器失败!");
 
 	//get zero frame
-	IWICBitmapFrameDecode * pBitmapDecode = nullptr;
-	hr = pDecoder->GetFrame(0,&pBitmapDecode);
+	IWICBitmapFrameDecode * pSource = nullptr;
+	hr = pDecoder->GetFrame(0,&pSource);
 	IS_RETURN_ERROR(FAILED(hr), nullptr, "获取第一frame图片失败!");
 
 	UINT oldSizeWidth, oldSizeHeight;
-	pBitmapDecode->GetSize(&oldSizeWidth,&oldSizeHeight);
+	pSource->GetSize(&oldSizeWidth,&oldSizeHeight);
 	//scale
 	IWICFormatConverter * pFormatConverter = nullptr;
 	hr = pImagingFactory->CreateFormatConverter(&pFormatConverter);
@@ -618,7 +716,7 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth,UINT
 	IWICBitmapScaler * pScaler = nullptr;
 	if (dstHeight == 0 && dstWidth == 0)
 	{
-		hr = pFormatConverter->Initialize(pBitmapDecode,
+		hr = pFormatConverter->Initialize(pSource,
 			GUID_WICPixelFormat32bppPBGRA,
 			WICBitmapDitherTypeNone,
 			NULL,
@@ -627,8 +725,23 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth,UINT
 	}
 	else 
 	{
-		hr = pScaler->Initialize(pBitmapDecode,dstWidth,dstHeight,WICBitmapInterpolationModeCubic);
+		//
+		if (dstWidth == 0)
+		{
+			FLOAT scalar = static_cast<FLOAT>(dstHeight) / static_cast<FLOAT>(oldSizeHeight);
+			dstWidth = static_cast<UINT>(scalar * static_cast<FLOAT>(oldSizeWidth));
+		}
+		else if (dstHeight == 0)
+		{
+			FLOAT scalar = static_cast<FLOAT>(dstWidth) / static_cast<FLOAT>(oldSizeWidth);
+			dstHeight = static_cast<UINT>(scalar * static_cast<FLOAT>(dstHeight));
+		}
+
+		//
+		hr = pImagingFactory->CreateBitmapScaler(&pScaler);
 		IS_RETURN_ERROR(FAILED(hr), nullptr, "创建缩放Scaler失败!");
+		hr = pScaler->Initialize(pSource,dstWidth,dstHeight,WICBitmapInterpolationModeCubic);
+		IS_RETURN_ERROR(FAILED(hr), nullptr, "初始化缩放Scaler失败!");
 
 		hr = pFormatConverter->Initialize(pScaler,
 			GUID_WICPixelFormat32bppPBGRA,
@@ -644,7 +757,7 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth,UINT
 	{
 		SAFE_RELEASE(pScaler);
 		SAFE_RELEASE(pFormatConverter);
-		SAFE_RELEASE(pBitmapDecode);
+		SAFE_RELEASE(pSource);
 		SAFE_RELEASE(pDecoder);
 		SAFE_RELEASE(pImagingFactory);
 		CoUninitialize();
@@ -670,14 +783,14 @@ bool My2DDraw::DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush
 	auto tempSolidBrush = pSoildBrush;
 	if (tempSolidBrush == NULL)
 		tempSolidBrush = CreateBrush();
-	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawLine(PointToD2DPointF(src), PointToD2DPointF(des),tempSolidBrush);
-	auto hr = mRenderTarget->EndDraw();
+		mRenderTarget->BeginDraw();
+		mRenderTarget->DrawLine(PointToD2DPointF(src), PointToD2DPointF(des),tempSolidBrush);
+		auto hr = mRenderTarget->EndDraw();
 	return SUCCEEDED(hr);
 	return false;
 }
 
-bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT srcRect, RECT decRect)
+bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 {
 	IS_RETURN_ERROR(pBitmap==NULL,false,"位图结构为空");
 	mRenderTarget->BeginDraw();

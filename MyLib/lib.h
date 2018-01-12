@@ -22,6 +22,7 @@ typedef struct { int x; int y; }Point;
 #define IS_RETURN_ERROR(condition,returnValue,error_message)\
 		if(condition)\
 		{\
+		OutputDebugStringA("[ERROR]------------------------------------");\
 		OutputDebugStringA(error_message);\
 		OutputDebugStringA("\n");\
 		return returnValue;\
