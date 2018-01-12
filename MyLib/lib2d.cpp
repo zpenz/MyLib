@@ -105,7 +105,7 @@ bool LoadBitmapFromFile(
 	SAFE_RELEASE(pSource);
 	SAFE_RELEASE(pConverter);
 	SAFE_RELEASE(pScaler);
-	return hr;
+	return SUCCEEDED(hr);
 }
 
 D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
@@ -119,10 +119,10 @@ D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
 D2D1_RECT_F & RectToD2DRectF(RECT & rc)
 {
 	D2D1_RECT_F df;
-	df.bottom = rc.bottom;
-	df.top = rc.top;
-	df.left = rc.left;
-	df.right = rc.right;
+	df.bottom = static_cast<float>(rc.bottom);
+	df.top = static_cast<float>(rc.top);
+	df.left = static_cast<float>(rc.left);
+	df.right = static_cast<float>(rc.right);
 	return df;
 }
 
@@ -618,9 +618,14 @@ void lib2d::DrawBitmap()
 		//不需要剪切
 		if (!(*it).need_clip)
 		{
+			RECT rc = { (*it).left_pos, (*it).top_pos, (*it).left_pos + (*it).need_width,
+				(*it).top_pos + (*it).need_height };
 			this->pRenderTarget->DrawBitmap((*it).pBitmap,
+				RectToD2DRectF(rc));
+		/*	this->pRenderTarget->DrawBitmap(
+				(*it).pBitmap,
 				D2D1::RectF((*it).left_pos, (*it).top_pos, (*it).left_pos + (*it).need_width,
-				(*it).top_pos + (*it).need_height));
+				(*it).top_pos + (*it).need_height));*/
 	      
 		} 
 		//只需要显示一部分图形
@@ -657,6 +662,8 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 		tempRect = new RECT();
 		GetClientRect(hTargetWindowHwnd, tempRect);
 	}
+	auto width = tempRect->right - tempRect->left;
+	auto height = tempRect->bottom - tempRect->top;
 	mRenderTarget = NULL;
 	auto tp = D2D1::RenderTargetProperties();
 	tp.dpiX = 96;
@@ -664,9 +671,11 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 	auto hr=mFactory->CreateHwndRenderTarget(
 		tp,
 		D2D1::HwndRenderTargetProperties(
-			hTargetWindowHwnd,D2D1::SizeU(tempRect->right- tempRect->left, tempRect->bottom - tempRect->top)
+			hTargetWindowHwnd,
+			D2D1::SizeU((int)width, (int)height)
 		), &mRenderTarget);
 	if (FAILED(hr)) return false;
+	mRenderTarget->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE);
 	return true;
 }
 
@@ -790,11 +799,15 @@ bool My2DDraw::DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush
 	return false;
 }
 
+
 bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 {
 	IS_RETURN_ERROR(pBitmap==NULL,false,"位图结构为空");
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawBitmap(pBitmap, RectToD2DRectF(decRect));
+	//mRenderTarget->DrawBitmap(pBitmap, RectToD2DRectF(decRect));
+	D2D1_RECT_F rf; 
+	mRenderTarget->DrawBitmap(pBitmap,D2D1::RectF(decRect.bottom,decRect.left,
+		decRect.right,decRect.top));
 	auto hr = mRenderTarget->EndDraw();
 	return false;
 }
