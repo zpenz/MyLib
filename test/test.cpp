@@ -27,14 +27,7 @@ int main()
 	rc.bottom = 100;
 	auto pBitmap = DrawManager.CreateBitmap(L"1.jpg",100,100);
 	DrawManager.DrawPicture(pBitmap,rc);
-	//DrawManager.DrawRectangle(rc,DrawManager.CreateBrush(MyColor::Pink));
-	//auto instance1 = DrawManager;
-	//auto RenderTarget = DrawManager.getRenderTarget();
-	//auto pBitmap = DrawManager.CreateBitmap(L"1.jpg", 100, 100);
-	//auto instance2 = DrawManager;
-	//RenderTarget->BeginDraw();
- // 	RenderTarget->Clear(MyColor(MyColor::Pink));
-	//RenderTarget->EndDraw();
+	DrawManager.DrawRectangle(rc,DrawManager.CreateBrush(MyColor::Pink));
     return 0;
 }
 

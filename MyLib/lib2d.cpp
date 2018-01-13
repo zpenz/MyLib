@@ -536,61 +536,11 @@ void lib2d::ClearBackground(int a, int r, int g, int b)
 }
 
 
-void lib2d::DrawBitmap(wchar_t * pic_name, int pos_x, int pos_y, int des_width = 0, int des_height = 0)
-{
-
-	ID2D1Bitmap * pBp = NULL;
-	ID2D1Bitmap * pBp2 = NULL;
-	HRESULT hs; 
-	//初始化资源
-	this->InitResource();
-	//LoadBitmap
-	hs = LoadBitmapFromFile(
-		pRenderTarget,
-		pWICFactory,
-		pic_name,
-		des_width,
-		des_height,
-		&pBp);
-
-	if (FAILED(hs))
-	{
-		Error_Box("Load Bitmap Failed!");
-		return ;
-	}
-
-	this->pRenderTarget->BeginDraw();
-	//白色背景
-	//pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
-	D2D1_SIZE_F size = pBp->GetSize();
-
-	pRenderTarget->DrawBitmap(
-		pBp2,
-		D2D1::RectF(pos_x-100, pos_y-100, pos_x + size.width,
-		pos_y + size.height));
-
-	//绘图
-	pRenderTarget->DrawBitmap(
-		pBp,
-		D2D1::RectF(pos_x, pos_y, pos_x + size.width,
-		pos_y + size.height));
-
-	hs = this->pRenderTarget->EndDraw();
-	if (FAILED(hs))
-	{
-		Error_Box("Draw Failed!");
-		exit(0);
-	}
-}
-
-//大改
 void lib2d::DrawBitmap2(wchar_t * pic_name, int pos_x, int pos_y, int des_width = 0, int des_height = 0)
 {
-	//加入图形列表
 	this->AddBitmap(pic_name,des_width,des_height,pos_x,pos_y);
 }
 
-//一次性加载所有的位图资源
 void lib2d::LoadBitmapResource()
 {
 	vector<Render_Bitmap>::iterator it;
@@ -608,7 +558,6 @@ void lib2d::LoadBitmapResource()
 	}
 }
 
-//一次渲染所有位图
 void lib2d::DrawBitmap()
 {
 	vector<Render_Bitmap>::iterator it;
@@ -619,13 +568,7 @@ void lib2d::DrawBitmap()
 		{
 			RECT rc = { (*it).left_pos, (*it).top_pos, (*it).left_pos + (*it).need_width,
 				(*it).top_pos + (*it).need_height };
-			this->pRenderTarget->DrawBitmap((*it).pBitmap,
-				RectToD2DRectF(rc));
-		/*	this->pRenderTarget->DrawBitmap(
-				(*it).pBitmap,
-				D2D1::RectF((*it).left_pos, (*it).top_pos, (*it).left_pos + (*it).need_width,
-				(*it).top_pos + (*it).need_height));*/
-	      
+			this->pRenderTarget->DrawBitmap((*it).pBitmap,RectToD2DRectF(rc));
 		} 
 		//只需要显示一部分图形
 		else
@@ -693,12 +636,6 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth,UINT
 	IWICImagingFactory * pImagingFactory = nullptr;
 	auto hr = CoCreateInstance(CLSID_WICImagingFactory1, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pImagingFactory));
 	IS_RETURN_ERROR(FAILED(hr), nullptr, "创建IWICImagingFactory接口Instance失败!");
-
-	//test
-	LoadBitmapFromFile(mRenderTarget, pImagingFactory,
-		BitmapFileName, dstWidth, dstHeight, &pD2DBitmap);
-	return pD2DBitmap;
-	//test end
 
 	IWICBitmapDecoder * pDecoder=nullptr;
 	hr = pImagingFactory->CreateDecoderFromFilename(
