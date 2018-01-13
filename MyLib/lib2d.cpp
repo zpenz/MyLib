@@ -110,20 +110,19 @@ bool LoadBitmapFromFile(
 
 D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
 {
-	D2D1_POINT_2F du;
-	du.x = pt.x;
-	du.y = pt.y;
-	return du;
+	D2D1_POINT_2F *pPointF = new D2D1_POINT_2F(
+		D2D1::Point2F(pt.x, pt.y)
+	);
+	return *pPointF;
 }
 
+//conver 
 D2D1_RECT_F & RectToD2DRectF(RECT & rc)
 {
-	D2D1_RECT_F df;
-	df.bottom = static_cast<float>(rc.bottom);
-	df.top = static_cast<float>(rc.top);
-	df.left = static_cast<float>(rc.left);
-	df.right = static_cast<float>(rc.right);
-	return df;
+	D2D1_RECT_F * pNeedRect = new D2D1_RECT_F(
+		D2D1::RectF(rc.left,rc.top,rc.right,rc.bottom)
+	);
+	return *pNeedRect;
 }
 
 rp::rp()
@@ -804,10 +803,7 @@ bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 {
 	IS_RETURN_ERROR(pBitmap==NULL,false,"位图结构为空");
 	mRenderTarget->BeginDraw();
-	//mRenderTarget->DrawBitmap(pBitmap, RectToD2DRectF(decRect));
-	D2D1_RECT_F rf; 
-	mRenderTarget->DrawBitmap(pBitmap,D2D1::RectF(decRect.bottom,decRect.left,
-		decRect.right,decRect.top));
+	mRenderTarget->DrawBitmap(pBitmap, RectToD2DRectF(decRect));
 	auto hr = mRenderTarget->EndDraw();
 	return false;
 }
