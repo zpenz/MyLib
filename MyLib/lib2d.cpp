@@ -1,113 +1,6 @@
 #include "stdafx.h"
 #include "lib2d.h"
 
-//test
-bool LoadBitmapFromFile(
-	ID2D1RenderTarget *pRenderTarget,
-	IWICImagingFactory *pIWICFactory,
-	PCWSTR uri,
-	UINT destinationWidth,
-	UINT destinationHeight,
-	ID2D1Bitmap **ppBitmap
-)
-{
-	HRESULT hr = S_OK;
-	IWICBitmapDecoder *pDecoder = NULL;
-	IWICBitmapFrameDecode *pSource = NULL;
-	IWICFormatConverter *pConverter = NULL;
-	IWICBitmapScaler *pScaler = NULL;
-
-	hr = pIWICFactory->CreateDecoderFromFilename(
-		uri,
-		NULL,
-		GENERIC_READ,
-		WICDecodeMetadataCacheOnLoad,
-		&pDecoder
-	);
-	if (SUCCEEDED(hr))
-	{
-		// Create the initial frame.
-		hr = pDecoder->GetFrame(0, &pSource);
-	}
-
-	if (SUCCEEDED(hr))
-	{
-		// Convert the image format to 32bppPBGRA
-		// (DXGI_FORMAT_B8G8R8A8_UNORM + D2D1_ALPHA_MODE_PREMULTIPLIED).
-		hr = pIWICFactory->CreateFormatConverter(&pConverter);
-	}
-	if (SUCCEEDED(hr))
-	{
-		// If a new width or height was specified, create an
-		// IWICBitmapScaler and use it to resize the image.
-		if (destinationWidth != 0 || destinationHeight != 0)
-		{
-			UINT originalWidth, originalHeight;
-			hr = pSource->GetSize(&originalWidth, &originalHeight);
-			if (SUCCEEDED(hr))
-			{
-				if (destinationWidth == 0)
-				{
-					FLOAT scalar = static_cast<FLOAT>(destinationHeight) / static_cast<FLOAT>(originalHeight);
-					destinationWidth = static_cast<UINT>(scalar * static_cast<FLOAT>(originalWidth));
-				}
-				else if (destinationHeight == 0)
-				{
-					FLOAT scalar = static_cast<FLOAT>(destinationWidth) / static_cast<FLOAT>(originalWidth);
-					destinationHeight = static_cast<UINT>(scalar * static_cast<FLOAT>(originalHeight));
-				}
-
-				hr = pIWICFactory->CreateBitmapScaler(&pScaler);
-				if (SUCCEEDED(hr))
-				{
-					hr = pScaler->Initialize(
-						pSource,
-						destinationWidth,
-						destinationHeight,
-						WICBitmapInterpolationModeCubic
-					);
-				}
-				if (SUCCEEDED(hr))
-				{
-					hr = pConverter->Initialize(
-						pScaler,
-						GUID_WICPixelFormat32bppPBGRA,
-						WICBitmapDitherTypeNone,
-						NULL,
-						0.f,
-						WICBitmapPaletteTypeMedianCut
-					);
-				}
-			}
-		}
-		else // Don't scale the image.
-		{
-			hr = pConverter->Initialize(
-				pSource,
-				GUID_WICPixelFormat32bppPBGRA,
-				WICBitmapDitherTypeNone,
-				NULL,
-				0.f,
-				WICBitmapPaletteTypeMedianCut
-			);
-		}
-	}
-	if (SUCCEEDED(hr))
-	{
-		// Create a Direct2D bitmap from the WIC bitmap.
-		hr = pRenderTarget->CreateBitmapFromWicBitmap(
-			pConverter,
-			NULL,
-			ppBitmap
-		);
-	}
-	SAFE_RELEASE(pDecoder);
-	SAFE_RELEASE(pSource);
-	SAFE_RELEASE(pConverter);
-	SAFE_RELEASE(pScaler);
-	return SUCCEEDED(hr);
-}
-
 D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
 {
 	D2D1_POINT_2F *pPointF = new D2D1_POINT_2F(
@@ -275,17 +168,6 @@ void lib2d::Destory()
 	cleanup();
 }
 
-void lib2d::Init()
-{
-	this->SetBrush((HBRUSH)GetStockObject(BLACK_BRUSH));
-	//this->SetWindowStyle(WS_OVERLAPPEDWINDOW|~WS_BORDER);
-	
-}
-
-void lib2d::OnCreate()
-{
-}
-
 void lib2d::DrawRectangle()
 {
 	this->InitResource();
@@ -330,9 +212,6 @@ void lib2d::OnDraw()
 	}
 }
 
-void lib2d::Clear()
-{
-}
 
 void lib2d::Draw()
 {
@@ -399,14 +278,11 @@ bool lib2d::InitResource()
 		return false;
 	}
 
-	// Create WIC factory
 	hs = CoCreateInstance(
 		CLSID_WICImagingFactory1,
 		NULL,
 		CLSCTX_INPROC_SERVER,
 		IID_PPV_ARGS(&pWICFactory)
-		//IID_IWICImagingFactory,
-		//reinterpret_cast<void **>(&pWICFactory)
 		);
 
 	if (FAILED(hs))
@@ -524,7 +400,6 @@ HRESULT lib2d::LoadBitmapFromFile(
 	return hr;
 }
 
-//≤¡≥˝±≥æ∞
 void lib2d::ClearBackground(int a, int r, int g, int b)
 {
 	D2D1_COLOR_F cf;
@@ -535,8 +410,7 @@ void lib2d::ClearBackground(int a, int r, int g, int b)
 	this->pRenderTarget->Clear(cf);
 }
 
-
-void lib2d::DrawBitmap2(wchar_t * pic_name, int pos_x, int pos_y, int des_width = 0, int des_height = 0)
+void lib2d::DrawBitmap(wchar_t * pic_name, int pos_x, int pos_y, int des_width = 0, int des_height = 0)
 {
 	this->AddBitmap(pic_name,des_width,des_height,pos_x,pos_y);
 }
@@ -681,7 +555,6 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth,UINT
 			FLOAT scalar = static_cast<FLOAT>(dstWidth) / static_cast<FLOAT>(oldSizeWidth);
 			dstHeight = static_cast<UINT>(scalar * static_cast<FLOAT>(dstHeight));
 		}
-
 		//
 		hr = pImagingFactory->CreateBitmapScaler(&pScaler);
 		IS_RETURN_ERROR(FAILED(hr), nullptr, "¥¥Ω®Àı∑≈Scaler ß∞‹!");

@@ -78,13 +78,11 @@ public:
 	bool AddBitmap(wchar_t * pic_name, int pos_x, int pos_y, float alpha, bool is_high_render, RECT sw_rc, int sw_width, int sw_height);
 
 	virtual void Destory();
-	virtual void OnCreate();
-	virtual void Init();
 	virtual void OnDraw() ;
 	virtual void Draw();
 	virtual void AfterCreate();
-	virtual void  Clear();
-	
+
+
 	virtual bool InitResource();
 	bool SetBrushColor(int a,int r,int b,int g);
 	virtual void ClearBackground(int a,int r,int g,int b);
@@ -92,7 +90,7 @@ public:
 	virtual void DrawRectangle(RECT & rc);
 	virtual void DrawRectangle(int left,int top,int right,int bottom);
 	virtual void DrawBitmap();
-	virtual void DrawBitmap2(wchar_t * pic_name, int pos_x, int pos_y, int des_width, int des_height);
+	virtual void DrawBitmap(wchar_t * pic_name, int pos_x, int pos_y, int des_width, int des_height);
 
 	virtual HRESULT LoadBitmapFromFile(
 		ID2D1RenderTarget *pRenderTarget,
