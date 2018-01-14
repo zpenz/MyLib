@@ -13,145 +13,92 @@ D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
 D2D1_RECT_F & RectToD2DRectF(RECT & rc)
 {
 	D2D1_RECT_F * pNeedRect = new D2D1_RECT_F(
-		D2D1::RectF(rc.left,rc.top,rc.right,rc.bottom)
+		D2D1::RectF(rc.left, rc.top, rc.right, rc.bottom)
 	);
 	return *pNeedRect;
 }
 
-rp::rp()
+class MyRect
 {
-	this->left_pos = 0;
-	this->need_height = 0;
-	this->need_width = 0;
-	this->pBitmap = NULL;
-	this->top_pos = 0; 
-	this->sw_height = 0;
-	this->sw_width = 0;
-	this->need_clip = false;
-	this->is_high_render = false;
-	//清空区域
-	ZeroMemory(&this->sw_rc,sizeof(RECT));
-	this->url = NULL;
-}
+private:
+	RECT mRect;
+	int mLeft;
+	int mRight;
+	int mTop;
+	int mBottom;
+public:
+	MyRect(INT left, INT top, INT right, INT bottom)
+		:mLeft(left),mRight(right),mTop(top),mBottom(bottom) 
+	{
+	}
+	MyRect(RECT desRect)
+		:mRect(desRect) {}
+
+	operator RECT&()
+	{
+		RECT rc = {mLeft,mTop,mRight,mBottom};
+		return rc;
+	}
+
+	operator D2D1_RECT_F&()
+	{
+		return RectToD2DRectF(*this);
+	}
+};
+
+
 
 rp::~rp()
 {
-	this->left_pos = 0;
-	this->top_pos = 0;
 	SAFE_RELEASE(pBitmap);
-	this->need_height = 0;
-	this->need_width  = 0;
 }
-
  
-lib2d::lib2d() :My_Window()
+lib2d::lib2d():pBrush(NULL),pFactory(NULL),pRenderTarget(NULL)
 {
-	this->pBrush = NULL;
-	this->pFactory = NULL;
-	this->pRenderTarget = NULL;
-	this->mwindowname = "LIB2D";
+	SetWindowName("MyLib2D");
 	//清零 默认为黑色
 	ZeroMemory(&brushcolor,sizeof(D2D1_COLOR_F));
-	this->v_bitmap = new vector<Render_Bitmap>();
-
+	this->pPictureSet = new vector<Render_Bitmap>();
 }
 
-//添加BITMAP
-bool lib2d::AddBitmap(wchar_t * pic_name, int des_width, int des_height, int pos_x, int pos_y)
+//添加一张图进去
+bool lib2d::AddBitmap(wchar_t * pic_name, RECT desRect)
 {
-	Render_Bitmap * pRenderBitmap = new Render_Bitmap();
-	pRenderBitmap->url = pic_name;
-	pRenderBitmap->need_width = des_width;
-	pRenderBitmap->need_height = des_height;
-	pRenderBitmap->top_pos = pos_y;
-	pRenderBitmap->left_pos = pos_x;
-	this->v_bitmap->push_back(*pRenderBitmap);
-	//释放资源
-	delete(pRenderBitmap);
-	pRenderBitmap = NULL;
+	Render_Bitmap  RenderBitmap(pic_name,desRect);
+	this->pPictureSet->push_back(RenderBitmap);
 	return true;
 }
 
-//version2 :: 带有显示宽度和高度的版本
-bool lib2d::AddBitmap(wchar_t * pic_name, int des_width, int des_height, int pos_x, int pos_y,int shw_width,int shw_height)
+bool lib2d::AddBitmap(wchar_t * pic_name, RECT desRect,int shw_width,int shw_height)
 {
-	Render_Bitmap * pRenderBitmap = new Render_Bitmap();
-	pRenderBitmap->url = pic_name;
-	pRenderBitmap->need_width = des_width;
-	pRenderBitmap->need_height = des_height;
-	pRenderBitmap->top_pos = pos_y;
-	pRenderBitmap->left_pos = pos_x;
-	pRenderBitmap->sw_width = shw_width;
-	pRenderBitmap->sw_height = shw_height;
-	this->v_bitmap->push_back(*pRenderBitmap);
-	//释放资源
-	delete(pRenderBitmap);
-	pRenderBitmap = NULL;
+	Render_Bitmap  RenderBitmap(pic_name,desRect);
+	RenderBitmap.sw_width = shw_width;
+	RenderBitmap.sw_height = shw_height;
+	this->pPictureSet->push_back(RenderBitmap);
 	return true;
 }
 
-//version3:: 可以剪切版本
-bool lib2d:: AddBitmap(wchar_t * pic_name, int des_width, int des_height, int pos_x, int pos_y, float alpha, bool is_high_render, RECT sw_rc)
+bool lib2d:: AddBitmap(wchar_t * pic_name,RECT desRect,float alpha, bool is_high_render, RECT sw_rc)
 {
-	Render_Bitmap * pRenderBitmap = new Render_Bitmap();
-	pRenderBitmap->url = pic_name;
-	pRenderBitmap->need_width = des_width;
-	pRenderBitmap->need_height = des_height;
-	pRenderBitmap->top_pos = pos_y;
-	pRenderBitmap->left_pos = pos_x;
-	pRenderBitmap->sw_rc = sw_rc;
-	pRenderBitmap->alpha = alpha;
-	pRenderBitmap->is_high_render = is_high_render;
+	Render_Bitmap RenderBitmap(pic_name, desRect);
+	RenderBitmap.sw_rc = sw_rc;
+	RenderBitmap.alpha = alpha;
+	RenderBitmap.mbHighRender = is_high_render;
 	//剪切为真
-	pRenderBitmap->need_clip = true;
-	this->v_bitmap->push_back(*pRenderBitmap);
-	//释放资源
-	delete(pRenderBitmap);
-	pRenderBitmap = NULL;
+	RenderBitmap.need_clip = true;
+	this->pPictureSet->push_back(RenderBitmap);
 	return true;
 }
 
-//version4:: 修正版本
-bool lib2d::AddBitmap(wchar_t * pic_name, int des_width, int des_height, int pos_x, int pos_y, float alpha, bool is_high_render, RECT sw_rc,int sw_width,int sw_height)
+bool lib2d::AddBitmap(wchar_t * pic_name, RECT desRect, float alpha, bool is_high_render, RECT sw_rc,int sw_width,int sw_height)
 {
-	Render_Bitmap * pRenderBitmap = new Render_Bitmap();
-	pRenderBitmap->url = pic_name;
-	pRenderBitmap->need_width = des_width;
-	pRenderBitmap->need_height = des_height;
-	pRenderBitmap->top_pos = pos_y;
-	pRenderBitmap->left_pos = pos_x;
-	pRenderBitmap->sw_rc = sw_rc;
-	pRenderBitmap->alpha = alpha;
-	pRenderBitmap->is_high_render = is_high_render;
-	pRenderBitmap->sw_width = sw_width;
-	pRenderBitmap->sw_height = sw_height;
+	Render_Bitmap RenderBitmap(pic_name, desRect);
+	RenderBitmap.sw_rc = sw_rc;
+	RenderBitmap.alpha = alpha;
+	RenderBitmap.mbHighRender = is_high_render;
 	//剪切为真
-	pRenderBitmap->need_clip = true;
-	this->v_bitmap->push_back(*pRenderBitmap);
-	//释放资源
-	delete(pRenderBitmap);
-	pRenderBitmap = NULL;
-	return true;
-}
-
-//version5:: finally version
-bool lib2d::AddBitmap(wchar_t * pic_name,int pos_x, int pos_y, float alpha, bool is_high_render, RECT sw_rc, int sw_width, int sw_height)
-{
-	Render_Bitmap * pRenderBitmap = new Render_Bitmap();
-	pRenderBitmap->url = pic_name;
-	pRenderBitmap->top_pos = pos_y;
-	pRenderBitmap->left_pos = pos_x;
-	pRenderBitmap->sw_rc = sw_rc;
-	pRenderBitmap->alpha = alpha;
-	pRenderBitmap->is_high_render = is_high_render;
-	pRenderBitmap->sw_width = sw_width;
-	pRenderBitmap->sw_height = sw_height;
-	//剪切为真
-	pRenderBitmap->need_clip = true;
-	this->v_bitmap->push_back(*pRenderBitmap);
-	//释放资源
-	delete(pRenderBitmap);
-	pRenderBitmap = NULL;
+	RenderBitmap.need_clip = true;
+	this->pPictureSet->push_back(RenderBitmap);
 	return true;
 }
 
@@ -198,18 +145,13 @@ void lib2d::DrawRectangle(int left,int top,int right,int bottom)
 
 void lib2d::OnDraw()
 {
-	HRESULT hs;
 	Draw();
-	this->InitResource();
-	this->LoadBitmapResource();
-	this->pRenderTarget->BeginDraw();
-	//this->Clear();
-	this->DrawBitmap();
-	hs = this->pRenderTarget->EndDraw();
-	if (FAILED(hs))
-	{
-		Error_Box("Draw Error!");
-	}
+	InitResource();
+	SetBitmapResource();
+	pRenderTarget->BeginDraw();
+	DrawBitmap();
+	auto hr = pRenderTarget->EndDraw();
+	IS_RETURN_ERROR(FAILED(hr),,"A Draw Problem has occur!");
 }
 
 
@@ -412,21 +354,21 @@ void lib2d::ClearBackground(int a, int r, int g, int b)
 
 void lib2d::DrawBitmap(wchar_t * pic_name, int pos_x, int pos_y, int des_width = 0, int des_height = 0)
 {
-	this->AddBitmap(pic_name,des_width,des_height,pos_x,pos_y);
+	this->AddBitmap(pic_name,MyRect(des_width,des_height,pos_x,pos_y));
 }
 
-void lib2d::LoadBitmapResource()
+void lib2d::SetBitmapResource()
 {
 	vector<Render_Bitmap>::iterator it;
-	for (it = v_bitmap->begin(); it != v_bitmap->end();it++)
+	for (it = pPictureSet->begin(); it != pPictureSet->end();it++)
 	{
 		if((*it).sw_height==0 && (*it).sw_width ==0)
 		{
-			this->LoadBitmapFromFile(pRenderTarget, pWICFactory, (*it).url, (*it).need_width, (*it).need_height, &(*it).pBitmap);
+			this->LoadBitmapFromFile(pRenderTarget, pWICFactory, (*it).mFileName, (*it).GetWidth(), (*it).GetHeight(), &(*it).pBitmap);
 		}
 		else // 显示参数
 		{
-			this->LoadBitmapFromFile(pRenderTarget, pWICFactory, (*it).url, (*it).sw_width, (*it).sw_height, &(*it).pBitmap);
+			this->LoadBitmapFromFile(pRenderTarget, pWICFactory, (*it).mFileName, (*it).sw_width, (*it).sw_height, &(*it).pBitmap);
 		}
 		
 	}
@@ -435,22 +377,21 @@ void lib2d::LoadBitmapResource()
 void lib2d::DrawBitmap()
 {
 	vector<Render_Bitmap>::iterator it;
-	for(it = v_bitmap->begin(); it != v_bitmap->end(); it++)
+	for(it = pPictureSet->begin(); it != pPictureSet->end(); it++)
 	{
 		//不需要剪切
 		if (!(*it).need_clip)
 		{
-			RECT rc = { (*it).left_pos, (*it).top_pos, (*it).left_pos + (*it).need_width,
-				(*it).top_pos + (*it).need_height };
-			this->pRenderTarget->DrawBitmap((*it).pBitmap,RectToD2DRectF(rc));
+			this->pRenderTarget->DrawBitmap((*it).pBitmap,RectToD2DRectF(
+			(*it).mDesRect));
 		} 
 		//只需要显示一部分图形
 		else
 		{
 			this->pRenderTarget->DrawBitmap((*it).pBitmap,
-				D2D1::RectF((*it).left_pos, (*it).top_pos, (*it).left_pos + (*it).sw_width == 0 ? (*it).need_width : (*it).sw_width, (*it).top_pos + (*it).sw_height == 0 ? (*it).need_height : (*it).sw_height),
+				(D2D1_RECT_F)MyRect((*it).mDesRect),
 				(*it).alpha,
-				(*it).is_high_render ? D2D1_BITMAP_INTERPOLATION_MODE_LINEAR : D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
+				(*it).mbHighRender ? D2D1_BITMAP_INTERPOLATION_MODE_LINEAR : D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
 				RectToD2DRectF((*it).sw_rc));
 		}
 	}

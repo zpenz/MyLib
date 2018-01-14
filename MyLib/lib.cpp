@@ -25,6 +25,7 @@ My_Window::My_Window():m_width(1024),m_height(768),m_isfullscreen(false),hBaseWn
 		m_classname("lib"),mwindowname("LIB"),m_lpvoid(this),mWindowStyle(WS_OVERLAPPEDWINDOW),
 	mWindowStyleEx(WS_EX_APPWINDOW),mHInstance(GetModuleHandle(NULL)),m_hdc(NULL),m_background(NULL)
 {
+
 }
 
 bool My_Window::Create()

@@ -40,18 +40,25 @@ public:
 
 typedef struct rp
 {
-	wchar_t * url;
-	float need_width;
-	float need_height;
-	float left_pos;
-	float top_pos; 
+public:
+	RECT mDesRect;
+
+	wchar_t * mFileName;
 	float sw_width;
 	float sw_height;
-	bool is_high_render;
+	bool mbHighRender;
 	RECT sw_rc;
 	bool need_clip;
 	float alpha;
 	ID2D1Bitmap * pBitmap;
+   
+	UINT GetWidth() { return mDesRect.right - mDesRect.left; }
+	UINT GetHeight() { return mDesRect.bottom - mDesRect.top; }
+
+	rp(wchar_t * filenmae,RECT desRect, float fAlpha = 1.0,bool bHighRender=true):mFileName(filenmae),mDesRect(desRect)
+		,mbHighRender(bHighRender),alpha(fAlpha)
+	{
+	}
 	rp();
 	~rp();
 
@@ -65,26 +72,24 @@ private:
 	ID2D1SolidColorBrush       * pBrush;
 	ID2D1Bitmap         * pBitmap;
 	IWICImagingFactory *  pWICFactory;
-	vector<Render_Bitmap> * v_bitmap;
+	vector<Render_Bitmap> * pPictureSet;
 	void cleanup();
 	D2D1_COLOR_F brushcolor;
-	void LoadBitmapResource();
+	void SetBitmapResource();
 public:
 	
-	bool AddBitmap(wchar_t * pic_name,int des_width, int des_height,int pos_x,int pos_y);
-	bool AddBitmap(wchar_t * pic_name,int des_width,int des_height,int pos_x,int pos_y,int shw_width,int shw_height);
-	bool AddBitmap(wchar_t * pic_name, int des_width, int des_height, int pos_x, int pos_y,float alpha,bool is_high_render,RECT sw_rc);
-	bool AddBitmap(wchar_t * pic_name, int des_width, int des_height, int pos_x, int pos_y, float alpha, bool is_high_render, RECT sw_rc,int sw_width,int sw_height);
-	bool AddBitmap(wchar_t * pic_name, int pos_x, int pos_y, float alpha, bool is_high_render, RECT sw_rc, int sw_width, int sw_height);
+	bool AddBitmap(wchar_t * pic_name,RECT desRect);
+	bool AddBitmap(wchar_t * pic_name, RECT desRect,int shw_width,int shw_height);
+	bool AddBitmap(wchar_t * pic_name, RECT desRect,float alpha,bool is_high_render,RECT sw_rc);
+	bool AddBitmap(wchar_t * pic_name, RECT desRect, float alpha, bool is_high_render, RECT sw_rc,int sw_width,int sw_height);
 
 	virtual void Destory();
 	virtual void OnDraw() ;
 	virtual void Draw();
 	virtual void AfterCreate();
 
-
+	bool SetBrushColor(int a, int r, int b, int g);
 	virtual bool InitResource();
-	bool SetBrushColor(int a,int r,int b,int g);
 	virtual void ClearBackground(int a,int r,int g,int b);
 	virtual void DrawRectangle();
 	virtual void DrawRectangle(RECT & rc);
