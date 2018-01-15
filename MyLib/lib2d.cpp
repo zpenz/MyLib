@@ -36,8 +36,8 @@ public:
 
 	operator RECT&()
 	{
-		RECT rc = {mLeft,mTop,mRight,mBottom};
-		return rc;
+		mRect = {mLeft,mTop,mRight,mBottom};
+		return mRect;
 	}
 
 	operator D2D1_RECT_F&()

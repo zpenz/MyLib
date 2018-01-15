@@ -97,7 +97,7 @@ public:
 	virtual void DrawBitmap();
 	virtual void DrawBitmap(wchar_t * pic_name, int pos_x, int pos_y, int des_width, int des_height);
 
-	virtual HRESULT LoadBitmapFromFile(
+	 HRESULT LoadBitmapFromFile(
 		ID2D1RenderTarget *pRenderTarget,
 		IWICImagingFactory *pIWICFactory,
 		PCWSTR uri,
