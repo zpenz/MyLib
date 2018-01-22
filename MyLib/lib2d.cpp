@@ -577,3 +577,9 @@ bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 	auto hr = mRenderTarget->EndDraw();
 	return false;
 }
+
+My2DDraw::~My2DDraw()
+{
+	SAFE_RELEASE(mRenderTarget);
+	SAFE_RELEASE(mFactory);
+}

@@ -5,12 +5,16 @@
 
 int main()
 { 
+	system("START NotePad 新建文本文档.txt");
+	Sleep(1000);
 	DrawManager.InitManager();
 	auto hw = FindWindow(L"Notepad", L"新建文本文档.txt - 记事本");
 	RECT  rcClient;
 	GetClientRect(hw, &rcClient);
 	if (!DrawManager.SetRenderTarget(hw)) return 0;
 
+while(1)
+{ 
 	//bitmap
 	RECT rcPicture = { 72,128,72*2,128*2 };
 	auto pBitmap = DrawManager.CreateBitmap(L"3.jpg",72,128);
@@ -33,6 +37,7 @@ int main()
 	DrawManager.DrawEllipse(pt, 10, 20, false, pGoldBrush);
 	pt = { 340,300 };
 	DrawManager.DrawEllipse(pt, 10, 20, false, pGoldBrush);
+}
     return 0;
 }
 

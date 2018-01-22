@@ -14,8 +14,6 @@ using namespace std;
 # pragma warning(disable:4244)
 # pragma warning(disable:4172)
 
-
-
 class My2DDraw
 {
 	SINGLE_INSTANCE(My2DDraw)
@@ -32,6 +30,7 @@ public:
 	bool DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush = NULL);
 	bool DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect);
 	ID2D1HwndRenderTarget * getRenderTarget() { return mRenderTarget; }
+	~My2DDraw();
 };
 
 #define DrawManager My2DDraw::getInstance() 
