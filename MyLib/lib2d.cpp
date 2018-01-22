@@ -30,13 +30,14 @@ public:
 	MyRect(INT left, INT top, INT right, INT bottom)
 		:mLeft(left),mRight(right),mTop(top),mBottom(bottom) 
 	{
+		mRect = { mLeft,mTop,mRight,mBottom };
 	}
+
 	MyRect(RECT desRect)
 		:mRect(desRect) {}
 
 	operator RECT&()
 	{
-		mRect = {mLeft,mTop,mRight,mBottom};
 		return mRect;
 	}
 
@@ -438,7 +439,7 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 
 ID2D1SolidColorBrush * My2DDraw::CreateBrush(D2D1::ColorF penColor)
 {
-	ID2D1SolidColorBrush * pSolidBrush = NULL;
+	ID2D1SolidColorBrush * pSolidBrush ;
 	auto hr = mRenderTarget->CreateSolidColorBrush(penColor, &pSolidBrush);
 	if (SUCCEEDED(hr)) return pSolidBrush;
 	return NULL;
@@ -525,16 +526,35 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName,UINT dstWidth,UINT
 	return nullptr;
 }
 
-bool My2DDraw::DrawRectangle(RECT Rect,ID2D1SolidColorBrush * pSolidBrush)
+bool My2DDraw::DrawRectangle(RECT Rect, bool isFillRectangle, ID2D1SolidColorBrush * pSolidBrush)
 {
 	//create brush
 	auto tempSolidBrush = pSolidBrush;
 	if(tempSolidBrush ==NULL)
 		tempSolidBrush = CreateBrush();
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawRectangle(RectToD2DRectF(Rect), tempSolidBrush);
+	D2D1_RECT_F desRect = MyRect(Rect);
+	if(!isFillRectangle)
+		mRenderTarget->DrawRectangle(desRect, tempSolidBrush);
+	else
+		mRenderTarget->FillRectangle(desRect, tempSolidBrush);
 	auto hr = mRenderTarget->EndDraw();
 	return SUCCEEDED(hr);
+}
+
+bool My2DDraw::DrawEllipse(POINT centerPoint, float r1, float r2, bool isFillEllipse, ID2D1SolidColorBrush * pSoildBrush)
+{
+	auto tempSolidBrush = pSoildBrush;
+	if (tempSolidBrush == NULL)
+		tempSolidBrush = CreateBrush();
+	mRenderTarget->BeginDraw();
+	if(!isFillEllipse)
+		mRenderTarget->DrawEllipse(D2D1::Ellipse(PointToD2DPointF(centerPoint), r1, r2), tempSolidBrush);
+	else
+		mRenderTarget->FillEllipse(D2D1::Ellipse(PointToD2DPointF(centerPoint), r1, r2), tempSolidBrush);
+	auto hr = mRenderTarget->EndDraw();
+	return SUCCEEDED(hr);
+	return false;
 }
 
 bool My2DDraw::DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush)
@@ -548,7 +568,6 @@ bool My2DDraw::DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush
 	return SUCCEEDED(hr);
 	return false;
 }
-
 
 bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 {
