@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "lib2d.h"
 
+//conver 
 D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
 {
 	D2D1_POINT_2F *pPointF = new D2D1_POINT_2F(
@@ -9,7 +10,6 @@ D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
 	return *pPointF;
 }
 
-//conver 
 D2D1_RECT_F & RectToD2DRectF(RECT & rc)
 {
 	D2D1_RECT_F * pNeedRect = new D2D1_RECT_F(
@@ -46,8 +46,6 @@ public:
 		return RectToD2DRectF(*this);
 	}
 };
-
-
 
 rp::~rp()
 {
@@ -398,10 +396,7 @@ void lib2d::DrawBitmap()
 	}
 }
 
-lib2d::~lib2d()
-{
-
-}
+lib2d::~lib2d() {}
 
 bool My2DDraw::InitManager()
 {
