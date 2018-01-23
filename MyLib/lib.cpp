@@ -19,7 +19,7 @@
  }
 
 BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mIsfullscreen(false),mHBaseWnd(NULL),
-		mClassname("lib"),mwindowname("LIB"),mLpvoid(this),mWindowStyle(WS_OVERLAPPEDWINDOW),
+		mClassname("lib"),mWindowname("LIB"),mLpvoid(this),mWindowStyle(WS_OVERLAPPEDWINDOW),
 	mWindowStyleEx(WS_EX_APPWINDOW),mHInstance(GetModuleHandle(NULL)),mHdc(NULL),mBackground(NULL)
 {
 }
@@ -50,7 +50,8 @@ bool BaseWindow::Create()
 	InitBeforeCreate();
 
 	MoveCenterWindow();
-	mHBaseWnd = CreateWindowEx(mWindowStyleEx,mClassname,mwindowname,mWindowStyle,this->mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
+	mHBaseWnd = CreateWindowEx(mWindowStyleEx,mClassname,mWindowname,
+		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
 	if(!mHBaseWnd)
 	{
 		ErrorMessage("´´½¨´°¿ÚÊ§°Ü");
@@ -72,7 +73,7 @@ void BaseWindow::MessageLoop()
 	static float fLastTime  = static_cast<float>(GetTickCount());
 	while(Message.message!= WM_QUIT)
 	{
-		bool bHasMessage = PeekMessage(&Message,NULL,0,0,PM_REMOVE);
+		auto bHasMessage = PeekMessage(&Message,NULL,0,0,PM_REMOVE);
 		if(bHasMessage)
 		{
 			TranslateMessage(&Message);

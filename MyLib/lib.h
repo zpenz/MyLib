@@ -3,8 +3,9 @@
 # include <cstdlib>
 # include <windows.h>
 
-# pragma warning(disable:4305)
-# pragma warning(disable:4996)
+# ifdef INCLUDE_MY_DX9
+# include "libD3D.h"
+# endif
 
 #define SCREEN_WIDTH  GetSystemMetrics(SM_CXSCREEN)
 #define SCREEN_HEIGHT GetSystemMetrics(SM_CYSCREEN)
@@ -12,7 +13,6 @@
 # define SAFE_RELEASE(p) if(p){p->Release(); p=NULL;}
 
 extern void ErrorMessage(const char * _error);
-typedef struct { int x; int y; }Point;
 
 #define SINGLE_INSTANCE(classname) \
 		private: \
@@ -34,17 +34,19 @@ typedef struct { int x; int y; }Point;
  class  BaseWindow
 {
 private:
+	typedef struct { int x; int y; }Point;
 
 	int mWidth;
 	int mHeight;
 	bool mIsfullscreen;
 	const char * mClassname; 
+	const char * mWindowname;
+
 	DWORD mWindowStyleEx;
 	DWORD mWindowStyle;
 	HINSTANCE mHInstance;
 	HBRUSH mBackground;
 
-	//¶îÍâ²ÎÊý
 	void * mLpvoid;
 	Point mLeftTop;
 
@@ -53,10 +55,9 @@ private:
 
 	Point mMousePos;
 
-	//Center
 	void MoveCenterWindow();
+
 public:
-	const char * mwindowname;
 
 	//InvalidRect
 	void ReDraw();
@@ -66,31 +67,31 @@ public:
 	virtual ~BaseWindow();
 
 	BaseWindow(int width, int height, bool isfullscreen, const char * windowname, const char * classname, DWORD WindowStyleEx, DWORD WindowStyle, void * lpvoid, Point leftUpper)
-		:mWidth(width), mHeight(height), mIsfullscreen(isfullscreen), mwindowname(windowname), mClassname(classname),
+		:mWidth(width), mHeight(height), mIsfullscreen(isfullscreen), mWindowname(windowname), mClassname(classname),
 		mWindowStyle(WindowStyle), mWindowStyleEx(WindowStyleEx) {}
 
 	bool Create(void);
 
-	void SetInstance(HINSTANCE hInstance) {this->mHInstance = hInstance;}
-	void SetWidth(int Width) {if(Width>0|| Width<SCREEN_WIDTH){this->mWidth = Width;}else{this->mWidth = 1024;}}
-	void SetHeight(int Height) {if(Height>0|| Height<SCREEN_HEIGHT){this->mHeight = Height;}else{this->mHeight = 768;}}
-	void SetWindowName(const char * windowname){this->mwindowname = windowname;}
-	void SetClassName(const char * classname){this->mClassname = classname;}
-	void SetWindowStyle(DWORD WindowStyle){this->mWindowStyle=WindowStyle;}
-	void SetWindowStyleEx(DWORD WindowStyleEx){this->mWindowStyleEx = WindowStyleEx;}
-	void SetWindowPos(Point leftUpper){this->mLeftTop = leftUpper;}
-	void SetUserData(LPVOID lpvoid){this->mLpvoid = lpvoid;}
-	void SetFullScrren(bool isfullscreen){this->mIsfullscreen = isfullscreen;}
+	void SetInstance(HINSTANCE hInstance) {mHInstance = hInstance;}
+	void SetWidth(int Width) {if(Width>0|| Width<SCREEN_WIDTH){mWidth = Width;}else{mWidth = 1024;}}
+	void SetHeight(int Height) {if(Height>0|| Height<SCREEN_HEIGHT){mHeight = Height;}else{mHeight = 768;}}
+	void SetWindowName(const char * windowname){mWindowname = windowname;}
+	void SetClassName(const char * classname){mClassname = classname;}
+	void SetWindowStyle(DWORD WindowStyle){mWindowStyle=WindowStyle;}
+	void SetWindowStyleEx(DWORD WindowStyleEx){mWindowStyleEx = WindowStyleEx;}
+	void SetWindowPos(Point leftUpper){mLeftTop = leftUpper;}
+	void SetUserData(LPVOID lpvoid){mLpvoid = lpvoid;}
+	void SetFullScrren(bool isfullscreen){mIsfullscreen = isfullscreen;}
 	void SetMousePos(int px,int py) {mMousePos.x = px; mMousePos.y = py;}
-	void SetBrush(const HBRUSH & bs) {this->mBackground = bs;}
+	void SetBrush(const HBRUSH & bs) {mBackground = bs;}
 
 	int GetWidth(void) {return mWidth;}
 	int GetHeight(void) {return mHeight;}
-	const char * GetWindowName(void){return mwindowname;}
+	const char * GetWindowName(void){return mWindowname;}
 
 	Point GetMousePos(void){return mMousePos;}
 	
-	bool SetHDC(HDC hDC){this->mHdc = hDC; return hDC?true:false;}
+	bool SetHDC(HDC hDC){mHdc = hDC; return hDC?true:false;}
 	HDC  GetHDC(void){return mHdc;}
 	HWND GetHwnd(void){return mHBaseWnd;}
 	
@@ -113,13 +114,10 @@ public:
 	virtual void OnKeyUp();
 	virtual void OnMouseMove();
 
-	operator HDC()  {return this->mHdc;}
-	operator HWND() {return this->mHBaseWnd;}
+	operator HDC()  {return mHdc;}
+	operator HWND() {return mHBaseWnd;}
 
 	friend 	
 		LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
 };
 
-# ifdef LIB3D9
-# include "libD3D.h"
-# endif
