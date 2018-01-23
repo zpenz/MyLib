@@ -88,7 +88,6 @@ void BaseWindow::MessageLoop()
 	}
 }
 
-
 //WM_NCCREATE posted before WM_CREATE
 LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
