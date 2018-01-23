@@ -16,7 +16,7 @@
 void Error_Box(const char * _error)
 =============
 */
-extern void Error_Box(const char * _error);
+extern void ErrorMessage(const char * _error);
 
 /*
 ==================
@@ -54,7 +54,7 @@ void lib3D9::AfterCreate(void)
 {
 	if(!this->InitD3D())
 	{
-		Error_Box("InitD3D Error!");
+		ErrorMessage("InitD3D Error!");
 	}
 	else
 	{
@@ -72,7 +72,7 @@ bool lib3D9::InitD3D(void)
 	_d3d = Direct3DCreate9(D3D_SDK_VERSION);
 	if(_d3d==NULL)
 	{
-		Error_Box("IDirect3D9 创建失败!");
+		ErrorMessage("IDirect3D9 创建失败!");
 		exit(0);
 		return false;
 	}
@@ -115,7 +115,7 @@ bool lib3D9::InitD3D(void)
 	if(FAILED(ht))
 	{
 		
-		Error_Box("创建设备失败！");
+		ErrorMessage("创建设备失败！");
 		exit(0);
 		return false;
 	}
@@ -139,7 +139,7 @@ void lib3D9::OnCreate()
 virtual function Init
 ===============
 */
-void lib3D9::Init()
+void lib3D9::InitBeforeCreate()
 {
 	
 }

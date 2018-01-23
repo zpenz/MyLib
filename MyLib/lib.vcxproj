@@ -89,8 +89,6 @@
     <ClInclude Include="lib.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FileLoad.cpp" />
-    <ClCompile Include="Keys.cpp" />
     <ClCompile Include="libd11.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

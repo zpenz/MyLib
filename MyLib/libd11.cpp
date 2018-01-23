@@ -128,7 +128,7 @@ bool libd11::InitD11()
 	AfterCreate();
 	if (pdev == NULL || pcon == NULL || pswapchain == NULL)
 	{ 
-		Error_Box("初始化错误！终止程序");		exit(-1); return false;
+		ErrorMessage("初始化错误！终止程序");		exit(-1); return false;
 	}
 	return true;
 }
@@ -178,7 +178,7 @@ void libd11::SetShaderName(UINT shader_kind, const char * shader_file_name)
 	FILE * pfile = fopen(shader_file_name,"r");
 	if (!pfile)
 	{
-		Error_Box("can not load shader file please check if the file name is true");
+		ErrorMessage("can not load shader file please check if the file name is true");
 		exit(-1);
 	}
 		
@@ -199,7 +199,7 @@ void libd11::initpiple()
 {
 	if (!vs_name || !ps_name)
 	{
-		Error_Box("没有载入shader文件 请至少载入vertex shader 和 pixel shader");
+		ErrorMessage("没有载入shader文件 请至少载入vertex shader 和 pixel shader");
 		exit(-1);
 	}
 		ID3D10Blob *VS, *PS;

@@ -19,7 +19,7 @@ public:
 
 	virtual void OnCreate();
 	virtual void OnDraw();
-	virtual void Init();
+	virtual void InitBeforeCreate();
 	virtual void AfterCreate();
 	virtual void MessageLoop();
 	virtual void Display(float delta);

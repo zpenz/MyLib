@@ -2,12 +2,13 @@
 # include "lib.h"
 # include <windows.h>
 
- void Error_Box(const char * _error)
+ void ErrorMessage(const char * _error)
  {
 	 MessageBox(NULL,_error,"error",MB_OK);
+	 exit(0);
  }
 
- void BaseWindow::PutCenterWindow()
+ void BaseWindow::MoveCenterWindow()
  {
 	 int tempWidth = SCREEN_WIDTH;
 	 int tempHeight = SCREEN_HEIGHT;
@@ -21,7 +22,6 @@ BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mIsfullscreen(false),mHBaseWn
 		mClassname("lib"),mwindowname("LIB"),mLpvoid(this),mWindowStyle(WS_OVERLAPPEDWINDOW),
 	mWindowStyleEx(WS_EX_APPWINDOW),mHInstance(GetModuleHandle(NULL)),mHdc(NULL),mBackground(NULL)
 {
-
 }
 
 bool BaseWindow::Create()
@@ -47,12 +47,13 @@ bool BaseWindow::Create()
 	wndcls.style        = CS_HREDRAW|CS_VREDRAW;
 	RegisterClassEx(&wndcls);
 
-	Init();
-	PutCenterWindow();
+	InitBeforeCreate();
+
+	MoveCenterWindow();
 	mHBaseWnd = CreateWindowEx(mWindowStyleEx,mClassname,mwindowname,mWindowStyle,this->mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
 	if(!mHBaseWnd)
 	{
-		Error_Box("创建窗口失败");
+		ErrorMessage("创建窗口失败");
 		return false;
 	}
 
@@ -86,11 +87,8 @@ void BaseWindow::MessageLoop()
 	}
 }
 
-//============================
-//WinProc
-//WM_NCCREATE posted before by
-//WM_CREATE
-//============================
+
+//WM_NCCREATE posted before WM_CREATE
 LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
 	static HDC hDC;
@@ -111,8 +109,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 	case WM_PAINT:
 		//window = (My_Window *)GetWindowLong(hWnd,GWL_USERDATA);
 		if(window==NULL) 
-			Error_Box("window==NULL");
-		// Draw();
+			ErrorMessage("window==NULL");
 		window->OnDraw();
 		break;
 	case WM_NCCREATE:
@@ -172,7 +169,7 @@ void BaseWindow::Destory()
  {	
  }
 
- void BaseWindow::Init()
+ void BaseWindow::InitBeforeCreate()
  {
 
  }

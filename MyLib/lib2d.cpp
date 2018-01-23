@@ -162,7 +162,7 @@ void lib2d::AfterCreate()
 {
 	if (!this->InitResource())
 	{
-		Error_Box("init Resource failed  need to close");
+		ErrorMessage("init Resource failed  need to close");
 		exit(0);
 	}
 }
@@ -182,21 +182,21 @@ bool lib2d::InitResource()
 	hs = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &this->pFactory);
 	if (FAILED(hs))
 	{
-		Error_Box("Init pFactory Failed£¡");
+		ErrorMessage("Init pFactory Failed£¡");
 		return false;
 	}
 
 	HWND _hwnd = GetHwnd();
 	if (_hwnd == NULL)
 	{
-		Error_Box("Get Hwnd Failed!");
+		ErrorMessage("Get Hwnd Failed!");
 		return false;
 	}
 
 	RECT rc;
 	if (!GetWindowRect(_hwnd, &rc))
 	{
-		Error_Box("Get Client Rect Failed!");
+		ErrorMessage("Get Client Rect Failed!");
 		return false;
 	}
 
@@ -205,7 +205,7 @@ bool lib2d::InitResource()
 
 	if (!SUCCEEDED(hs))
 	{
-		Error_Box("init HwndRenderTarget failed!");
+		ErrorMessage("init HwndRenderTarget failed!");
 		return false;
 	}
 	
@@ -215,7 +215,7 @@ bool lib2d::InitResource()
 	hs = pRenderTarget->CreateSolidColorBrush(this->brushcolor, &pBrush);
 	if (!SUCCEEDED(hs))
 	{
-		Error_Box("Init SolidBrushFailed");
+		ErrorMessage("Init SolidBrushFailed");
 		return false;
 	}
 
@@ -228,7 +228,7 @@ bool lib2d::InitResource()
 
 	if (FAILED(hs))
 	{
-		Error_Box("Load Bitmap Failed!");
+		ErrorMessage("Load Bitmap Failed!");
 		return false;
 	}
 	return true;
