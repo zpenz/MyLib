@@ -23,7 +23,7 @@ extern void Error_Box(const char * _error);
 construct
 ==================
 */
-lib3D9::lib3D9():My_Window()
+lib3D9::lib3D9():BaseWindow()
 {
 	this->_d3d   = NULL;
 	this->Device = NULL;

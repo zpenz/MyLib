@@ -5,7 +5,7 @@
 # pragma comment(lib,"winmm.lib") 
 
 
-class lib3D9 : public My_Window
+class lib3D9 : public BaseWindow
 {
 public:
 	//³õÊ¼»¯D3D
@@ -27,7 +27,7 @@ public:
 	operator IDirect3D9 *() {return this->_d3d;}
 	operator IDirect3DDevice9*() {return this->Device;}
 
-	friend class My_Window;
+	friend class BaseWindow;
 
 	//construct
 	//Wsq3D():My_Window(){ this->_d3d = NULL; this->Device = NULL;}

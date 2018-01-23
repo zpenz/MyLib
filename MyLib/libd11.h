@@ -42,7 +42,7 @@ public:
 	~BufferManager() { delete pInstance; }
 };
 
-class libd11 :public My_Window
+class libd11 :public BaseWindow
 {
 
 private:

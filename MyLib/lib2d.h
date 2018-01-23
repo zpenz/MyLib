@@ -62,7 +62,7 @@ public:
 
 }Render_Bitmap;
 
-class lib2d : public My_Window
+class lib2d : public BaseWindow
 {
 private:
 	ID2D1Factory * pFactory;
