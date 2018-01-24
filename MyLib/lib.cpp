@@ -14,8 +14,10 @@
 	 int tempHeight = SCREEN_HEIGHT;
 	 int centerX = tempWidth / 2;
 	 int centerY = tempHeight / 2;
-	 SetWidth(centerX - GetWidth() / 2);
-	 SetHeight(centerY - GetHeight() / 2);
+	 centerX = centerX - GetWidth() / 2;
+	 centerY = centerY - GetHeight() / 2;
+	 POINT tempPoint = {centerX,centerY};
+	 SetLeftTopPos(tempPoint);
  }
 
 BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mIsfullscreen(false),mHBaseWnd(NULL),
@@ -47,7 +49,9 @@ bool BaseWindow::ShowThisWindow()
 	wndcls.lpszClassName = mClassname;
 	wndcls.lpszMenuName = NULL;
 
-	wndcls.style        = CS_HREDRAW|CS_VREDRAW;
+	if (!mWindowStyle) 	wndcls.style = CS_HREDRAW | CS_VREDRAW;
+	else wndcls.style = CS_HREDRAW | CS_VREDRAW;
+	
 	RegisterClassEx(&wndcls);
 
 	InitBeforeCreate();

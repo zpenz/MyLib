@@ -7,8 +7,8 @@
 # include "libD3D.h"
 # endif
 
-#define SCREEN_WIDTH  GetSystemMetrics(SM_CXSCREEN)
-#define SCREEN_HEIGHT GetSystemMetrics(SM_CYSCREEN)
+#define SCREEN_WIDTH  GetDeviceCaps(GetDC(NULL),HORZRES)
+#define SCREEN_HEIGHT GetDeviceCaps(GetDC(NULL),VERTRES)
 #define MAX_KEYS 256
 # define SAFE_RELEASE(p) if(p){p->Release(); p=NULL;}
 
@@ -89,7 +89,7 @@ public:
 	void SetClassName(const char * classname){mClassname = classname;}
 	void SetWindowStyle(DWORD WindowStyle){mWindowStyle=WindowStyle;}
 	void SetWindowStyleEx(DWORD WindowStyleEx){mWindowStyleEx = WindowStyleEx;}
-	void SetWindowPos(POINT leftUpper){mLeftTop = leftUpper;}
+	void SetLeftTopPos(POINT leftUpper){mLeftTop = leftUpper;}
 	void SetBrush(const HBRUSH & bs) {mBackground = bs;}
 
 	int GetWidth(void) {return mWidth;}

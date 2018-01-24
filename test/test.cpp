@@ -5,6 +5,9 @@
 
 int main()
 { 
+	BaseWindow bs;
+	bs.ShowThisWindow();
+
 	system("START NotePad 新建文本文档.txt");
 	Sleep(1000);
 	DrawManager.InitManager();
