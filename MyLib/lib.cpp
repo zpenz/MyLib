@@ -19,12 +19,12 @@
  }
 
 BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mIsfullscreen(false),mHBaseWnd(NULL),
-		mClassname("lib"),mWindowname("LIB"),mLpvoid(this),mWindowStyle(WS_OVERLAPPEDWINDOW),
+		mClassname("lib"),mWindowname("LIB"),mWindowStyle(WS_OVERLAPPEDWINDOW),
 	mWindowStyleEx(WS_EX_APPWINDOW),mHInstance(GetModuleHandle(NULL)),mHdc(NULL),mBackground(NULL)
 {
 }
 
-bool BaseWindow::Create()
+bool BaseWindow::ShowThisWindow()
 {
 	WNDCLASSEX wndcls;
 	ZeroMemory(&wndcls,sizeof(wndcls));
@@ -93,53 +93,50 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
 	static HDC hDC;
 	static BaseWindow * window;
+
 	switch (uMsg)
 	{
-	case WM_CREATE:
-		hDC = GetDC(hWnd);
-		window->SetHDC(hDC);
-		window->OnCreate();
-		break;
-	case WM_DESTROY:
-		window->Destory();
-		window = NULL;
-		ReleaseDC(hWnd,hDC);
-		PostQuitMessage(0);
-		break;
-	case WM_PAINT:
-		//window = (My_Window *)GetWindowLong(hWnd,GWL_USERDATA);
-		if(window==NULL) 
-			ErrorMessage("window==NULL");
-		window->OnDraw();
-		break;
-	case WM_NCCREATE:
-		window = (BaseWindow*)(((CREATESTRUCT *)lParam)->lpCreateParams);
-		break;
-	case WM_NCPAINT:
-		window->DrawSurface(wParam);
-		break;
-	case WM_NCCALCSIZE:
-		window->CalSize(wParam,lParam);
-		break;
-	case WM_KEYUP:
-		window->OnKeyUp();
-		break;
-	case WM_KEYDOWN:
-		window->OnKeyDown();
-		break;
-	case WM_MOUSEMOVE:
-		window->SetMousePos(LOWORD(lParam),HIWORD(lParam));
-		break;
-	case WM_LBUTTONDOWN:
-		window->OnLButtonDown(wParam, lParam);
-		break;
-	case WM_LBUTTONUP:
-		break;
-	case WM_SIZING:
-		window->ReDraw();
-		break;
-	default:
-		break;
+		case WM_CREATE:
+			hDC = GetDC(hWnd);
+			window->SetHDC(hDC);
+			window->OnCreate();
+			break;
+		case WM_DESTROY:
+			window->Destory();
+			if(hDC) ReleaseDC(hWnd, hDC);
+			PostQuitMessage(0);
+			break;
+		case WM_PAINT:
+			//window = (My_Window *)GetWindowLong(hWnd,GWL_USERDATA);
+			if(window==NULL) 
+				ErrorMessage("window==NULL");
+			window->OnDraw();
+			break;
+		case WM_NCCREATE:
+			window = (BaseWindow*)(((CREATESTRUCT *)lParam)->lpCreateParams);
+			break;
+		case WM_NCPAINT:
+			window->OnNcPaint(wParam);
+			break;
+		case WM_NCCALCSIZE:
+			window->OnNcCalcSize(wParam,lParam);
+			break;
+		case WM_KEYUP:
+			break;
+		case WM_KEYDOWN:
+			break;
+		case WM_MOUSEMOVE:
+			break;
+		case WM_LBUTTONDOWN:
+			window->OnLButtonDown(wParam, lParam);
+			break;
+		case WM_LBUTTONUP:
+			break;
+		case WM_SIZING:
+			window->ReDraw();
+			break;
+		default:
+			break;
 	}
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
 }
@@ -165,7 +162,7 @@ void BaseWindow::Destory()
  { 
  }
 
- void BaseWindow::DrawSurface(WPARAM wParam)
+ void BaseWindow::OnNcPaint(WPARAM wParam)
  {	
  }
 
@@ -173,23 +170,6 @@ void BaseWindow::Destory()
  {
 
  }
-
- void BaseWindow::OwnMessageDo()
- {
- }
-
- void BaseWindow::OnKeyDown()
- {
- }
-
- void BaseWindow::OnKeyUp()
- {
- }
-
- void BaseWindow::OnMouseMove()
- {
- }
-
 
  void BaseWindow::ReDraw()
  {
@@ -203,7 +183,7 @@ void BaseWindow::Destory()
  {
  }
 
- void BaseWindow::CalSize(WPARAM wParam,LPARAM lParam)
+ void BaseWindow::OnNcCalcSize(WPARAM wParam,LPARAM lParam)
  {
  }
 

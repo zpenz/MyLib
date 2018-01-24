@@ -11,8 +11,6 @@ using namespace Microsoft::WRL;
 using namespace std;
 # pragma comment(lib,"d2d1.lib")
 # pragma comment(lib,"windowscodecs.lib")
-# pragma warning(disable:4244)
-# pragma warning(disable:4172)
 
 class My2DDraw
 {
@@ -36,31 +34,31 @@ public:
 #define DrawManager My2DDraw::getInstance() 
 #define MyColor D2D1::ColorF
 
-typedef struct rp
+typedef struct PicStruct
 {
 public:
 	RECT mDesRect;
 
 	wchar_t * mFileName;
-	float sw_width;
-	float sw_height;
-	bool mbHighRender;
-	RECT sw_rc;
-	bool need_clip;
-	float alpha;
-	ID2D1Bitmap * pBitmap;
+	float mWidth;
+	float mHeight;
+	bool mIsHighRender;
+	RECT mPicRect;
+	bool mIsNeedClip;
+	float mPicAlpha;
+	ID2D1Bitmap * mPicture;
    
 	UINT GetWidth() { return mDesRect.right - mDesRect.left; }
 	UINT GetHeight() { return mDesRect.bottom - mDesRect.top; }
 
-	rp(wchar_t * filenmae,RECT desRect, float fAlpha = 1.0,bool bHighRender=true):mFileName(filenmae),mDesRect(desRect)
-		,mbHighRender(bHighRender),alpha(fAlpha)
+	PicStruct(wchar_t * filenmae,RECT desRect, float fAlpha = 1.0,bool bHighRender=true):mFileName(filenmae),mDesRect(desRect)
+		,mIsHighRender(bHighRender),mPicAlpha(fAlpha)
 	{
 	}
-	rp();
-	~rp();
+	PicStruct() {}
+	~PicStruct();
 
-}Render_Bitmap;
+}RenderPicture;
 
 class lib2d : public BaseWindow
 {
@@ -70,7 +68,7 @@ private:
 	ID2D1SolidColorBrush       * pBrush;
 	ID2D1Bitmap         * pBitmap;
 	IWICImagingFactory *  pWICFactory;
-	vector<Render_Bitmap> * pPictureSet;
+	vector<RenderPicture> * pPictureSet;
 	void cleanup();
 	D2D1_COLOR_F brushcolor;
 	void SetBitmapResource();
@@ -86,9 +84,9 @@ public:
 	virtual void Draw();
 	virtual void AfterCreate();
 
-	bool SetBrushColor(int a, int r, int b, int g);
+	bool SetBrushColor(float a, float r, float b, float g);
 	virtual bool InitResource();
-	virtual void ClearBackground(int a,int r,int g,int b);
+	virtual void ClearBackground(float a, float r, float g, float b);
 	virtual void DrawRectangle();
 	virtual void DrawRectangle(RECT & rc);
 	virtual void DrawRectangle(int left,int top,int right,int bottom);

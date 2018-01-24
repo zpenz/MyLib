@@ -35,6 +35,7 @@ extern void ErrorMessage(const char * _error);
 {
 private:
 	typedef struct { int x; int y; }Point;
+	typedef LRESULT (*pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 	int mWidth;
 	int mHeight;
@@ -47,13 +48,10 @@ private:
 	HINSTANCE mHInstance;
 	HBRUSH mBackground;
 
-	void * mLpvoid;
-	Point mLeftTop;
+	POINT mLeftTop;
 
 	HDC  mHdc;
 	HWND mHBaseWnd; 
-
-	Point mMousePos;
 
 	void MoveCenterWindow();
 
@@ -70,7 +68,7 @@ public:
 		:mWidth(width), mHeight(height), mIsfullscreen(isfullscreen), mWindowname(windowname), mClassname(classname),
 		mWindowStyle(WindowStyle), mWindowStyleEx(WindowStyleEx) {}
 
-	bool Create(void);
+	bool ShowThisWindow(void); //show this window
 
 	void SetInstance(HINSTANCE hInstance) {mHInstance = hInstance;}
 	void SetWidth(int Width) {if(Width>0|| Width<SCREEN_WIDTH){mWidth = Width;}else{mWidth = 1024;}}
@@ -79,17 +77,12 @@ public:
 	void SetClassName(const char * classname){mClassname = classname;}
 	void SetWindowStyle(DWORD WindowStyle){mWindowStyle=WindowStyle;}
 	void SetWindowStyleEx(DWORD WindowStyleEx){mWindowStyleEx = WindowStyleEx;}
-	void SetWindowPos(Point leftUpper){mLeftTop = leftUpper;}
-	void SetUserData(LPVOID lpvoid){mLpvoid = lpvoid;}
-	void SetFullScrren(bool isfullscreen){mIsfullscreen = isfullscreen;}
-	void SetMousePos(int px,int py) {mMousePos.x = px; mMousePos.y = py;}
+	void SetWindowPos(POINT leftUpper){mLeftTop = leftUpper;}
 	void SetBrush(const HBRUSH & bs) {mBackground = bs;}
 
 	int GetWidth(void) {return mWidth;}
 	int GetHeight(void) {return mHeight;}
 	const char * GetWindowName(void){return mWindowname;}
-
-	Point GetMousePos(void){return mMousePos;}
 	
 	bool SetHDC(HDC hDC){mHdc = hDC; return hDC?true:false;}
 	HDC  GetHDC(void){return mHdc;}
@@ -101,18 +94,11 @@ public:
 	virtual void InitBeforeCreate();
 	virtual void AfterCreate();
 
-	//default draw operate
-	virtual void OnDraw();
-	virtual void OwnMessageDo();
+	virtual void OnDraw();	//default draw operate
 	virtual void OnCreate();
-	virtual void DrawSurface(WPARAM wParam);
-	virtual void CalSize(WPARAM wParam,LPARAM lParam);
+	virtual void OnNcPaint(WPARAM wParam);
+	virtual void OnNcCalcSize(WPARAM wParam,LPARAM lParam);
 	virtual void OnLButtonDown(WPARAM wParam,LPARAM lParam);
-
-	//pree class
-	virtual void OnKeyDown();
-	virtual void OnKeyUp();
-	virtual void OnMouseMove();
 
 	operator HDC()  {return mHdc;}
 	operator HWND() {return mHBaseWnd;}
