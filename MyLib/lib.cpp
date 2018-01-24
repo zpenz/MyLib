@@ -28,42 +28,53 @@ bool BaseWindow::ShowThisWindow()
 {
 	WNDCLASSEX wndcls;
 	ZeroMemory(&wndcls,sizeof(wndcls));
+
 	wndcls.cbClsExtra = 0;
 	wndcls.cbSize     = sizeof(WNDCLASSEX);
 	wndcls.cbWndExtra = 0;
-	if(this->mBackground!=NULL)
-	wndcls.hbrBackground = this->mBackground;
-	else 
-	wndcls.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-	wndcls.hCursor    = LoadCursor(NULL,IDC_ARROW);
+	wndcls.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndcls.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	if(mHInstance)
-	wndcls.hInstance  = mHInstance;
-	else
-	wndcls.hInstance  = NULL;
-	wndcls.lpfnWndProc = WinProc;
+
+	if(mBackground!=NULL) wndcls.hbrBackground = mBackground;
+	else wndcls.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+
+	if(mHInstance) 	wndcls.hInstance = mHInstance;
+	else wndcls.hInstance = NULL;
+	
+	if(!mCallBackFunc) 	wndcls.lpfnWndProc = WinProc;
+	else wndcls.lpfnWndProc = mCallBackFunc;
+
 	wndcls.lpszClassName = mClassname;
 	wndcls.lpszMenuName = NULL;
+
 	wndcls.style        = CS_HREDRAW|CS_VREDRAW;
 	RegisterClassEx(&wndcls);
 
 	InitBeforeCreate();
-
 	MoveCenterWindow();
+
 	mHBaseWnd = CreateWindowEx(mWindowStyleEx,mClassname,mWindowname,
 		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
+
 	if(!mHBaseWnd)
 	{
 		ErrorMessage("´´½¨´°¿ÚÊ§°Ü");
 		return false;
 	}
 
+	AfterCreate();
+
 	SetWindowLong(mHBaseWnd,GWL_USERDATA,(LONG)this);
 	ShowWindow(mHBaseWnd,SW_SHOWNORMAL);
 	UpdateWindow(mHBaseWnd);
-	AfterCreate();
+
 	MessageLoop();
 	return true;
+}
+
+void BaseWindow::SetCallBackFunc(pCallBackFunc mFunc)
+{
+	mCallBackFunc = mFunc;
 }
 
 void BaseWindow::MessageLoop()

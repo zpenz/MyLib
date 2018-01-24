@@ -28,14 +28,23 @@ extern void ErrorMessage(const char * _error);
 		OutputDebugStringA("[ERROR]------------------------------------");\
 		OutputDebugStringA(error_message);\
 		OutputDebugStringA("\n");\
-		return returnValue;\
-		}
+		return returnValue;}
 		
- class  BaseWindow
+
+#define IS_RETURN_FUNC(condition,returnValue,FUNC)\
+		if(condition)\
+		{\
+		FUNC();\
+		return returnValue;}
+		
+
+typedef LRESULT(_stdcall *pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+class  BaseWindow
 {
 private:
 	typedef struct { int x; int y; }Point;
-	typedef LRESULT (*pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
 
 	int mWidth;
 	int mHeight;
@@ -53,6 +62,8 @@ private:
 	HDC  mHdc;
 	HWND mHBaseWnd; 
 
+	pCallBackFunc mCallBackFunc;
+
 	void MoveCenterWindow();
 
 public:
@@ -66,10 +77,11 @@ public:
 
 	BaseWindow(int width, int height, bool isfullscreen, const char * windowname, const char * classname, DWORD WindowStyleEx, DWORD WindowStyle, void * lpvoid, Point leftUpper)
 		:mWidth(width), mHeight(height), mIsfullscreen(isfullscreen), mWindowname(windowname), mClassname(classname),
-		mWindowStyle(WindowStyle), mWindowStyleEx(WindowStyleEx) {}
+		mWindowStyle(WindowStyle), mWindowStyleEx(WindowStyleEx),mCallBackFunc(NULL){}
 
 	bool ShowThisWindow(void); //show this window
 
+	void SetCallBackFunc(pCallBackFunc mFunc);
 	void SetInstance(HINSTANCE hInstance) {mHInstance = hInstance;}
 	void SetWidth(int Width) {if(Width>0|| Width<SCREEN_WIDTH){mWidth = Width;}else{mWidth = 1024;}}
 	void SetHeight(int Height) {if(Height>0|| Height<SCREEN_HEIGHT){mHeight = Height;}else{mHeight = 768;}}
