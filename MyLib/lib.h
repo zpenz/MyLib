@@ -54,13 +54,13 @@ private:
 
 	DWORD mWindowStyleEx;
 	DWORD mWindowStyle;
-	HINSTANCE mHInstance;
+	HINSTANCE mInstance;
 	HBRUSH mBackground;
 
 	POINT mLeftTop;
 
 	HDC  mHdc;
-	HWND mHBaseWnd; 
+	HWND mBaseHwnd; 
 
 	pCallBackFunc mCallBackFunc;
 
@@ -82,7 +82,7 @@ public:
 	bool ShowThisWindow(void); //show this window
 
 	void SetCallBackFunc(pCallBackFunc mFunc);
-	void SetInstance(HINSTANCE hInstance) {mHInstance = hInstance;}
+	void SetInstance(HINSTANCE hInstance) {mInstance = hInstance;}
 	void SetWidth(int Width) {if(Width>0|| Width<SCREEN_WIDTH){mWidth = Width;}else{mWidth = 1024;}}
 	void SetHeight(int Height) {if(Height>0|| Height<SCREEN_HEIGHT){mHeight = Height;}else{mHeight = 768;}}
 	void SetWindowName(const char * windowname){mWindowname = windowname;}
@@ -98,7 +98,7 @@ public:
 	
 	bool SetHDC(HDC hDC){mHdc = hDC; return hDC?true:false;}
 	HDC  GetHDC(void){return mHdc;}
-	HWND GetHwnd(void){return mHBaseWnd;}
+	HWND GetHwnd(void){return mBaseHwnd;}
 	
 	virtual void Destory();
 	virtual void MessageLoop();
@@ -113,7 +113,7 @@ public:
 	virtual void OnLButtonDown(WPARAM wParam,LPARAM lParam);
 
 	operator HDC()  {return mHdc;}
-	operator HWND() {return mHBaseWnd;}
+	operator HWND() {return mBaseHwnd;}
 
 	friend 	
 		LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);

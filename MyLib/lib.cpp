@@ -20,9 +20,9 @@
 	 SetLeftTopPos(tempPoint);
  }
 
-BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mIsfullscreen(false),mHBaseWnd(NULL),
+BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mIsfullscreen(false),mBaseHwnd(NULL),
 		mClassname("lib"),mWindowname("LIB"),mWindowStyle(WS_OVERLAPPEDWINDOW),
-	mWindowStyleEx(WS_EX_APPWINDOW),mHInstance(GetModuleHandle(NULL)),mHdc(NULL),mBackground(NULL)
+	mWindowStyleEx(WS_EX_APPWINDOW),mInstance(GetModuleHandle(NULL)),mHdc(NULL),mBackground(NULL)
 {
 }
 
@@ -40,7 +40,7 @@ bool BaseWindow::ShowThisWindow()
 	if(mBackground!=NULL) wndcls.hbrBackground = mBackground;
 	else wndcls.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 
-	if(mHInstance) 	wndcls.hInstance = mHInstance;
+	if(mInstance) 	wndcls.hInstance = mInstance;
 	else wndcls.hInstance = NULL;
 	
 	if(!mCallBackFunc) 	wndcls.lpfnWndProc = WinProc;
@@ -57,10 +57,10 @@ bool BaseWindow::ShowThisWindow()
 	InitBeforeCreate();
 	MoveCenterWindow();
 
-	mHBaseWnd = CreateWindowEx(mWindowStyleEx,mClassname,mWindowname,
+	mBaseHwnd = CreateWindowEx(mWindowStyleEx,mClassname,mWindowname,
 		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
 
-	if(!mHBaseWnd)
+	if(!mBaseHwnd)
 	{
 		ErrorMessage("´´½¨´°¿ÚÊ§°Ü");
 		return false;
@@ -68,9 +68,9 @@ bool BaseWindow::ShowThisWindow()
 
 	AfterCreate();
 
-	SetWindowLong(mHBaseWnd,GWL_USERDATA,(LONG)this);
-	ShowWindow(mHBaseWnd,SW_SHOWNORMAL);
-	UpdateWindow(mHBaseWnd);
+	SetWindowLong(mBaseHwnd,GWL_USERDATA,(LONG)this);
+	ShowWindow(mBaseHwnd,SW_SHOWNORMAL);
+	UpdateWindow(mBaseHwnd);
 
 	MessageLoop();
 	return true;
@@ -150,7 +150,14 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_SIZING:
 			window->ReDraw();
 			break;
-		default:
+		case WM_COMMAND:
+			auto ControlId = LOWORD(wParam);
+			switch(ControlId)
+			{
+			case 9999:
+				ErrorMessage("¹þ¹þ");
+				break;
+			}
 			break;
 	}
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
@@ -162,7 +169,7 @@ void BaseWindow::Update(float delta)
 
 void BaseWindow::Destory()
 {
-	DestroyWindow(mHBaseWnd);
+	DestroyWindow(mBaseHwnd);
 }
 
  BaseWindow::~BaseWindow()
@@ -175,6 +182,7 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnCreate()
  { 
+
  }
 
  void BaseWindow::OnNcPaint(WPARAM wParam)
@@ -189,13 +197,17 @@ void BaseWindow::Destory()
  void BaseWindow::ReDraw()
  {
 	RECT rect;
-	GetClientRect(mHBaseWnd,&rect);
-	InvalidateRect(mHBaseWnd,&rect,true);
+	GetClientRect(mBaseHwnd,&rect);
+	InvalidateRect(mBaseHwnd,&rect,true);
  }
 
 
  void BaseWindow::AfterCreate()
  {
+	 //test for subwindow
+	 auto hButton = CreateWindow(
+		 "Button", "ºÙºÙ", WS_SYSMENU | WS_VISIBLE | WS_CHILD, 0, 0, 200, 200, mBaseHwnd, (HMENU)9999, NULL, 0);
+	 auto error = GetLastError();
  }
 
  void BaseWindow::OnNcCalcSize(WPARAM wParam,LPARAM lParam)
