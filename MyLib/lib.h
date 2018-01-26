@@ -66,6 +66,7 @@ private:
 
 	void MoveCenterWindow();
 
+
 public:
 
 	//InvalidRect
@@ -79,6 +80,8 @@ public:
 		:mWidth(width), mHeight(height), mIsfullscreen(isfullscreen), mWindowname(windowname), mClassname(classname),
 		mWindowStyle(WindowStyle), mWindowStyleEx(WindowStyleEx),mCallBackFunc(NULL){}
 
+
+	bool Show();
 	bool ShowThisWindow(void); //show this window
 
 	void SetCallBackFunc(pCallBackFunc mFunc);

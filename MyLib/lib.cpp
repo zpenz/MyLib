@@ -1,6 +1,7 @@
 # include "stdafx.h"
 # include "lib.h"
 # include <windows.h>
+# include <thread>
 
  void ErrorMessage(const char * _error)
  {
@@ -73,6 +74,26 @@ bool BaseWindow::ShowThisWindow()
 	UpdateWindow(mBaseHwnd);
 
 	MessageLoop();
+	return true;
+}
+
+bool BaseWindow::Show()
+{
+	auto proc = [](LPVOID lpParameter)-> DWORD WINAPI
+	{
+		auto semphore = OpenSemaphore(SEMAPHORE_ALL_ACCESS,false,"WindowOccur");
+		ReleaseSemaphore(semphore, 1, NULL);
+		BaseWindow * pWindow = reinterpret_cast<BaseWindow *>(lpParameter);
+		pWindow->ShowThisWindow();
+		return 0;
+	};
+
+	DWORD hThreadId;
+	auto hThread = CreateThread(NULL, 0, proc, this, 0, &hThreadId); 
+	if (!hThread) return false;
+	auto error = GetLastError();
+
+	CloseHandle(hThread);
 	return true;
 }
 
