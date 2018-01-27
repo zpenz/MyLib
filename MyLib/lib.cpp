@@ -84,6 +84,7 @@ bool BaseWindow::Show()
 		auto semphore = OpenSemaphore(SEMAPHORE_ALL_ACCESS,false,"WindowOccur");
 		ReleaseSemaphore(semphore, 1, NULL);
 		BaseWindow * pWindow = reinterpret_cast<BaseWindow *>(lpParameter);
+		// -------------- 
 		pWindow->ShowThisWindow();
 		return 0;
 	};

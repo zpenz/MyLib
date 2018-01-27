@@ -3,48 +3,12 @@
 # include <cstdlib>
 # include <windows.h>
 
-# ifdef INCLUDE_MY_DX9
-# include "libD3D.h"
-# endif
-
-#define SCREEN_WIDTH  GetDeviceCaps(GetDC(NULL),HORZRES)
-#define SCREEN_HEIGHT GetDeviceCaps(GetDC(NULL),VERTRES)
-#define MAX_KEYS 256
-# define SAFE_RELEASE(p) if(p){p->Release(); p=NULL;}
-
-extern void ErrorMessage(const char * _error);
-
-#define SINGLE_INSTANCE(classname) \
-		private: \
-			classname(){} \
-		public:\
-		inline static classname & getInstance(){\
-			static classname  cInstance;\
-			return cInstance;}
-
-#define IS_RETURN_ERROR(condition,returnValue,error_message)\
-		if(condition)\
-		{\
-		OutputDebugStringA("[ERROR]------------------------------------");\
-		OutputDebugStringA(error_message);\
-		OutputDebugStringA("\n");\
-		return returnValue;}
-		
-
-#define IS_RETURN_FUNC(condition,returnValue,FUNC)\
-		if(condition)\
-		{\
-		FUNC();\
-		return returnValue;}
-		
-
-typedef LRESULT(_stdcall *pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+#include "Macros.h"
 
 class  BaseWindow
 {
-private:
+protected:
 	typedef struct { int x; int y; }Point;
-
 
 	int mWidth;
 	int mHeight;
@@ -65,7 +29,7 @@ private:
 	pCallBackFunc mCallBackFunc;
 
 	void MoveCenterWindow();
-
+	bool ShowThisWindow(void); //show this window
 
 public:
 
@@ -80,9 +44,7 @@ public:
 		:mWidth(width), mHeight(height), mIsfullscreen(isfullscreen), mWindowname(windowname), mClassname(classname),
 		mWindowStyle(WindowStyle), mWindowStyleEx(WindowStyleEx),mCallBackFunc(NULL){}
 
-
 	bool Show();
-	bool ShowThisWindow(void); //show this window
 
 	void SetCallBackFunc(pCallBackFunc mFunc);
 	void SetInstance(HINSTANCE hInstance) {mInstance = hInstance;}

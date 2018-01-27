@@ -16,6 +16,9 @@
     <Filter Include="头文件\Control">
       <UniqueIdentifier>{b47a81b1-4f40-4791-b2c1-8d15dfdba8ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\同步">
+      <UniqueIdentifier>{83302f98-7f76-4e55-a44c-a366394c5602}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -42,6 +45,12 @@
     <ClInclude Include="Control.h">
       <Filter>头文件\Control</Filter>
     </ClInclude>
+    <ClInclude Include="Macros.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SemaphoreManager.h">
+      <Filter>头文件\同步</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -61,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="Control.cpp">
       <Filter>头文件\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="SemaphoreManager.cpp">
+      <Filter>头文件\同步</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
