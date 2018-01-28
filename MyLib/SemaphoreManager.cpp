@@ -6,18 +6,20 @@ namespace MY_LIB
 	bool Semaphore::Add(UINT increase)
 	{
 		ReleaseSemaphore(mHandle, increase, NULL);
+		mValue++;
 		return false;
 	}
 	bool Semaphore::Reduce(UINT reduce)
 	{
 		WaitForSingleObject(mHandle,INFINITE);
+		mValue--;
 		return false;
 	}
 
 	HANDLE Semaphore::GetSemphore(string SemaphoreName)
 	{
 		auto ret = OpenSemaphore(SEMAPHORE_ALL_ACCESS, false, SemaphoreName.c_str());
-		if (!ret) LOG_WARNING("出错");
+		if (!ret) LOG_WARNING("OpenSemphore: 无法打开指定的SemaphoreObject");
 		return ret;
 	}
 

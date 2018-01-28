@@ -19,7 +19,6 @@ protected:
 	DWORD mWindowStyleEx;
 	DWORD mWindowStyle;
 	HINSTANCE mInstance;
-	HBRUSH mBackground;
 
 	POINT mLeftTop;
 
@@ -30,9 +29,8 @@ protected:
 
 	void MoveCenterWindow();
 	bool ShowThisWindow(void); //show this window
-
+	void MoveWindow()const;
 public:
-
 	//InvalidRect
 	void ReDraw();
 
@@ -47,23 +45,21 @@ public:
 	bool Show();
 
 	void SetCallBackFunc(pCallBackFunc mFunc);
-	void SetInstance(HINSTANCE hInstance) {mInstance = hInstance;}
-	void SetWidth(int Width) {if(Width>0|| Width<SCREEN_WIDTH){mWidth = Width;}else{mWidth = 1024;}}
-	void SetHeight(int Height) {if(Height>0|| Height<SCREEN_HEIGHT){mHeight = Height;}else{mHeight = 768;}}
-	void SetWindowName(const char * windowname){mWindowname = windowname;}
-	void SetClassName(const char * classname){mClassname = classname;}
-	void SetWindowStyle(DWORD WindowStyle){mWindowStyle=WindowStyle;}
-	void SetWindowStyleEx(DWORD WindowStyleEx){mWindowStyleEx = WindowStyleEx;}
-	void SetLeftTopPos(POINT leftUpper){mLeftTop = leftUpper;}
-	void SetBrush(const HBRUSH & bs) {mBackground = bs;}
+	void SetInstance(HINSTANCE hInstance);
+	void SetWidth(int Width);
+	void SetHeight(int Height);
+	void SetWindowName(const char * windowname);
+	void AddWindowStyle(DWORD WindowStyle);
+	void ReduceWindowStyle(DWORD WindowStyle);
+	void AddWindowStyleEx(DWORD WindowStyleEx);
+	void ReduceWindowStyleEx(DWORD WindowStyleEx);
+	void SetLeftTopPos(POINT leftUpper);
 
-	int GetWidth(void) {return mWidth;}
-	int GetHeight(void) {return mHeight;}
-	const char * GetWindowName(void){return mWindowname;}
-	
-	bool SetHDC(HDC hDC){mHdc = hDC; return hDC?true:false;}
-	HDC  GetHDC(void){return mHdc;}
-	HWND GetHwnd(void){return mBaseHwnd;}
+	int GetWidth(void)const;
+	int GetHeight(void)const;
+	const char * GetWindowName(void)const;
+	HDC  GetHDC(void)const;
+	HWND GetHwnd(void)const;
 	
 	virtual void Destory();
 	virtual void MessageLoop();
@@ -80,7 +76,7 @@ public:
 	operator HDC()  {return mHdc;}
 	operator HWND() {return mBaseHwnd;}
 
-	friend 	
-		LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
+	friend
+	LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
 };
 

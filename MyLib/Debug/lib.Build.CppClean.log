@@ -4,10 +4,11 @@ c:\users\psong\desktop\lib\mylib\debug\lib.idb
 c:\users\psong\desktop\lib\mylib\debug\stdafx.obj
 c:\users\psong\desktop\lib\mylib\debug\control.obj
 c:\users\psong\desktop\lib\mylib\debug\libd11.obj
+c:\users\psong\desktop\lib\mylib\debug\macros.obj
+c:\users\psong\desktop\lib\mylib\debug\semaphoremanager.obj
 c:\users\psong\desktop\lib\mylib\debug\lib2d.obj
 c:\users\psong\desktop\lib\mylib\debug\libd3d.obj
 c:\users\psong\desktop\lib\mylib\debug\lib.obj
-c:\users\psong\desktop\lib\mylib\debug\semaphore1.obj
 c:\users\psong\desktop\lib\debug\lib.lib
 c:\users\psong\desktop\lib\debug\lib.pdb
 c:\users\psong\desktop\lib\mylib\debug\lib.tlog\cl.command.1.tlog

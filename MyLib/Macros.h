@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <stdarg.h>
+#include <string>
 # ifdef INCLUDE_MY_DX9
 # include "libD3D.h"
 # endif
@@ -32,13 +33,8 @@ extern void ErrorMessage(const char * _error);
 		OutputDebugStringA("\n");\
 		return returnValue;}
 
-#define LOG_WARNING(warning,...)\
-		va_list va;\
-		va_start(va,warning);\
-		char buf[256];\
-		sprintf(buf,"[WARN]------------------------------------%s%s",warning);\
-		OutputDebugStringA(buf);\
-		va_end(va);
+#define LOG_WARNING(format,...)\
+		OutputDebugStringA(Conver::Format("[WARN]:%s\n",format).c_str());
 
 
 #define IS_RETURN_FUNC(condition,returnValue,FUNC)\
@@ -47,5 +43,10 @@ extern void ErrorMessage(const char * _error);
 		FUNC();\
 		return returnValue;}
 
+namespace Conver
+{
+	using namespace std;
+	string Format(char * format,...);
+}
 
 typedef LRESULT(_stdcall *pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

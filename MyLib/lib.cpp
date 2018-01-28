@@ -1,7 +1,7 @@
 # include "stdafx.h"
 # include "lib.h"
 # include <windows.h>
-# include <thread>
+# include "SemaphoreManager.h"
 
  void ErrorMessage(const char * _error)
  {
@@ -23,7 +23,7 @@
 
 BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mIsfullscreen(false),mBaseHwnd(NULL),
 		mClassname("lib"),mWindowname("LIB"),mWindowStyle(WS_OVERLAPPEDWINDOW),
-	mWindowStyleEx(WS_EX_APPWINDOW),mInstance(GetModuleHandle(NULL)),mHdc(NULL),mBackground(NULL)
+	mWindowStyleEx(WS_EX_APPWINDOW),mInstance(GetModuleHandle(NULL)),mHdc(NULL)
 {
 }
 
@@ -38,8 +38,7 @@ bool BaseWindow::ShowThisWindow()
 	wndcls.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndcls.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 
-	if(mBackground!=NULL) wndcls.hbrBackground = mBackground;
-	else wndcls.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndcls.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 
 	if(mInstance) 	wndcls.hInstance = mInstance;
 	else wndcls.hInstance = NULL;
@@ -77,12 +76,16 @@ bool BaseWindow::ShowThisWindow()
 	return true;
 }
 
+void BaseWindow::MoveWindow() const
+{
+	if(mBaseHwnd)
+	::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, true);
+}
+
 bool BaseWindow::Show()
 {
 	auto proc = [](LPVOID lpParameter)-> DWORD WINAPI
 	{
-		auto semphore = OpenSemaphore(SEMAPHORE_ALL_ACCESS,false,"WindowOccur");
-		ReleaseSemaphore(semphore, 1, NULL);
 		BaseWindow * pWindow = reinterpret_cast<BaseWindow *>(lpParameter);
 		// -------------- 
 		pWindow->ShowThisWindow();
@@ -101,6 +104,91 @@ bool BaseWindow::Show()
 void BaseWindow::SetCallBackFunc(pCallBackFunc mFunc)
 {
 	mCallBackFunc = mFunc;
+	if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_WNDPROC, (LONG)mFunc);
+}
+
+void BaseWindow::SetInstance(HINSTANCE hInstance)
+{
+	mInstance = hInstance;
+	if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_HINSTANCE, (LONG)mInstance);
+}
+
+void BaseWindow::SetWidth(int Width)
+{
+	mWidth = Width;
+	if (mBaseHwnd) ::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, true);
+}
+
+void BaseWindow::SetHeight(int Height)
+{
+}
+
+void BaseWindow::SetWindowName(const char * windowname)
+{
+	mWindowname = windowname;
+	if(mBaseHwnd)
+	::SetWindowText(GetHwnd(), mWindowname);
+}
+
+void BaseWindow::AddWindowStyle(DWORD WindowStyle)
+{
+	mWindowStyle = mWindowStyle | WindowStyle;
+	if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_STYLE, mWindowStyle);
+}
+
+void BaseWindow::ReduceWindowStyle(DWORD WindowStyle)
+{
+	if (mWindowStyle & WindowStyle)
+	{
+		mWindowStyle = mWindowStyle & ~WindowStyle;
+		if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_STYLE, mWindowStyle);
+	}
+}
+
+void BaseWindow::AddWindowStyleEx(DWORD WindowStyleEx)
+{
+	mWindowStyleEx = mWindowStyleEx | WindowStyleEx;
+	if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_EXSTYLE, mWindowStyleEx);
+}
+
+void BaseWindow::ReduceWindowStyleEx(DWORD WindowStyleEx)
+{
+	if (mWindowStyleEx & WindowStyleEx)
+	{
+		mWindowStyleEx = mWindowStyleEx & ~WindowStyleEx;
+		if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_EXSTYLE, mWindowStyleEx);
+	}
+}
+
+void BaseWindow::SetLeftTopPos(POINT leftUpper)
+{
+	mLeftTop = leftUpper;  
+	if(mBaseHwnd) ::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, true);	
+}
+
+int BaseWindow::GetWidth(void) const
+{
+	return mWidth;
+}
+
+int BaseWindow::GetHeight(void) const
+{
+	return mHeight;
+}
+
+const char * BaseWindow::GetWindowName(void) const
+{
+	return mWindowname;
+}
+
+HDC BaseWindow::GetHDC(void) const
+{
+	return mHdc;
+}
+
+HWND BaseWindow::GetHwnd(void) const
+{
+	return mBaseHwnd;
 }
 
 void BaseWindow::MessageLoop()
@@ -135,7 +223,6 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 	{
 		case WM_CREATE:
 			hDC = GetDC(hWnd);
-			window->SetHDC(hDC);
 			window->OnCreate();
 			break;
 		case WM_DESTROY:

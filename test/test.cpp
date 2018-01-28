@@ -1,18 +1,17 @@
 #include "stdafx.h"
 #include "../MyLib/lib2d.h"
+#include "../MyLib/Macros.h"
 #pragma comment(lib,"../Debug/lib.lib")
 
+
 int main()
-{ 
-	auto semphore = CreateSemaphoreW(NULL, 0, 1, L"WindowOccur");
+{
 	BaseWindow bs;
 	bs.Show();
-	WaitForSingleObject(semphore,INFINITE);
-	cout << "成功等待出现!"<<endl;
+
 
 	while (1)
 	{
-		cout << GetTickCount()<<endl;
 
 		////bitmap
 		//RECT rcPicture = { 72,128,72 * 2,128 * 2 };

@@ -18,8 +18,7 @@ lib3D9::lib3D9():BaseWindow()
 	this->mDirect9   = NULL;
 	this->mDevice9 = NULL;
 	
-	SetWindowName("WSQ_3D");
-	this->SetBrush((HBRUSH)GetStockObject(BLACK_BRUSH));
+	SetWindowName("LIB DX9");
 }
 
 lib3D9::~lib3D9()
