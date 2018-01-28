@@ -82,6 +82,12 @@ void BaseWindow::MoveWindow() const
 	::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, true);
 }
 
+void BaseWindow::UpdateCache(bool topMost)
+{
+	::SetWindowPos(mBaseHwnd, topMost?HWND_TOPMOST:HWND_TOP, mLeftTop.x, mLeftTop.y,
+		mWidth, mHeight, SWP_FRAMECHANGED);
+}
+
 bool BaseWindow::Show()
 {
 	auto proc = [](LPVOID lpParameter)-> DWORD WINAPI
@@ -116,11 +122,13 @@ void BaseWindow::SetInstance(HINSTANCE hInstance)
 void BaseWindow::SetWidth(int Width)
 {
 	mWidth = Width;
-	if (mBaseHwnd) ::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, true);
+	if (mBaseHwnd) MoveWindow();
 }
 
 void BaseWindow::SetHeight(int Height)
 {
+	mHeight = Height;
+	if (mBaseHwnd) MoveWindow();
 }
 
 void BaseWindow::SetWindowName(const char * windowname)
@@ -133,22 +141,38 @@ void BaseWindow::SetWindowName(const char * windowname)
 void BaseWindow::AddWindowStyle(DWORD WindowStyle)
 {
 	mWindowStyle = mWindowStyle | WindowStyle;
-	if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_STYLE, mWindowStyle);
+	if (mBaseHwnd)
+	{
+		auto TempStyle = GetWindowLong(mBaseHwnd,GWL_STYLE);
+		SetWindowLong(mBaseHwnd, GWL_STYLE, TempStyle|WindowStyle);
+		UpdateCache(false);
+	}
 }
 
 void BaseWindow::ReduceWindowStyle(DWORD WindowStyle)
 {
+
 	if (mWindowStyle & WindowStyle)
 	{
 		mWindowStyle = mWindowStyle & ~WindowStyle;
-		if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_STYLE, mWindowStyle);
+		if (mBaseHwnd)
+		{
+			auto TempStyle = GetWindowLong(mBaseHwnd, GWL_STYLE);
+			SetWindowLong(mBaseHwnd, GWL_STYLE, TempStyle & ~WindowStyle);
+			UpdateCache(false);
+		}
 	}
 }
 
 void BaseWindow::AddWindowStyleEx(DWORD WindowStyleEx)
 {
 	mWindowStyleEx = mWindowStyleEx | WindowStyleEx;
-	if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_EXSTYLE, mWindowStyleEx);
+	if (mBaseHwnd)
+	{
+		auto TempStyle = GetWindowLong(mBaseHwnd, GWL_STYLE);
+		SetWindowLong(mBaseHwnd, GWL_EXSTYLE, TempStyle|WindowStyleEx);
+		UpdateCache(false);
+	}
 }
 
 void BaseWindow::ReduceWindowStyleEx(DWORD WindowStyleEx)
@@ -156,14 +180,27 @@ void BaseWindow::ReduceWindowStyleEx(DWORD WindowStyleEx)
 	if (mWindowStyleEx & WindowStyleEx)
 	{
 		mWindowStyleEx = mWindowStyleEx & ~WindowStyleEx;
-		if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_EXSTYLE, mWindowStyleEx);
+		auto TempStyle = GetWindowLong(mBaseHwnd, GWL_STYLE);
+		if (mBaseHwnd) SetWindowLong(mBaseHwnd, GWL_EXSTYLE, TempStyle&~WindowStyleEx);
+		UpdateCache(false);
 	}
 }
 
 void BaseWindow::SetLeftTopPos(POINT leftUpper)
 {
 	mLeftTop = leftUpper;  
-	if(mBaseHwnd) ::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, true);	
+	if(mBaseHwnd) MoveWindow();
+}
+
+void BaseWindow::SetWindowAlpha(int alpha)
+{
+	if (!mBaseHwnd)
+	{
+		LOG_WARNING(Conver::Format("%sµ÷ÓÃ´íÎó!",__FUNCTION__).c_str());
+		return;
+	}
+	AddWindowStyleEx(WS_EX_LAYERED);
+	::SetLayeredWindowAttributes(mBaseHwnd,RGB(0,255,0),alpha, LWA_ALPHA);
 }
 
 int BaseWindow::GetWidth(void) const
@@ -231,7 +268,6 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			PostQuitMessage(0);
 			break;
 		case WM_PAINT:
-			//window = (My_Window *)GetWindowLong(hWnd,GWL_USERDATA);
 			if(window==NULL) 
 				ErrorMessage("window==NULL");
 			window->OnDraw();
@@ -264,7 +300,8 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			switch(ControlId)
 			{
 			case 9999:
-				ErrorMessage("¹þ¹þ");
+				window->AddWindowStyle(WS_VSCROLL);
+				window->SetWindowAlpha(200);
 				break;
 			}
 			break;

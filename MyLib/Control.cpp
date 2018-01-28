@@ -1,111 +1,124 @@
 #include "Control.h"
 #include <algorithm>
 
-UINT Control::START_ID = 678 + 1;
-
-class MyString :public std::string 
+namespace LIB_CONTROL
 {
-public:
-	string ms;
-	MyString(string s) :ms(s) {}
-	bool toUpper()
+	UINT Handle::ID = 678 + 1;
+
+	void Handle::UpdatePosition()
 	{
-		if (empty()) return false;
-		auto cString = c_str();
-		char c;
-		do 
-		{
-			static int i = 0;
-			c = c_str()[i++];
-			if ((int)c > 97) c = c - 32;
-		} while (!c);
+		MoveWindow(mHwnd, mX, mY, mWidth, mHeight, true);
+	}
+	void Handle::UpdateCache()
+	{
+		SetWindowPos(mHwnd,HWND_TOP,mX,mY,mWidth,
+			mHeight,SWP_FRAMECHANGED);
+	}
+
+	Handle::Handle():mX(0),mY(0),mWidth(),mHeight(),mStyle(WS_CHILD|WS_VISIBLE)
+	{
+
+	}
+
+	bool Handle::Create()
+	{
+		mID = ID++;
+		mHwnd = CreateWindow(mClassName, "", mStyle, mX, mY, 
+			mWidth, mHeight, NULL, HMENU(mID), NULL,NULL);
+		if (!mHwnd) return false;
 		return true;
 	}
-	operator string() { return ms; }
-};
 
-vector<string> typeV = {"EDIT","BUTTON","STATIC","LISTBOX","SCROLLBAE","COMBOBOX",
-"MDICLIENT","RichEdit","RICHEDIT_CLASS"};
+	UINT Handle::GetID()
+	{
+		return mID;
+	}
 
-Control::Control()
-{
-	Control("", START_ID++);
-}
+	HWND Handle::GetParent()
+	{
+		return mParent;
+	}
 
-Control::Control(string text, UINT ID, int x, int y, pCommandFunction pfn) :mText(text), mID(ID),
-mPoint(x, y), mFunction(pfn),mStyle(WS_CHILD|WS_VISIBLE),mType("BUTTON")
-{
-}
+	void Handle::SetPosition(int x, int y)
+	{
+		mX = x, mY = y;
+		if (mHwnd) UpdatePosition();
+	}
 
-Control::~Control()
-{
-}
+	void Handle::SetWidth(int width)
+	{
+		mWidth = width;
+		if (mHwnd) UpdatePosition();
+	}
 
-string Control::text()
-{
-	return mText;
-}
+	void Handle::SetHeight(int height)
+	{
+		mHeight = height;
+		if (mHwnd) UpdatePosition();
+	}
 
-void Control::setText(string text)
-{
-	if(!text.empty()) mText = text;
-}
+	void Handle::AddStyle(DWORD style)
+	{
+		if (mHwnd)
+		{
+			mStyle = mStyle | style;
+			auto tempStyle = GetWindowLong(mHwnd,GWL_STYLE);
+			SetWindowLong(mHwnd,GWL_STYLE,tempStyle|style);
+			UpdateCache();
+		}
+	}
 
-UINT Control::GetID()
-{
-	return mID;
-}
+	void Handle::ReduceStyle(DWORD style)
+	{
+		if (mHwnd)
+		{
+			mStyle = mStyle & ~style;
+			auto tempStyle = GetWindowLong(mHwnd, GWL_STYLE);
+			SetWindowLong(mHwnd, GWL_STYLE, tempStyle &  ~style);
+			UpdateCache();
+		}
+	}
 
-void Control::SetID(UINT id)
-{
-	mID = id;
-}
 
-Point<> Control::GetPos()
-{
-	return mPoint;
-}
+	LRESULT CALLBACK ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		switch (uMsg)
+		{
+		case WM_DRAWITEM:
+		case WM_COMMAND:
 
-void Control::SetPos(Point<> pt)
-{
-	mPoint = pt;
-}
+		default:
+			break;
+		}
+		return DefWindowProc(hWnd,uMsg,wParam,lParam);
+	}
 
-bool Control::isVisible()
-{
-	return static_cast<bool>(mStyle & WS_VISIBLE);
-}
 
-void Control::setVisible(bool state)
-{
-	mStyle =  state ? (mStyle |WS_VISIBLE ): (mStyle|~WS_VISIBLE);
-}
-
-void Control::setCallBack(pCommandFunction  pfn)
-{
-	mFunction = pfn;
-}
-
-void Control::setStyle(UINT style)
-{
-	mStyle = style;
-}
-
-bool Control::setType( string controlType)
-{//test ... not 
-	auto tempType = (string)strupr(const_cast<char *>(controlType.c_str()));
-	MyString s(controlType);
-	s.toUpper();
-	tempType = s.c_str();
-	if (find_if(typeV.begin(),typeV.end(), [&tempType](vector<string>::reference & r)->bool{
-		return r == tempType;
-	}) == typeV.end())
+	bool View::IsVisible()
+	{
+		if (!mHwnd) return false;
+		if (GetWindowLong(mHwnd, GWL_STYLE)&WS_VISIBLE) return true;
 		return false;
-	mType = controlType;
-	return true;
-}
+	}
 
-string Control::getType()
-{
-	return mType;
+	void View::SetText(string st)
+	{
+		if (mHwnd) SetWindowText(mHwnd, st.c_str());
+	}
+
+
+	Control::Control():Handle()
+	{
+
+	}
+
+	void Control::OnDraw(WPARAM wParam, LPARAM lParam)
+	{
+
+	}
+	void Control::OnClick(WPARAM wParam, LPARAM lParam)
+	{
+
+	}
+
 }

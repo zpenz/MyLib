@@ -1,44 +1,59 @@
 #pragma once
-#include <string>
 #include <vector>
 #include <windows.h>
+#include "Macros.h"
 
-using namespace std;
-typedef void(_stdcall * pCommandFunction)(void);
-
-template<typename T = int>
-class Point
+namespace LIB_CONTROL
 {
-public:
-	T posX, posY;
-	Point(T x, T y) :posX(x), posY(y) {}
-	Point() :posX(0), posY(0) {};
-};
+	using namespace std;
 
-class Control
-{
-public:
-	Control();
-	Control(string text,UINT ID=START_ID,int x=0,int y=0,pCommandFunction pfn=NULL);
-	virtual ~Control();
-	string text();
-	void   setText(string text);
-	UINT   GetID();
-	void   SetID(UINT id);
-	Point<>   GetPos();
-	void      SetPos(Point<> pt);
-	bool   isVisible();
-	void   setVisible(bool state);
-	void   setCallBack(pCommandFunction  pfn);
-	void   setStyle(UINT style);
-	bool   setType( string controlType);
-	string getType();
-protected:
-	 static UINT START_ID ;
-	UINT  mID;
-	string mText;
-	string mType;
-	pCommandFunction mFunction;
-	Point<> mPoint;
-	UINT mStyle;
-};
+	class Handle
+	{
+		static UINT ID;
+	protected:
+		int mX, mY,mWidth,mHeight;
+		HWND  mHwnd;
+		HWND  mParent;
+		DWORD mStyle;
+		UINT mID;
+		const char * mClassName;
+		void UpdatePosition(); //update position
+		void UpdateCache();    //update cache
+	public:
+		Handle();
+		bool Create();   //increase ID
+		UINT GetID();
+		HWND GetParent();
+		void SetPosition(int x,int y);
+		void SetWidth(int width);
+		void SetHeight(int height);
+		void AddStyle(DWORD style);
+		void ReduceStyle(DWORD style);
+
+		friend LRESULT CALLBACK ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	};
+
+	class View
+	{
+	protected:
+		HWND  mHwnd;
+		string mText;
+		HWND  mParent;
+	public:
+		virtual void Draw()=0;
+		bool IsVisible();
+		void SetText(string st);
+	};
+
+	class Control : public Handle, public View
+	{
+	public:
+		Control();
+		virtual void OnDraw(WPARAM wParam,LPARAM lParam);
+		virtual void OnClick(WPARAM wParam, LPARAM lParam);
+
+	};
+}
+
+
+

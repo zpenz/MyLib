@@ -9,7 +9,6 @@ int main()
 	BaseWindow bs;
 	bs.Show();
 
-
 	while (1)
 	{
 

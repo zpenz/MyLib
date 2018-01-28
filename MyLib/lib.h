@@ -2,7 +2,6 @@
 # include <stdio.h>
 # include <cstdlib>
 # include <windows.h>
-
 #include "Macros.h"
 
 class  BaseWindow
@@ -27,9 +26,11 @@ protected:
 
 	pCallBackFunc mCallBackFunc;
 
+private:
 	void MoveCenterWindow();
 	bool ShowThisWindow(void); //show this window
 	void MoveWindow()const;
+	void UpdateCache(bool topMost);
 public:
 	//InvalidRect
 	void ReDraw();
@@ -54,6 +55,8 @@ public:
 	void AddWindowStyleEx(DWORD WindowStyleEx);
 	void ReduceWindowStyleEx(DWORD WindowStyleEx);
 	void SetLeftTopPos(POINT leftUpper);
+
+	void SetWindowAlpha(int alpha); //窗口透明度 0~255 透明度
 
 	int GetWidth(void)const;
 	int GetHeight(void)const;
