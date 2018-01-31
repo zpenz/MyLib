@@ -32,6 +32,7 @@ private:
 	bool ShowThisWindow(void); //show this window
 	void MoveWindow()const;
 	void UpdateCache(bool topMost);
+	void UpdatePosition(WPARAM wParam,LPARAM lParam);
 public:
 	//InvalidRect
 	void ReDraw();

@@ -88,6 +88,11 @@ void BaseWindow::UpdateCache(bool topMost)
 		mWidth, mHeight, SWP_FRAMECHANGED);
 }
 
+void BaseWindow::UpdatePosition(WPARAM wParam, LPARAM lParam)
+{
+	mLeftTop = { LOWORD(lParam),HIWORD(lParam) };
+}
+
 bool BaseWindow::Show()
 {
 	auto proc = [](LPVOID lpParameter)-> DWORD WINAPI
@@ -194,6 +199,8 @@ void BaseWindow::SetLeftTopPos(POINT leftUpper)
 
 void BaseWindow::SetWindowAlpha(int alpha)
 {
+	if (alpha < 0 || alpha >256) alpha = alpha | 256;
+
 	if (!mBaseHwnd)
 	{
 		LOG_WARNING(Conver::Format("%sµ÷ÓÃ´íÎó!",__FUNCTION__).c_str());
@@ -297,6 +304,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			window->ReDraw();
 			break;
 		case WM_MOVE:
+			window->UpdatePosition(wParam,lParam);
 			break;
 		case WM_COMMAND:
 			auto ControlId = LOWORD(wParam);

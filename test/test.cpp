@@ -12,7 +12,7 @@ int main()
 	bs.Show();
 	Sleep(200);
 	bs.SetWindowName("haha");
-	bs.SetWindowAlpha(100);
+
 	while (1)
 	{
 		//if (bs.GetHwnd() != NULL)
