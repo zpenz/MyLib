@@ -169,7 +169,7 @@ void BaseWindow::AddWindowStyleEx(DWORD WindowStyleEx)
 	mWindowStyleEx = mWindowStyleEx | WindowStyleEx;
 	if (mBaseHwnd)
 	{
-		auto TempStyle = GetWindowLong(mBaseHwnd, GWL_STYLE);
+		auto TempStyle = GetWindowLong(mBaseHwnd, GWL_EXSTYLE);
 		SetWindowLong(mBaseHwnd, GWL_EXSTYLE, TempStyle|WindowStyleEx);
 		UpdateCache(false);
 	}
@@ -201,6 +201,7 @@ void BaseWindow::SetWindowAlpha(int alpha)
 	}
 	AddWindowStyleEx(WS_EX_LAYERED);
 	::SetLayeredWindowAttributes(mBaseHwnd,RGB(0,255,0),alpha, LWA_ALPHA);
+	UpdateCache(true);
 }
 
 int BaseWindow::GetWidth(void) const
@@ -295,13 +296,16 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_SIZING:
 			window->ReDraw();
 			break;
+		case WM_MOVE:
+			break;
 		case WM_COMMAND:
 			auto ControlId = LOWORD(wParam);
 			switch(ControlId)
 			{
 			case 9999:
-				window->AddWindowStyle(WS_VSCROLL);
-				window->SetWindowAlpha(200);
+				LIB_CONTROL::Control ctest;
+				ctest.AttachParent(window->GetHwnd());
+				auto ret = ctest.CreateObject(300,100,100,50);
 				break;
 			}
 			break;
@@ -352,7 +356,7 @@ void BaseWindow::Destory()
  {
 	 //test for subwindow
 	 auto hButton = CreateWindow(
-		 "Button", "細細", WS_SYSMENU | WS_VISIBLE | WS_CHILD, 0, 0, 200, 200, mBaseHwnd, (HMENU)9999, NULL, 0);
+		 "BUTTON", "細細", WS_VISIBLE | WS_CHILD, 0, 0, 200, 200, mBaseHwnd, (HMENU)9999, NULL, 0);
 	 auto error = GetLastError();
  }
 

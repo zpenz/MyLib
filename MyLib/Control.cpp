@@ -15,7 +15,7 @@ namespace LIB_CONTROL
 			mHeight,SWP_FRAMECHANGED);
 	}
 
-	Handle::Handle():mX(0),mY(0),mWidth(),mHeight(),mStyle(WS_CHILD|WS_VISIBLE)
+	Handle::Handle():mX(0),mY(0),mWidth(),mHeight(),mStyle(WS_CHILD|WS_VISIBLE),mClassName("BUTTON")
 	{
 
 	}
@@ -23,20 +23,20 @@ namespace LIB_CONTROL
 	bool Handle::Create()
 	{
 		mID = ID++;
-		mHwnd = CreateWindow(mClassName, "", mStyle, mX, mY, 
-			mWidth, mHeight, NULL, HMENU(mID), NULL,NULL);
+		mHwnd = CreateWindowA(mClassName.c_str(), mText.empty()?"hahaha":mText.c_str(), mStyle, mX, mY, 
+			mWidth, mHeight, mParent, HMENU(mID), NULL,NULL);
 		if (!mHwnd) return false;
 		return true;
 	}
 
-	UINT Handle::GetID()
+	UINT Handle::GetID() const
 	{
 		return mID;
 	}
 
-	HWND Handle::GetParent()
+	HWND Handle::GetOwn() const
 	{
-		return mParent;
+		return mHwnd;
 	}
 
 	void Handle::SetPosition(int x, int y)
@@ -79,6 +79,14 @@ namespace LIB_CONTROL
 		}
 	}
 
+	bool Handle::AttachParent(HWND parent)
+	{
+		if (!parent) return false;
+		else
+			mParent = parent;
+		return true;
+	}
+
 
 	LRESULT CALLBACK ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
@@ -101,11 +109,26 @@ namespace LIB_CONTROL
 		return false;
 	}
 
+	bool View::SetVisible(bool CanSee)
+	{
+		if (!mHwnd) return false;
+		auto style = GetWindowLong(mHwnd, GWL_STYLE);
+		if(!CanSee) SetWindowLong(mHwnd, GWL_STYLE, style &~ WS_VISIBLE);
+		else
+		SetWindowLong(mHwnd, GWL_STYLE, style | WS_VISIBLE);
+		return true;
+	}
+
 	void View::SetText(string st)
 	{
 		if (mHwnd) SetWindowText(mHwnd, st.c_str());
 	}
 
+
+	Control::Control(string Type)
+	{
+		mClassName = Type.c_str();
+	}
 
 	Control::Control():Handle()
 	{
@@ -119,6 +142,16 @@ namespace LIB_CONTROL
 	void Control::OnClick(WPARAM wParam, LPARAM lParam)
 	{
 
+	}
+
+	bool Control::CreateObject(int x, int y,int width,int height)
+	{
+		mWidth = width;
+		mHeight = height;
+		if (mClassName.empty()) return false;
+		mX = x;
+		mY = y;
+		return Handle::Create();
 	}
 
 }

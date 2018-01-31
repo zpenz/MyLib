@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------
-	libD3D(nc)
+	libD3D(not complete)
 	last devise : 2016Äê7ÔÂ31ÈÕ 22:18:22
 	purpose     :  more convince  to use DirectX9
 --------------------------------------------------

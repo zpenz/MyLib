@@ -16,20 +16,21 @@ namespace LIB_CONTROL
 		HWND  mParent;
 		DWORD mStyle;
 		UINT mID;
-		const char * mClassName;
+		string mClassName;
+		string mText;
 		void UpdatePosition(); //update position
 		void UpdateCache();    //update cache
 	public:
 		Handle();
 		bool Create();   //increase ID
-		UINT GetID();
-		HWND GetParent();
+		UINT GetID() const;
+		HWND GetOwn() const;
 		void SetPosition(int x,int y);
 		void SetWidth(int width);
 		void SetHeight(int height);
 		void AddStyle(DWORD style);
 		void ReduceStyle(DWORD style);
-
+		bool AttachParent(HWND parent);
 		friend LRESULT CALLBACK ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	};
 
@@ -40,18 +41,19 @@ namespace LIB_CONTROL
 		string mText;
 		HWND  mParent;
 	public:
-		virtual void Draw()=0;
 		bool IsVisible();
+		bool SetVisible(bool CanSee);
 		void SetText(string st);
 	};
 
-	class Control : public Handle, public View
+	class Control : public Handle, public View 
 	{
 	public:
+		Control(string Type);
 		Control();
 		virtual void OnDraw(WPARAM wParam,LPARAM lParam);
 		virtual void OnClick(WPARAM wParam, LPARAM lParam);
-
+		virtual bool CreateObject(int x, int y,int width,int height);
 	};
 }
 

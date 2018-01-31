@@ -2,6 +2,7 @@
 # include <stdio.h>
 # include <cstdlib>
 # include <windows.h>
+# include "Control.h"
 #include "Macros.h"
 
 class  BaseWindow
