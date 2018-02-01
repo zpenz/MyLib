@@ -1,4 +1,3 @@
-
 # include "lib.h"
 # include "d3d9.h"
 # pragma comment(lib,"d3d9.lib")
@@ -20,7 +19,6 @@ public:
 	operator IDirect3DDevice9*() {return mDevice9;}
 
 	lib3D9();
-
 	~lib3D9();
 
 private:

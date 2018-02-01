@@ -15,7 +15,7 @@
 #define MAX_KEYS 256
 # define SAFE_RELEASE(p) if(p){p->Release(); p=NULL;}
 
-extern void ErrorMessage(const char * _error);
+void ErrorMessage(const char * _error);
 
 #define SINGLE_INSTANCE(classname) \
 		private: \

@@ -36,9 +36,9 @@ private:
 	void UpdateCache(bool topMost);
 	void UpdatePosition(WPARAM wParam,LPARAM lParam);
 public:
+	BaseWindow();
 	BaseWindow(int width, int height,const string windowname, const string classname, 
 		DWORD WindowStyleEx, DWORD WindowStyle, POINT leftUpper);
-	BaseWindow();
 	virtual ~BaseWindow();
 
 	//InvalidRect
@@ -55,7 +55,6 @@ public:
 	void AddWindowStyleEx(DWORD WindowStyleEx);
 	void ReduceWindowStyleEx(DWORD WindowStyleEx);
 	void SetLeftTopPos(POINT leftUpper);
-
 	void SetWindowAlpha(int alpha); //窗口透明度 0~255 透明度
 
 	int GetWidth(void)const;

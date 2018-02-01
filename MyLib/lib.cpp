@@ -4,13 +4,6 @@
 
 namespace LIB_WINDOW
 {
-
- void ErrorMessage(const char * _error)
- {
-	 MessageBox(NULL,_error,"error",MB_OK);
-	 exit(0);
- }
-
  void BaseWindow::MoveCenterWindow()
  {
 	 int tempWidth = SCREEN_WIDTH;

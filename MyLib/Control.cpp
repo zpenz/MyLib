@@ -124,8 +124,7 @@ namespace LIB_CONTROL
 	bool View::IsVisible()
 	{
 		if (!mHwnd) return false;
-		if (GetWindowLong(mHwnd, GWL_STYLE)&WS_VISIBLE) return true;
-		return false;
+		return IsWindowVisible(mHwnd);
 	}
 
 	bool View::SetVisible(bool CanSee)
