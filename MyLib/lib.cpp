@@ -316,7 +316,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			case 9999:
 				LIB_CONTROL::Control ctest;
 				ctest.AttachParent(window->GetHwnd());
-				auto ret = ctest.CreateObject(300,100,100,50);
+				auto ret = ctest.CreateObject(rand() % 1024, rand() % 768,100,50);
 				break;
 			}
 			break;

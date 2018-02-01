@@ -11,8 +11,9 @@ int main()
 	bs.Show();
 	Sleep(500);
 	bs.SetWindowName("haha");
-	ctest.AttachParent(bs.GetHwnd());
-	ctest.CreateObject(400,400,20,50);
+	//auto testH = FindWindowA("Notepad","新建文本文档.txt - 记事本");
+	ctest.AttachParent(bs);
+	//ctest.CreateObject(400,400,20,50);
 	
 	while (1)
 	{

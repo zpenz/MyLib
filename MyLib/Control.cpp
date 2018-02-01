@@ -26,7 +26,7 @@ namespace LIB_CONTROL
 		mHwnd = CreateWindow(mClassName.c_str(), mText.empty()?"hahaha":mText.c_str(), mStyle, mX, mY, 
 			mWidth, mHeight, mParent, HMENU(mID), NULL,NULL);
 		if (!mHwnd) return false;
-		 SetProc(ControlProc);
+		SetProc(ControlProc);
 		return true;
 	}
 
@@ -60,11 +60,16 @@ namespace LIB_CONTROL
 
 	void Handle::SetProc(pCallBackFunc pRoc)
 	{
+		auto Proc = [](HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)->LRESULT CALLBACK
+		{
+
+		};
 		if (mHwnd)
 		{
 			auto PreProc = SetWindowLong(mHwnd, GWL_WNDPROC, reinterpret_cast<LONG>(pRoc));
 			SetWindowLong(mHwnd, GWL_USERDATA, PreProc);
 		}
+		UpdateCache();
 	}
 
 	void Handle::AddStyle(DWORD style)
@@ -104,13 +109,14 @@ namespace LIB_CONTROL
 		{
 		case WM_CREATE:
 			break;
-		case WM_COMMAND:
+		case WM_LBUTTONUP:
+			ErrorMessage("点击了错误的按钮!");
 			break;
 		case WM_PAINT:
-			TextOut(dc, 240, 120, "xxx", sizeof("xxx"));
+			TextOut(dc, 240, 120, "xxx", strlen("xxx"));
 			break;
 		case WM_NCPAINT:
-			TextOut(dc, 320, 120, "xxx", sizeof("xxx"));
+			TextOut(dc, 320, 120, "xxx", strlen("xxx"));
 			break;
 		default:
 			break;
