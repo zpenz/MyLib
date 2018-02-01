@@ -20,14 +20,15 @@ namespace LIB_CONTROL
 		string mText;
 		void UpdatePosition(); //update position
 		void UpdateCache();    //update cache
+		bool Create();   //increase ID
 	public:
 		Handle();
-		bool Create();   //increase ID
 		UINT GetID() const;
 		HWND GetOwn() const;
 		void SetPosition(int x,int y);
 		void SetWidth(int width);
 		void SetHeight(int height);
+		void SetProc(pCallBackFunc pRoc);
 		void AddStyle(DWORD style);
 		void ReduceStyle(DWORD style);
 		bool AttachParent(HWND parent);

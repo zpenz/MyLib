@@ -1,7 +1,9 @@
 # include "stdafx.h"
 # include "lib.h"
 # include <windows.h>
-# include "SemaphoreManager.h"
+
+namespace LIB_WINDOW
+{
 
  void ErrorMessage(const char * _error)
  {
@@ -21,10 +23,18 @@
 	 SetLeftTopPos(tempPoint);
  }
 
-BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mIsfullscreen(false),mBaseHwnd(NULL),
-		mClassname("lib"),mWindowname("LIB"),mWindowStyle(WS_OVERLAPPEDWINDOW),
-	mWindowStyleEx(WS_EX_APPWINDOW),mInstance(GetModuleHandle(NULL)),mHdc(NULL)
+ BaseWindow::BaseWindow(int width, int height,
+	 const string windowname, const string classname, DWORD WindowStyleEx, DWORD WindowStyle,POINT leftUpper)
+	 :mWidth(width), mHeight(height),mClassname(classname), mWindowname(windowname), mWindowStyle(WindowStyle),
+	 mWindowStyleEx(WindowStyleEx),mLeftTop(leftUpper)
+ {
+ }
+
+ BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mBaseHwnd(NULL),
+		mClassname("LIB"),mWindowname("LIB"),mWindowStyle(WS_OVERLAPPEDWINDOW),
+	mWindowStyleEx(WS_EX_APPWINDOW)
 {
+
 }
 
 bool BaseWindow::ShowThisWindow()
@@ -46,7 +56,7 @@ bool BaseWindow::ShowThisWindow()
 	if(!mCallBackFunc) 	wndcls.lpfnWndProc = WinProc;
 	else wndcls.lpfnWndProc = mCallBackFunc;
 
-	wndcls.lpszClassName = mClassname;
+	wndcls.lpszClassName = mClassname.c_str();
 	wndcls.lpszMenuName = NULL;
 
 	if (!mWindowStyle) 	wndcls.style = CS_HREDRAW | CS_VREDRAW;
@@ -57,7 +67,7 @@ bool BaseWindow::ShowThisWindow()
 	InitBeforeCreate();
 	MoveCenterWindow();
 
-	mBaseHwnd = CreateWindowEx(mWindowStyleEx,mClassname,mWindowname,
+	mBaseHwnd = CreateWindowEx(mWindowStyleEx,mClassname.c_str(),mWindowname.c_str(),
 		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
 
 	if(!mBaseHwnd)
@@ -136,11 +146,11 @@ void BaseWindow::SetHeight(int Height)
 	if (mBaseHwnd) MoveWindow();
 }
 
-void BaseWindow::SetWindowName(const char * windowname)
+void BaseWindow::SetWindowName(const string windowname)
 {
 	mWindowname = windowname;
 	if(mBaseHwnd)
-	::SetWindowText(GetHwnd(), mWindowname);
+	::SetWindowText(GetHwnd(), mWindowname.c_str());
 }
 
 void BaseWindow::AddWindowStyle(DWORD WindowStyle)
@@ -221,7 +231,7 @@ int BaseWindow::GetHeight(void) const
 	return mHeight;
 }
 
-const char * BaseWindow::GetWindowName(void) const
+string BaseWindow::GetWindowName(void) const
 {
 	return mWindowname;
 }
@@ -375,3 +385,5 @@ void BaseWindow::Destory()
  void BaseWindow::OnLButtonDown(WPARAM wParam, LPARAM lParam)
  {
  } 
+
+ }

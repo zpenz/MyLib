@@ -3,23 +3,25 @@
 # include <cstdlib>
 # include <windows.h>
 # include "Control.h"
+# include <string>
 #include "Macros.h"
+
+namespace LIB_WINDOW
+{
+	using namespace std;
 
 class  BaseWindow
 {
 protected:
-	typedef struct { int x; int y; }Point;
-
 	int mWidth;
 	int mHeight;
 	bool mIsfullscreen;
-	const char * mClassname; 
-	const char * mWindowname;
+	const string mClassname; 
+	string mWindowname;
 
 	DWORD mWindowStyleEx;
 	DWORD mWindowStyle;
 	HINSTANCE mInstance;
-
 	POINT mLeftTop;
 
 	HDC  mHdc;
@@ -34,24 +36,20 @@ private:
 	void UpdateCache(bool topMost);
 	void UpdatePosition(WPARAM wParam,LPARAM lParam);
 public:
-	//InvalidRect
-	void ReDraw();
-
+	BaseWindow(int width, int height,const string windowname, const string classname, 
+		DWORD WindowStyleEx, DWORD WindowStyle, POINT leftUpper);
 	BaseWindow();
-
 	virtual ~BaseWindow();
 
-	BaseWindow(int width, int height, bool isfullscreen, const char * windowname, const char * classname, DWORD WindowStyleEx, DWORD WindowStyle, void * lpvoid, Point leftUpper)
-		:mWidth(width), mHeight(height), mIsfullscreen(isfullscreen), mWindowname(windowname), mClassname(classname),
-		mWindowStyle(WindowStyle), mWindowStyleEx(WindowStyleEx),mCallBackFunc(NULL){}
-
+	//InvalidRect
+	void ReDraw();
 	bool Show();
 
 	void SetCallBackFunc(pCallBackFunc mFunc);
 	void SetInstance(HINSTANCE hInstance);
 	void SetWidth(int Width);
 	void SetHeight(int Height);
-	void SetWindowName(const char * windowname);
+	void SetWindowName(const string windowname);
 	void AddWindowStyle(DWORD WindowStyle);
 	void ReduceWindowStyle(DWORD WindowStyle);
 	void AddWindowStyleEx(DWORD WindowStyleEx);
@@ -62,7 +60,7 @@ public:
 
 	int GetWidth(void)const;
 	int GetHeight(void)const;
-	const char * GetWindowName(void)const;
+	string GetWindowName(void)const;
 	HDC  GetHDC(void)const;
 	HWND GetHwnd(void)const;
 	
@@ -84,4 +82,6 @@ public:
 	friend
 	LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
 };
+}
 
+using namespace LIB_WINDOW;

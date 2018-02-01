@@ -4,15 +4,16 @@
 #include "../MyLib/Control.h"
 #pragma comment(lib,"../Debug/lib.lib")
 
-
 int main()
 {
 	BaseWindow bs;
 	LIB_CONTROL::Control ctest;
 	bs.Show();
-	Sleep(200);
+	Sleep(500);
 	bs.SetWindowName("haha");
-
+	ctest.AttachParent(bs.GetHwnd());
+	ctest.CreateObject(400,400,20,50);
+	
 	while (1)
 	{
 		//if (bs.GetHwnd() != NULL)
@@ -44,10 +45,6 @@ int main()
 		//DrawManager.DrawEllipse(pt, 10, 20, false, pGoldBrush);
 	}
 
-	while (1)
-	{
-
-	}
     return 0;
 }
 

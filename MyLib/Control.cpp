@@ -23,9 +23,10 @@ namespace LIB_CONTROL
 	bool Handle::Create()
 	{
 		mID = ID++;
-		mHwnd = CreateWindowA(mClassName.c_str(), mText.empty()?"hahaha":mText.c_str(), mStyle, mX, mY, 
+		mHwnd = CreateWindow(mClassName.c_str(), mText.empty()?"hahaha":mText.c_str(), mStyle, mX, mY, 
 			mWidth, mHeight, mParent, HMENU(mID), NULL,NULL);
 		if (!mHwnd) return false;
+		 SetProc(ControlProc);
 		return true;
 	}
 
@@ -55,6 +56,15 @@ namespace LIB_CONTROL
 	{
 		mHeight = height;
 		if (mHwnd) UpdatePosition();
+	}
+
+	void Handle::SetProc(pCallBackFunc pRoc)
+	{
+		if (mHwnd)
+		{
+			auto PreProc = SetWindowLong(mHwnd, GWL_WNDPROC, reinterpret_cast<LONG>(pRoc));
+			SetWindowLong(mHwnd, GWL_USERDATA, PreProc);
+		}
 	}
 
 	void Handle::AddStyle(DWORD style)
@@ -87,18 +97,27 @@ namespace LIB_CONTROL
 		return true;
 	}
 
-
 	LRESULT CALLBACK ControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
+		auto dc = GetDC(hWnd);
 		switch (uMsg)
 		{
-		case WM_DRAWITEM:
+		case WM_CREATE:
+			break;
 		case WM_COMMAND:
-
+			break;
+		case WM_PAINT:
+			TextOut(dc, 240, 120, "xxx", sizeof("xxx"));
+			break;
+		case WM_NCPAINT:
+			TextOut(dc, 320, 120, "xxx", sizeof("xxx"));
+			break;
 		default:
 			break;
 		}
-		return DefWindowProc(hWnd,uMsg,wParam,lParam);
+		//must call CallWindowProc 
+		return CallWindowProc(reinterpret_cast<WNDPROC>(GetWindowLong(hWnd,GWL_USERDATA)),hWnd,
+			uMsg,wParam,lParam);
 	}
 
 
@@ -124,7 +143,6 @@ namespace LIB_CONTROL
 		if (mHwnd) SetWindowText(mHwnd, st.c_str());
 	}
 
-
 	Control::Control(string Type)
 	{
 		mClassName = Type.c_str();
@@ -146,9 +164,9 @@ namespace LIB_CONTROL
 
 	bool Control::CreateObject(int x, int y,int width,int height)
 	{
+		if (mClassName.empty()) return false;
 		mWidth = width;
 		mHeight = height;
-		if (mClassName.empty()) return false;
 		mX = x;
 		mY = y;
 		return Handle::Create();
