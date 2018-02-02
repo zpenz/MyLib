@@ -81,6 +81,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="2Draw.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="libd11.h" />
     <ClInclude Include="SemaphoreManager.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Macros.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="2Draw.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="libd11.cpp" />
     <ClCompile Include="Macros.cpp" />

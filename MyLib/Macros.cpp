@@ -18,5 +18,29 @@ namespace Conver
 		va_end(va);
 		return buf;
 	}
+
+	POINT  CenterPoint(RECT rc,float offsetX,float offsetY)
+	{
+		POINT pt = {rc.left + (rc.right - rc.left)*0.5 - offsetX*0.5,
+			rc.top + (rc.bottom - rc.top)*0.5 - offsetY*0.5 };
+		return pt;
+	}
+
+	POINT LeftTopPoint(RECT rc)
+	{
+		POINT pt = {rc.left,rc.top};
+		return pt;
+	}
+
+	char * WCharToAChar(wchar_t * Wchar)
+	{
+		//WideCharToMultiByte(CP_ACP,);
+		return nullptr;
+	}
+
+	wchar_t * ACharToWChar(wchar_t * Wchar)
+	{
+		return nullptr;
+	}
 }
 

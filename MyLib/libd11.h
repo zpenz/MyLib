@@ -75,5 +75,4 @@ public:
 	libd11() :pdev(NULL), pcon(NULL), background_color(D3DXCOLOR(0.0f, 0.2f, 0.4f, 1.0f)) {}
 	~libd11();
 };
-
 #endif

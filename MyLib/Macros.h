@@ -43,10 +43,25 @@ void ErrorMessage(const char * _error);
 		FUNC();\
 		return returnValue;}
 
+#define IS_ERROR_EXIT(condition,sErrorMessage)\
+		if(condition)\
+		{\
+			ErrorMessage(sErrorMessage);\
+		}
+		
 namespace Conver
 {
+
+#define RECTWIDTH(rc) rc.right - rc.left
+#define RECTHEIGHT(rc) rc.bottom - rc.top
+
 	using namespace std;
 	string Format(char * format,...);
+	POINT  CenterPoint(RECT rc, float offsetX = 0.00,float offsetY = 0.00);
+	POINT LeftTopPoint(RECT rc);
+	///<ÏÈÁô×Å¿Ó>
+	char * WCharToAChar(wchar_t * Wchar);
+	wchar_t * ACharToWChar(wchar_t * Wchar);
 }
 
 typedef LRESULT(_stdcall *pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

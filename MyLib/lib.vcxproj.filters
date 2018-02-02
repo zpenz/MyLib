@@ -22,6 +22,9 @@
     <Filter Include="头文件\Macro">
       <UniqueIdentifier>{646a81d0-cbf9-495e-a039-dda97b979ab1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Draw">
+      <UniqueIdentifier>{7732b972-94b7-4236-8891-2e1c7d066ea4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -54,6 +57,9 @@
     <ClInclude Include="Macros.h">
       <Filter>头文件\Macro</Filter>
     </ClInclude>
+    <ClInclude Include="2Draw.h">
+      <Filter>头文件\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -79,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="Macros.cpp">
       <Filter>头文件\Macro</Filter>
+    </ClCompile>
+    <ClCompile Include="2Draw.cpp">
+      <Filter>头文件\Draw</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

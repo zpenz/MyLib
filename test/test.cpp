@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "../MyLib/lib2d.h"
+#include "../MyLib/lib.h"
+#include "../MyLib/2Draw.h"
 #include "../MyLib/Macros.h"
 #include "../MyLib/Control.h"
 #pragma comment(lib,"../Debug/lib.lib")
@@ -7,13 +8,14 @@
 int main()
 {
 	BaseWindow bs;
-	LIB_CONTROL::Control ctest;
 	bs.Show();
 	Sleep(500);
-	bs.SetWindowName("haha");
-	//auto testH = FindWindowA("Notepad","新建文本文档.txt - 记事本");
-	ctest.AttachParent(bs);
-	//ctest.CreateObject(400,400,20,50);
+	bs.SetWindowName("pSong's Window");
+	DrawManager.InitManager();
+	DrawManager.SetRenderTarget(bs.GetHwnd());
+	RECT rcPicture = { 0,0,100,50 };
+	DrawManager.DrawRectWithText(rcPicture,"haha",true,DrawManager.CreateBrush(MyColor::Gray));
+	////auto testH = FindWindowA("Notepad","新建文本文档.txt - 记事本");
 	
 	while (1)
 	{

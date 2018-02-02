@@ -52,13 +52,19 @@ bool BaseWindow::ShowThisWindow()
 	wndcls.lpszClassName = mClassname.c_str();
 	wndcls.lpszMenuName = NULL;
 
-	if (!mWindowStyle) 	wndcls.style = CS_HREDRAW | CS_VREDRAW;
-	else wndcls.style = CS_HREDRAW | CS_VREDRAW;
+	wndcls.style = CS_HREDRAW | CS_VREDRAW;
 	
 	RegisterClassEx(&wndcls);
 
 	InitBeforeCreate();
 	MoveCenterWindow();
+
+	//Visual-Stdio-Style
+	mWindowStyleEx = WS_EX_APPWINDOW|WS_EX_LTRREADING|WS_EX_WINDOWEDGE|WS_EX_LEFT|
+		WS_EX_RIGHTSCROLLBAR;
+
+	mWindowStyle = WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_OVERLAPPED | 
+		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_THICKFRAME;
 
 	mBaseHwnd = CreateWindowEx(mWindowStyleEx,mClassname.c_str(),mWindowname.c_str(),
 		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
@@ -314,9 +320,10 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			switch(ControlId)
 			{
 			case 9999:
-				LIB_CONTROL::Control ctest;
-				ctest.AttachParent(window->GetHwnd());
-				auto ret = ctest.CreateObject(rand() % 1024, rand() % 768,100,50);
+				//LIB_CONTROL::Control ctest;
+				//ctest.AttachParent(window->GetHwnd());
+				//auto ret = ctest.CreateObject(rand() % 1024, rand() % 768,100,50);
+				//break;
 				break;
 			}
 			break;
@@ -366,9 +373,9 @@ void BaseWindow::Destory()
  void BaseWindow::AfterCreate()
  {
 	 //test for subwindow
-	 auto hButton = CreateWindow(
-		 "BUTTON", "細細", WS_VISIBLE | WS_CHILD, 0, 0, 200, 200, mBaseHwnd, (HMENU)9999, NULL, 0);
-	 auto error = GetLastError();
+	 //auto hButton = CreateWindow(
+		// "BUTTON", "細細", WS_VISIBLE | WS_CHILD, 0, 0, 200, 200, mBaseHwnd, (HMENU)9999, NULL, 0);
+	 //auto error = GetLastError();
  }
 
  void BaseWindow::OnNcCalcSize(WPARAM wParam,LPARAM lParam)
