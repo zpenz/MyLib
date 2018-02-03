@@ -13,8 +13,8 @@ int main()
 	bs.SetWindowName("pSong's Window");
 	DrawManager.InitManager();
 	DrawManager.SetRenderTarget(bs.GetHwnd());
-	RECT rcPicture = { 0,0,100,50 };
-	DrawManager.DrawRectWithText(rcPicture,"haha",true,DrawManager.CreateBrush(MyColor::Gray));
+	RECT rcPicture = { 500,400,600,450 };
+	DrawManager.DrawRectWithText(rcPicture,"haha",MyColor::Blue,MyColor::Black,1);
 	////auto testH = FindWindowA("Notepad","新建文本文档.txt - 记事本");
 	
 	while (1)

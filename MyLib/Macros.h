@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <stdarg.h>
 #include <string>
+#include <d2d1.h>
 # ifdef INCLUDE_MY_DX9
 # include "libD3D.h"
 # endif
@@ -57,11 +58,28 @@ namespace Conver
 
 	using namespace std;
 	string Format(char * format,...);
-	POINT  CenterPoint(RECT rc, float offsetX = 0.00,float offsetY = 0.00);
+	POINT  CenterPoint(RECT rc, int offsetX = 0,int offsetY = 0);
 	POINT LeftTopPoint(RECT rc);
+
 	///<ÏÈÁô×Å¿Ó>
 	char * WCharToAChar(wchar_t * Wchar);
 	wchar_t * ACharToWChar(wchar_t * Wchar);
+
+	///<d2dConver>some d2d conver</d2dConver>
+	D2D1_POINT_2F & PointToD2DPointF(POINT & pt);
+	D2D1_RECT_F & RectToD2DRectF(RECT & rc);
+
+	class MyRect
+	{
+	private:
+		RECT mRect;
+		int mLeft, mRight, mTop, mBottom;
+	public:
+		MyRect(INT left, INT top, INT right, INT bottom);
+		MyRect(RECT desRect);
+		operator RECT&();
+		operator D2D1_RECT_F&();
+	};
 }
 
 typedef LRESULT(_stdcall *pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

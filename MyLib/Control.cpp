@@ -60,7 +60,7 @@ namespace LIB_CONTROL
 
 	void Handle::SetProc(pCallBackFunc pRoc)
 	{
-		auto Proc = [](HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)->LRESULT CALLBACK
+		auto Proc = [](HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)->LRESULT 
 		{
 
 		};
@@ -130,7 +130,7 @@ namespace LIB_CONTROL
 	bool View::IsVisible()
 	{
 		if (!mHwnd) return false;
-		return IsWindowVisible(mHwnd);
+		return IsWindowVisible(mHwnd)!=0;
 	}
 
 	bool View::SetVisible(bool CanSee)

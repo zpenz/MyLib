@@ -104,7 +104,7 @@ void BaseWindow::UpdatePosition(WPARAM wParam, LPARAM lParam)
 
 bool BaseWindow::Show()
 {
-	auto proc = [](LPVOID lpParameter)-> DWORD WINAPI
+	auto proc = [](LPVOID lpParameter)-> DWORD 
 	{
 		BaseWindow * pWindow = reinterpret_cast<BaseWindow *>(lpParameter);
 		// -------------- 

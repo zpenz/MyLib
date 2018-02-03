@@ -5,55 +5,6 @@
 
 using namespace Conver;
 
-//conver 
-D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
-{
-	D2D1_POINT_2F *pPointF = new D2D1_POINT_2F(
-		D2D1::Point2F(static_cast<float>(pt.x),
-			static_cast<float>(pt.y)));
-	return *pPointF;
-}
-
-D2D1_RECT_F & RectToD2DRectF(RECT & rc)
-{
-	D2D1_RECT_F * pNeedRect = new D2D1_RECT_F(
-		D2D1::RectF(static_cast<float>(rc.left),
-			static_cast<float>(rc.top),
-			static_cast<float>(rc.right),
-			static_cast<float>(rc.bottom)));
-	return *pNeedRect;
-}
-
-class MyRect
-{
-private:
-	RECT mRect;
-	int mLeft;
-	int mRight;
-	int mTop;
-	int mBottom;
-public:
-	MyRect(INT left, INT top, INT right, INT bottom)
-		:mLeft(left), mRight(right), mTop(top), mBottom(bottom)
-	{
-		mRect = { mLeft,mTop,mRight,mBottom };
-	}
-
-	MyRect(RECT desRect)
-		:mRect(desRect) {}
-
-	operator RECT&()
-	{
-		return mRect;
-	}
-
-	operator D2D1_RECT_F&()
-	{
-		return RectToD2DRectF(*this);
-	}
-};
-
-
 bool My2DDraw::InitManager()
 {
 	mFactory = NULL;
@@ -179,12 +130,11 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 	return nullptr;
 }
 
-bool My2DDraw::DrawRectangle(RECT Rect, bool isFillRectangle, ID2D1SolidColorBrush * pSolidBrush)
+bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle)
 {
 	//create brush
-	auto tempSolidBrush = pSolidBrush;
-	if (tempSolidBrush == NULL)
-		tempSolidBrush = CreateBrush();
+	auto tempSolidBrush = CreateBrush(RectColor);
+
 	mRenderTarget->BeginDraw();
 	D2D1_RECT_F desRect = MyRect(Rect);
 	if (!isFillRectangle)
@@ -209,9 +159,10 @@ IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text)
 	return tempTextLayout;
 }
 
-bool My2DDraw::DrawRectWithText(RECT Rect, std::string text, bool isFillRectangle, ID2D1SolidColorBrush * pSoildBrush)
+bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,
+	D2D1::ColorF RectColor, D2D1::ColorF TextColor, bool isFillRectangle)
 {
-	if(!DrawRectangle(Rect,isFillRectangle,pSoildBrush)) return false;
+	if(!DrawRectangle(Rect,RectColor, isFillRectangle)) return false;
 	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
 	float fMaxWidth; 
 	auto hr = tempTextLayout->DetermineMinWidth(&fMaxWidth);
@@ -225,16 +176,15 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text, bool isFillRectangl
 	///<´¹Ö±¾ÓÖÐ¶ÔÆë>////
 	tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)),tempTextLayout,CreateBrush(MyColor::White));
+	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)),tempTextLayout,CreateBrush(TextColor));
 	mRenderTarget->EndDraw();
 	return true;
 }
 
-bool My2DDraw::DrawEllipse(POINT centerPoint, float r1, float r2, bool isFillEllipse, ID2D1SolidColorBrush * pSoildBrush)
+bool My2DDraw::DrawEllipse(POINT centerPoint, float r1, float r2, MyColor EllipseColor,bool isFillEllipse)
 {
-	auto tempSolidBrush = pSoildBrush;
-	if (tempSolidBrush == NULL)
-		tempSolidBrush = CreateBrush();
+	auto tempSolidBrush = CreateBrush(EllipseColor);
+
 	mRenderTarget->BeginDraw();
 	if (!isFillEllipse)
 		mRenderTarget->DrawEllipse(D2D1::Ellipse(PointToD2DPointF(centerPoint), r1, r2), tempSolidBrush);

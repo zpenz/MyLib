@@ -1,53 +1,7 @@
 #include "stdafx.h"
 #include "lib2d.h"
-
-//conver 
-D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
-{
-	D2D1_POINT_2F *pPointF = new D2D1_POINT_2F(
-		D2D1::Point2F(static_cast<float>(pt.x), 
-			static_cast<float>(pt.y)));
-	return *pPointF;
-}
-
-D2D1_RECT_F & RectToD2DRectF(RECT & rc)
-{
-	D2D1_RECT_F * pNeedRect = new D2D1_RECT_F(
-		D2D1::RectF(static_cast<float>(rc.left), 
-			static_cast<float>(rc.top), 
-			static_cast<float>(rc.right), 
-			static_cast<float>(rc.bottom)));
-	return *pNeedRect;
-}
-
-class MyRect
-{
-private:
-	RECT mRect;
-	int mLeft;
-	int mRight;
-	int mTop;
-	int mBottom;
-public:
-	MyRect(INT left, INT top, INT right, INT bottom)
-		:mLeft(left),mRight(right),mTop(top),mBottom(bottom) 
-	{
-		mRect = { mLeft,mTop,mRight,mBottom };
-	}
-
-	MyRect(RECT desRect)
-		:mRect(desRect) {}
-
-	operator RECT&()
-	{
-		return mRect;
-	}
-
-	operator D2D1_RECT_F&()
-	{
-		return RectToD2DRectF(*this);
-	}
-};
+#include "Macros.h"
+using namespace Conver;
 
 PicStruct::~PicStruct()
 {
