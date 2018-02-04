@@ -17,6 +17,19 @@
 #define SAFE_RELEASE(p) if(p){p->Release(); p = NULL;}
 #define SAFE_DELETE(p)  if(p){delete p; p = NULL;} 
 
+namespace DRAW2D
+{
+	//¶ÔÆë·½Ê½
+#define ALIGN_DEFAULT    0
+#define ALIGN_LEFT       1
+#define ALIGN_RIGHT      2
+#define ALIGN_TOP        3
+#define ALIGN_BOTTOM     4
+#define ALIGN_CENTER_V   5
+#define ALIGN_CENTER_H   6
+}
+
+
 void ErrorMessage(const char * _error);
 
 #define SINGLE_INSTANCE(classname) \

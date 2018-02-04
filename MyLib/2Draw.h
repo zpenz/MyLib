@@ -9,23 +9,18 @@
 # pragma comment(lib,"Dwrite.lib")
 # pragma comment(lib,"windowscodecs.lib")
 
-//¶ÔÆë·½Ê½
-#define ALIGN_DEFAULT    0
-#define ALIGN_LEFT       1
-#define ALIGN_RIGHT      2
-#define ALIGN_TOP        3
-#define ALIGN_BOTTOM     4
-#define ALIGN_CENTER_V   5
-#define ALIGN_CENTER_H   6
-
 #define MyColor D2D1::ColorF
+
+using namespace DRAW2D;
 
 class My2DDraw
 {
 	SINGLE_INSTANCE(My2DDraw)
 private:
 	ID2D1Factory * mFactory;
+
 	ID2D1RenderTarget * mRenderTarget;
+
 	IDWriteFactory * mWriteFactory;
 public:
 	bool InitManager();
