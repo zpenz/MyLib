@@ -380,15 +380,16 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnDraw()
  {
-	 DrawManager.Clear(MyColor::Gray);
+	 DrawManager.Clear(MyColor::ColorF(45.0/256,45.0/256,48.0/256));
 	 RECT windowRect;
 	 GetWindowRect(mBaseHwnd,&windowRect);
 	 Conver::ScreenToClientRc(GetHwnd(),windowRect);
 	 auto cxFrame = GetSystemMetrics(SM_CXFRAME);
 	 auto cyFrame = GetSystemMetrics(SM_CYFRAME);
 	 DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
-	 RECT rc = { 0,0,50,50 };
-	 DrawManager.DrawRectWithText(rc, "pSong", MyColor::Gray, MyColor::Silver, false);
+	 RECT rc = { 10,20,60,30 };
+	 DrawManager.DrawRectWithText(rc, "pSong", MyColor::ColorF(45.0 / 256, 45.0 / 256, 48.0 / 256), MyColor::ColorF(111.0 / 256, 111.0 / 256, 112.0 / 256)
+		 ,ALIGN_LEFT|ALIGN_CENTER_H,false);
  }
 
  void BaseWindow::OnNcPaint(HRGN rgn)

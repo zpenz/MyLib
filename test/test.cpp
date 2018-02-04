@@ -4,6 +4,8 @@
 #include "../MyLib/Macros.h"
 #include "../MyLib/Control.h"
 #pragma comment(lib,"../Debug/lib.lib")
+#include <iostream>
+using namespace std;
 
 int main()
 {
@@ -21,7 +23,11 @@ int main()
 	
 	while (1)
 	{
-
+		POINT  * pPoint=new POINT();
+		GetCursorPos(pPoint);
+		COLORREF color = GetPixel(GetDC(NULL), pPoint->x,pPoint->y);
+		cout <<(UINT)GetRValue(color)<<(UINT)GetGValue(color)<< (UINT)GetBValue(color)<<endl;
+		Sleep(1000);
 		////bitmap
 		//RECT rcPicture = { 72,128,72 * 2,128 * 2 };
 		//auto pBitmap = DrawManager.CreateBitmap(L"3.jpg", 72, 128);

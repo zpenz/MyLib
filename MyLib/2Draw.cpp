@@ -216,31 +216,31 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	{
 		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
 	}
-	else if (AlignType & ALIGN_RIGHT)
+	if (AlignType & ALIGN_RIGHT)
 	{
 		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
 	}
-	else if (AlignType & ALIGN_RIGHT)
+	if (AlignType & ALIGN_RIGHT)
 	{
 		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING); 
 	}
-	else if (AlignType & ALIGN_TOP)
+	if (AlignType & ALIGN_TOP)
 	{
 		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 	}
-	else if (AlignType & ALIGN_BOTTOM)
+	if (AlignType & ALIGN_BOTTOM)
 	{
 		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_FAR);
 	}
-	else if(AlignType & ALIGN_CENTER_H)
+	if(AlignType & ALIGN_CENTER_H)
 	{
 		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER); 
 	}
-	else if(AlignType & ALIGN_CENTER_V)
+	if(AlignType & ALIGN_CENTER_V)
 	{
 		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER); 
 	}
-	else
+	if(AlignType == ALIGN_DEFAULT)
 	{
 		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);  //水平居中
 		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER); //垂直居中
