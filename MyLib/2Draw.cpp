@@ -18,6 +18,10 @@ bool My2DDraw::InitManager()
 bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 {
 	IS_RETURN_ERROR(!hTargetWindowHwnd, false, "hTargetWindowHwnd不存在");
+
+	IS_RETURN_ERROR(!mFactory, false, "mFactory null");
+	if (mRenderTarget != nullptr) SAFE_RELEASE(mRenderTarget); //clean
+
 	auto tempRect = pRect;
 	if (tempRect == NULL)
 	{
@@ -26,7 +30,8 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 	}
 	auto width = tempRect->right - tempRect->left;
 	auto height = tempRect->bottom - tempRect->top;
-	mRenderTarget = NULL;
+
+	ID2D1HwndRenderTarget *pTempRenderTarget;
 	auto tp = D2D1::RenderTargetProperties();
 	tp.dpiX = 96;
 	tp.dpiY = 96;
@@ -35,13 +40,49 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 		D2D1::HwndRenderTargetProperties(
 			hTargetWindowHwnd,
 			D2D1::SizeU((int)width, (int)height)
-		), &mRenderTarget);
+		),&pTempRenderTarget);
+
+	IS_RETURN_ERROR(FAILED(hr), false, "创建HWNDRenderTarget出错!");
+
+	///<warning>short-cut!</warning>
+	mRenderTarget = pTempRenderTarget;
+	
+
 	if (FAILED(hr)) return false;
 	mRenderTarget->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE);
 	return true;
 }
 
-ID2D1SolidColorBrush * My2DDraw::CreateBrush(D2D1::ColorF penColor)
+bool My2DDraw::SetRenderTarget(HDC hDC,RECT * pRc)
+{
+	IS_RETURN_ERROR(!mFactory, false, "mFactory null");
+	if (mRenderTarget != nullptr) SAFE_RELEASE(mRenderTarget); //clean
+
+	ID2D1DCRenderTarget * pTempDcRenderTarget;
+	D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(
+		D2D1_RENDER_TARGET_TYPE_DEFAULT,
+		D2D1::PixelFormat(
+			DXGI_FORMAT_B8G8R8A8_UNORM,
+			D2D1_ALPHA_MODE_IGNORE),
+		0,
+		0,
+		D2D1_RENDER_TARGET_USAGE_NONE,
+		D2D1_FEATURE_LEVEL_DEFAULT
+	);
+	auto hr = mFactory->CreateDCRenderTarget(&props,&pTempDcRenderTarget);
+	IS_RETURN_ERROR(FAILED(hr), false, "创建DcRenderTarget出错!");
+	
+	hr = pTempDcRenderTarget->BindDC(hDC, pRc);
+	IS_RETURN_ERROR(FAILED(hr), false, "绑定指定的DC和RECT失败!");
+
+	///<warning>short-cut!</warning>
+	mRenderTarget = pTempDcRenderTarget;
+	IS_RETURN_ERROR(mRenderTarget == nullptr, false, "转换出错");
+
+	return true;
+}
+
+ID2D1SolidColorBrush * My2DDraw::CreateBrush(MyColor penColor)
 {
 	ID2D1SolidColorBrush * pSolidBrush;
 	auto hr = mRenderTarget->CreateSolidColorBrush(penColor, &pSolidBrush);
@@ -159,8 +200,7 @@ IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text)
 	return tempTextLayout;
 }
 
-bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,
-	D2D1::ColorF RectColor, D2D1::ColorF TextColor, bool isFillRectangle)
+bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, MyColor TextColor, bool isFillRectangle)
 {
 	if(!DrawRectangle(Rect,RectColor, isFillRectangle)) return false;
 	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
@@ -214,6 +254,14 @@ bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 	mRenderTarget->DrawBitmap(pBitmap, RectToD2DRectF(decRect));
 	auto hr = mRenderTarget->EndDraw();
 	return false;
+}
+
+bool My2DDraw::Clear(MyColor color)
+{
+	if (!mRenderTarget) return false;
+	mRenderTarget->BeginDraw();
+	mRenderTarget->Clear(color);
+	return SUCCEEDED(mRenderTarget->EndDraw());
 }
 
 

@@ -29,6 +29,25 @@ namespace Conver
 		return *pNeedRect;
 	}
 
+	RECT  ClientToScreenRc(HWND hWnd,RECT & rc)
+	{
+		POINT lt = { rc.left,rc.top }, rt = {rc.right,rc.bottom};
+		ClientToScreen(hWnd, &lt);
+		ClientToScreen(hWnd, &rt);
+		RECT tempRect = { lt.x,lt.y,rt.x,rt.y };
+		rc = tempRect;
+		return tempRect;
+	}
+
+	RECT  ScreenToClientRc(HWND hWnd, RECT & rc)
+	{
+		POINT lt = { rc.left,rc.top }, rt = { rc.right,rc.bottom };
+		ScreenToClient(hWnd, &lt);
+		ScreenToClient(hWnd, &rt);
+		RECT tempRect = { lt.x,lt.y,rt.x,rt.y };
+		rc = tempRect;
+		return tempRect;
+	}
 	
 
 	string Format(char * format, ...)

@@ -16,18 +16,20 @@ class My2DDraw
 	SINGLE_INSTANCE(My2DDraw)
 private:
 	ID2D1Factory * mFactory;
-	ID2D1HwndRenderTarget * mRenderTarget;
+	ID2D1RenderTarget * mRenderTarget;
 	IDWriteFactory * mWriteFactory;
 public:
 	bool InitManager();
 
 	bool SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect = NULL);
 
-	ID2D1SolidColorBrush * CreateBrush(D2D1::ColorF BrushColor = D2D1::ColorF::Black);
+	bool SetRenderTarget(HDC hDC, RECT * pRc);
+
+	ID2D1SolidColorBrush * CreateBrush(MyColor BrushColor = MyColor::Black);
 
 	bool DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle = false);
 
-	bool DrawRectWithText(RECT Rect,std::string text, D2D1::ColorF RectColor,D2D1::ColorF TextColor,bool isFillRectangle = false);
+	bool DrawRectWithText(RECT Rect,std::string text, MyColor RectColor, MyColor TextColor,bool isFillRectangle = false);
 
 	bool DrawEllipse(POINT centerPoint, float r1, float r2, MyColor EllipseColor,bool isFillEllipse = false);
 
@@ -35,11 +37,13 @@ public:
 
 	bool DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect);
 
+	bool Clear(MyColor color = MyColor::Black);
+
 	IDWriteTextLayout * CreateTextLayout(std::string text);
 
 	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth = 0, UINT dstHeight = 0);
 
-	ID2D1HwndRenderTarget * getRenderTarget() { return mRenderTarget; }
+	ID2D1RenderTarget * getRenderTarget() { return mRenderTarget; }
 
 	~My2DDraw();
 };

@@ -9,21 +9,15 @@ int main()
 {
 	BaseWindow bs;
 	bs.Show();
-	Sleep(500);
-	bs.SetWindowName("pSong's Window");
-	DrawManager.InitManager();
-	DrawManager.SetRenderTarget(bs.GetHwnd());
-	RECT rcPicture = { 500,400,600,450 };
-	DrawManager.DrawRectWithText(rcPicture,"haha",MyColor::Blue,MyColor::Black,1);
-	////auto testH = FindWindowA("Notepad","新建文本文档.txt - 记事本");
+	//Sleep(500);
+	//bs.SetWindowName("pSong's Window");
+
+	//RECT rcPicture = { 500,400,600,450 };
+	//DrawManager.DrawRectWithText(rcPicture,"haha",MyColor::Blue,MyColor::Black,1);
+	//auto testH = FindWindowA("Notepad","新建文本文档.txt - 记事本");
 	
 	while (1)
 	{
-		//if (bs.GetHwnd() != NULL)
-		//{
-			//ctest.AttachParent(bs.GetHwnd());
-			//if (ctest.CreateObject(500, 500,50,50)) break;
-		//}
 		////bitmap
 		//RECT rcPicture = { 72,128,72 * 2,128 * 2 };
 		//auto pBitmap = DrawManager.CreateBitmap(L"3.jpg", 72, 128);

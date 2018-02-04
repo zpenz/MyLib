@@ -14,7 +14,8 @@
 #define SCREEN_WIDTH  GetDeviceCaps(GetDC(NULL),HORZRES)
 #define SCREEN_HEIGHT GetDeviceCaps(GetDC(NULL),VERTRES)
 #define MAX_KEYS 256
-# define SAFE_RELEASE(p) if(p){p->Release(); p=NULL;}
+#define SAFE_RELEASE(p) if(p){p->Release(); p = NULL;}
+#define SAFE_DELETE(p)  if(p){delete p; p = NULL;} 
 
 void ErrorMessage(const char * _error);
 
@@ -60,7 +61,8 @@ namespace Conver
 	string Format(char * format,...);
 	POINT  CenterPoint(RECT rc, int offsetX = 0,int offsetY = 0);
 	POINT LeftTopPoint(RECT rc);
-
+	RECT ClientToScreenRc(HWND hWnd, RECT & rc);
+	RECT ScreenToClientRc(HWND hWnd, RECT & rc);
 	///<ÏÈÁô×Å¿Ó>
 	char * WCharToAChar(wchar_t * Wchar);
 	wchar_t * ACharToWChar(wchar_t * Wchar);

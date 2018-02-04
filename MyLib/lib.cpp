@@ -285,18 +285,22 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			PostQuitMessage(0);
 			break;
 		case WM_PAINT:
-			if(window==NULL) 
-				ErrorMessage("window==NULL");
 			window->OnDraw();
 			break;
 		case WM_NCCREATE:
 			window = (BaseWindow*)(((CREATESTRUCT *)lParam)->lpCreateParams);
 			break;
 		case WM_NCPAINT:
-			window->OnNcPaint(wParam);
+			window->OnNcPaint((HRGN)wParam);
+			return 0;
 			break;
 		case WM_NCCALCSIZE:
 			window->OnNcCalcSize(wParam,lParam);
+			break;
+		case WM_NCHITTEST:
+			break;
+		case WM_NCACTIVATE:
+			return(window->OnNcActive(wParam,lParam));
 			break;
 		case WM_KEYUP:
 			break;
@@ -310,7 +314,6 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_LBUTTONUP:
 			break;
 		case WM_SIZING:
-			window->ReDraw();
 			break;
 		case WM_MOVE:
 			window->UpdatePosition(wParam,lParam);
@@ -320,10 +323,6 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			switch(ControlId)
 			{
 			case 9999:
-				//LIB_CONTROL::Control ctest;
-				//ctest.AttachParent(window->GetHwnd());
-				//auto ret = ctest.CreateObject(rand() % 1024, rand() % 768,100,50);
-				//break;
 				break;
 			}
 			break;
@@ -344,17 +343,11 @@ void BaseWindow::Destory()
 {
 }
 
- void BaseWindow::OnDraw()
- {
- }
+
 
  void BaseWindow::OnCreate()
  { 
 
- }
-
- void BaseWindow::OnNcPaint(WPARAM wParam)
- {	
  }
 
  void BaseWindow::InitBeforeCreate()
@@ -372,18 +365,63 @@ void BaseWindow::Destory()
 
  void BaseWindow::AfterCreate()
  {
-	 //test for subwindow
-	 //auto hButton = CreateWindow(
-		// "BUTTON", "ºÙºÙ", WS_VISIBLE | WS_CHILD, 0, 0, 200, 200, mBaseHwnd, (HMENU)9999, NULL, 0);
-	 //auto error = GetLastError();
+	 auto ret = DrawManager.InitManager();
+	 IS_RETURN_ERROR(!ret, , "³õÊ¼»¯D2D´íÎó!");
+	 RECT windowRect;
+	 GetWindowRect(mBaseHwnd,&windowRect);
+	 IS_RETURN_ERROR(!mBaseHwnd, , "´°¿Ú¾ä±úÎª¿Õ!");
+	 ret = DrawManager.SetRenderTarget(mBaseHwnd,&windowRect);
+	 IS_RETURN_ERROR(!ret, , "ÉèÖÃRenderTargetÊ§°Ü!");
+	 //test
+ }
+
+ void BaseWindow::OnDraw()
+ {
+	 RECT windowRect;
+	 GetWindowRect(mBaseHwnd,&windowRect);
+	 Conver::ScreenToClientRc(GetHwnd(),windowRect);
+	 auto cxFrame = GetSystemMetrics(SM_CXFRAME);
+	 auto cyFrame = GetSystemMetrics(SM_CYFRAME);
+	 DrawManager.Clear(MyColor::Gray);
+	 DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
+ }
+
+ void BaseWindow::OnNcPaint(HRGN rgn)
+ {
+	 auto hdc = GetWindowDC(mBaseHwnd);
+	 // Paint into this DC
+	 if (hdc)
+	 {
+		 TextOut(hdc, 400, 10, TEXT("abcd"), 4);
+		 ReleaseDC(mBaseHwnd, hdc);
+	 }
+
+	 RECT rc;
+	 GetRgnBox(rgn,&rc);
+	 Conver::ScreenToClientRc(mBaseHwnd,rc);
+	 DrawManager.DrawRectangle(rc,MyColor::Black,true);
  }
 
  void BaseWindow::OnNcCalcSize(WPARAM wParam,LPARAM lParam)
  {
+	 if (wParam == FALSE) return;
+	 auto ncp = reinterpret_cast<NCCALCSIZE_PARAMS *>(lParam);
+	 RECT rc1 = ncp->rgrc[0];
+	 RECT rc2 = ncp->rgrc[1];
+	 RECT rc3 = ncp->rgrc[2];
+
+ }
+
+ bool BaseWindow::OnNcActive(WPARAM wParam, LPARAM lParam)
+ {
+	 return true;
  }
 
  void BaseWindow::OnLButtonDown(WPARAM wParam, LPARAM lParam)
  {
- } 
+
+ }
+
+
 
  }

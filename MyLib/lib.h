@@ -5,6 +5,7 @@
 # include "Control.h"
 # include <string>
 #include "Macros.h"
+#include "2Draw.h"
 
 namespace LIB_WINDOW
 {
@@ -71,9 +72,11 @@ public:
 
 	virtual void OnDraw();	//default draw operate
 	virtual void OnCreate();
-	virtual void OnNcPaint(WPARAM wParam);
+
+	virtual void OnNcPaint(HRGN rgn);	///<rgn>÷ÿªÊ«¯”Ú</rgn>
 	virtual void OnNcCalcSize(WPARAM wParam,LPARAM lParam);
 	virtual void OnLButtonDown(WPARAM wParam,LPARAM lParam);
+	virtual bool OnNcActive(WPARAM wParam, LPARAM lParam);
 
 	operator HDC()  {return mHdc;}
 	operator HWND() {return mBaseHwnd;}
