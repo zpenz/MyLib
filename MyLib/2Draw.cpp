@@ -8,7 +8,7 @@ using namespace Conver;
 bool My2DDraw::InitManager()
 {
 	mFactory = NULL;
-	auto hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &mFactory);
+	auto hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, &mFactory);
 	IS_RETURN_ERROR(FAILED(hr), false, "CreateFactory失败");
 	hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED,__uuidof(IDWriteFactory),(IUnknown **)&mWriteFactory);
 	IS_RETURN_ERROR(FAILED(hr), false, "CreateWriteFactory失败");
@@ -26,15 +26,13 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 	if (tempRect == NULL)
 	{
 		tempRect = new RECT();
-		GetClientRect(hTargetWindowHwnd, tempRect);
+		GetWindowRect(hTargetWindowHwnd, tempRect);
 	}
 	auto width = tempRect->right - tempRect->left;
 	auto height = tempRect->bottom - tempRect->top;
 
 	ID2D1HwndRenderTarget *pTempRenderTarget;
 	auto tp = D2D1::RenderTargetProperties();
-	tp.dpiX = 96;
-	tp.dpiY = 96;
 	auto hr = mFactory->CreateHwndRenderTarget(
 		tp,
 		D2D1::HwndRenderTargetProperties(
@@ -173,6 +171,7 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 
 bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle)
 {
+	IS_RETURN_ERROR(mRenderTarget==nullptr,false,"RenderTarget为空");
 	//create brush
 	auto tempSolidBrush = CreateBrush(RectColor);
 
@@ -183,6 +182,7 @@ bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle)
 	else
 		mRenderTarget->FillRectangle(desRect, tempSolidBrush);
 	auto hr = mRenderTarget->EndDraw();
+	auto error = GetLastError();
 	return SUCCEEDED(hr);
 }
 
@@ -200,7 +200,7 @@ IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text)
 	return tempTextLayout;
 }
 
-bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, MyColor TextColor, bool isFillRectangle)
+bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, MyColor TextColor, UINT AlignType,bool isFillRectangle)
 {
 	if(!DrawRectangle(Rect,RectColor, isFillRectangle)) return false;
 	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
@@ -211,10 +211,41 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	///<LayOutBox>MaxWidth-MaxHeight</LayOutBox>
 	tempTextLayout->SetMaxWidth(static_cast<FLOAT>(RECTWIDTH(Rect)));
 	tempTextLayout->SetMaxHeight(static_cast<FLOAT>(RECTHEIGHT(Rect)));
-	///<水平居中对齐>////
-	tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-	///<垂直居中对齐>////
-	tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+	if (AlignType & ALIGN_LEFT)
+	{
+		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
+	}
+	else if (AlignType & ALIGN_RIGHT)
+	{
+		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
+	}
+	else if (AlignType & ALIGN_RIGHT)
+	{
+		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING); 
+	}
+	else if (AlignType & ALIGN_TOP)
+	{
+		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+	}
+	else if (AlignType & ALIGN_BOTTOM)
+	{
+		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_FAR);
+	}
+	else if(AlignType & ALIGN_CENTER_H)
+	{
+		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER); 
+	}
+	else if(AlignType & ALIGN_CENTER_V)
+	{
+		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER); 
+	}
+	else
+	{
+		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);  //水平居中
+		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER); //垂直居中
+	}
+	
 	mRenderTarget->BeginDraw();
 	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)),tempTextLayout,CreateBrush(TextColor));
 	mRenderTarget->EndDraw();
@@ -244,7 +275,6 @@ bool My2DDraw::DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush
 	mRenderTarget->DrawLine(PointToD2DPointF(src), PointToD2DPointF(des), tempSolidBrush);
 	auto hr = mRenderTarget->EndDraw();
 	return SUCCEEDED(hr);
-	return false;
 }
 
 bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
@@ -253,7 +283,7 @@ bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 	mRenderTarget->BeginDraw();
 	mRenderTarget->DrawBitmap(pBitmap, RectToD2DRectF(decRect));
 	auto hr = mRenderTarget->EndDraw();
-	return false;
+	return SUCCEEDED(hr);
 }
 
 bool My2DDraw::Clear(MyColor color)
@@ -264,10 +294,9 @@ bool My2DDraw::Clear(MyColor color)
 	return SUCCEEDED(mRenderTarget->EndDraw());
 }
 
-
-
 My2DDraw::~My2DDraw()
 {
 	SAFE_RELEASE(mRenderTarget);
+	SAFE_RELEASE(mWriteFactory);
 	SAFE_RELEASE(mFactory);
 }

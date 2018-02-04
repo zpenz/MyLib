@@ -9,6 +9,9 @@ int main()
 {
 	BaseWindow bs;
 	bs.Show();
+	auto DeskTop = GetDesktopWindow();
+
+
 	//Sleep(500);
 	//bs.SetWindowName("pSong's Window");
 
@@ -18,6 +21,7 @@ int main()
 	
 	while (1)
 	{
+
 		////bitmap
 		//RECT rcPicture = { 72,128,72 * 2,128 * 2 };
 		//auto pBitmap = DrawManager.CreateBitmap(L"3.jpg", 72, 128);

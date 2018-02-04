@@ -59,12 +59,11 @@ bool BaseWindow::ShowThisWindow()
 	InitBeforeCreate();
 	MoveCenterWindow();
 
-	//Visual-Stdio-Style
-	mWindowStyleEx = WS_EX_APPWINDOW|WS_EX_LTRREADING|WS_EX_WINDOWEDGE|WS_EX_LEFT|
-		WS_EX_RIGHTSCROLLBAR;
+	//Style
+	mWindowStyleEx = WS_EX_LEFT | WS_EX_LTRREADING| WS_EX_RIGHTSCROLLBAR|WS_EX_WINDOWEDGE;
 
-	mWindowStyle = WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_OVERLAPPED | 
-		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_THICKFRAME;
+	mWindowStyle =  WS_CAPTION | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
+		WS_SYSMENU | WS_THICKFRAME| WS_OVERLAPPED | WS_MINIMIZEBOX |WS_MAXIMIZEBOX ;
 
 	mBaseHwnd = CreateWindowEx(mWindowStyleEx,mClassname.c_str(),mWindowname.c_str(),
 		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
@@ -296,6 +295,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			break;
 		case WM_NCCALCSIZE:
 			window->OnNcCalcSize(wParam,lParam);
+			if ((BOOL)wParam) return 0;
 			break;
 		case WM_NCHITTEST:
 			break;
@@ -370,20 +370,25 @@ void BaseWindow::Destory()
 	 RECT windowRect;
 	 GetWindowRect(mBaseHwnd,&windowRect);
 	 IS_RETURN_ERROR(!mBaseHwnd, , "窗口句柄为空!");
-	 ret = DrawManager.SetRenderTarget(mBaseHwnd,&windowRect);
+	 ret = DrawManager.SetRenderTarget(mBaseHwnd);
 	 IS_RETURN_ERROR(!ret, , "设置RenderTarget失败!");
-	 //test
+	 //转换为完全矩形 
+	 auto Rgn = CreateRectRgn(0,0,mWidth,mHeight);
+	 SetWindowRgn(mBaseHwnd, Rgn,true);
+	 DeleteObject(Rgn);
  }
 
  void BaseWindow::OnDraw()
  {
+	 DrawManager.Clear(MyColor::Gray);
 	 RECT windowRect;
 	 GetWindowRect(mBaseHwnd,&windowRect);
 	 Conver::ScreenToClientRc(GetHwnd(),windowRect);
 	 auto cxFrame = GetSystemMetrics(SM_CXFRAME);
 	 auto cyFrame = GetSystemMetrics(SM_CYFRAME);
-	 DrawManager.Clear(MyColor::Gray);
 	 DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
+	 RECT rc = { 0,0,50,50 };
+	 DrawManager.DrawRectWithText(rc, "pSong", MyColor::Gray, MyColor::Silver, false);
  }
 
  void BaseWindow::OnNcPaint(HRGN rgn)
@@ -392,14 +397,11 @@ void BaseWindow::Destory()
 	 // Paint into this DC
 	 if (hdc)
 	 {
+		 RECT windowRect;
+		 GetWindowRect(mBaseHwnd, &windowRect);
 		 TextOut(hdc, 400, 10, TEXT("abcd"), 4);
 		 ReleaseDC(mBaseHwnd, hdc);
 	 }
-
-	 RECT rc;
-	 GetRgnBox(rgn,&rc);
-	 Conver::ScreenToClientRc(mBaseHwnd,rc);
-	 DrawManager.DrawRectangle(rc,MyColor::Black,true);
  }
 
  void BaseWindow::OnNcCalcSize(WPARAM wParam,LPARAM lParam)
@@ -421,7 +423,5 @@ void BaseWindow::Destory()
  {
 
  }
-
-
 
  }
