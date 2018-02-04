@@ -207,7 +207,7 @@ void BaseWindow::SetLeftTopPos(POINT leftUpper)
 
 void BaseWindow::SetWindowAlpha(int alpha)
 {
-	if (alpha < 0 || alpha >256) alpha = alpha | 256;
+	if (alpha < 0 || alpha >=256) alpha = alpha | 256;
 
 	if (!mBaseHwnd)
 	{
