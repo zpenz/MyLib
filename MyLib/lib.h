@@ -5,11 +5,12 @@
 # include "Control.h"
 # include <string>
 #include "Macros.h"
-#include "2Draw.h"
+#include "Control.h"
 
 namespace LIB_WINDOW
 {
-	using namespace std;
+
+using namespace LIB_CONTROL;
 
 class  BaseWindow
 {
@@ -37,6 +38,8 @@ protected:
 	HWND mBaseHwnd; 
 
 	pCallBackFunc mCallBackFunc;
+
+	Listener ControlListener;
 
 private:
 	void MoveCenterWindow();
@@ -114,6 +117,8 @@ public:
 	virtual void OnLButtonDown(WPARAM wParam,LPARAM lParam);
 
 	virtual bool OnNcActive(WPARAM wParam, LPARAM lParam);
+
+	virtual UINT OnHitTest(LPARAM lParam);
 
 	operator HDC()  {return mHdc;}
 

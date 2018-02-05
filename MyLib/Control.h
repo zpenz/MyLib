@@ -1,5 +1,6 @@
 #pragma once
 #include <list>
+#include <functional>
 #include "2Draw.h"
 
 namespace LIB_CONTROL
@@ -17,6 +18,8 @@ namespace LIB_CONTROL
 
 		COLORREF mForceColor, mBackColor;
 
+		COLORREF mHonverBackColor, mHoverForceColor;
+
 		bool mVisible;
 
 		UINT mAlignType;
@@ -33,7 +36,7 @@ namespace LIB_CONTROL
 
 		virtual void LButtonUp(Listener * pListener) = 0;
 
-		virtual bool HitTest(Listener * pListener) = 0;
+		virtual UINT HitTest(Listener * pListener,POINT pt) = 0;
 
 		string Text() const;
 
@@ -46,6 +49,14 @@ namespace LIB_CONTROL
 		COLORREF BackColor() const;
 
 		void SetBackColor(COLORREF color);
+
+		COLORREF HoverBackColor() const;
+
+		void SetHoverBackColor(COLORREF color);
+
+		COLORREF HoverForceColor() const;
+
+		void SetHoverForceColor(COLORREF color);
 
 		bool IsVisible() const;
 
@@ -61,9 +72,11 @@ namespace LIB_CONTROL
 
 		bool IsMouseInteral() const;
 
-		Control(RECT rc, string text);
+		Control();
 
-		Control(RECT rc, string text, COLORREF forceColor, COLORREF backColor);
+		Control(string text, RECT rc = {0,0});
+
+		Control(RECT rc, string text, COLORREF forceColor, COLORREF backColor,COLORREF hoverBackColor);
 
 		virtual ~Control();
 	};
@@ -87,9 +100,10 @@ namespace LIB_CONTROL
 
 		void LButtonUp();
 
-		void HitTest();
+		UINT HitTest(POINT pt);
 	};
 
+	///<Button>∞¥≈•</Button>
 	class Button : public Control
 	{
 	public:
@@ -101,7 +115,27 @@ namespace LIB_CONTROL
 
 		void LButtonUp(Listener * pListener) override;
 
-		bool HitTest(Listener * pListener) override;
+		UINT HitTest(Listener * pListener,POINT pt) override;
+	};
+
+	///<TitleBar>±ÍÃ‚¿∏</TitleBar>
+	class TitleBar : public Control
+	{
+		IPIC * mPic;
+	public:
+		void Draw(Listener * pListener) override;
+
+		void Hover(Listener * pListener) override;
+
+		void LButtonDown(Listener * pListener) override;
+
+		void LButtonUp(Listener * pListener) override;
+
+		UINT HitTest(Listener * pListener,POINT pt) override;
+
+		TitleBar(string text,IPIC * pPic);
+
+		~TitleBar();
 	};
 
 }

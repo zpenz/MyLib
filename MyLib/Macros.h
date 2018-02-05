@@ -17,7 +17,7 @@
 #define SAFE_RELEASE(p) if(p){p->Release(); p = NULL;}
 #define SAFE_DELETE(p)  if(p){delete p; p = NULL;} 
 
-namespace DRAW2D
+namespace Macros2D
 {
 	//¶ÔÆë·½Ê½
 #define ALIGN_DEFAULT    0
@@ -27,6 +27,8 @@ namespace DRAW2D
 #define ALIGN_BOTTOM     4
 #define ALIGN_CENTER_V   5
 #define ALIGN_CENTER_H   6
+
+#define COLOREX(colorRef) D2D1::ColorF(GetRValue(colorRef)/255.0f,GetGValue(colorRef)/255.0f,GetBValue(colorRef)/255.0f,1.0f)
 }
 
 
@@ -84,6 +86,8 @@ namespace Conver
 	D2D1_POINT_2F & PointToD2DPointF(POINT & pt);
 	D2D1_RECT_F & RectToD2DRectF(RECT & rc);
 
+	bool PointInRect(int x, int y,RECT rc);
+
 	class MyRect
 	{
 	private:
@@ -91,8 +95,13 @@ namespace Conver
 		int mLeft, mRight, mTop, mBottom;
 	public:
 		MyRect(INT left, INT top, INT right, INT bottom);
+
 		MyRect(RECT desRect);
-		operator RECT&();
+
+		RECT Rect() const;
+
+		operator RECT &();
+
 		operator D2D1_RECT_F&();
 	};
 }

@@ -58,11 +58,15 @@ namespace LIB_CONTROL
 		});
 	}
 
-	void Listener::HitTest()
+	UINT Listener::HitTest( POINT pt)
 	{
-		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
-			pControl->HitTest(this);
-		});
+		list<Control *>::iterator it;
+		for (it = mpControl.begin(); it != mpControl.end(); it++)
+		{
+			if (Conver::PointInRect(pt.x,pt.y,(*it)->getRect())) break;
+		}
+		if (it == mpControl.end()) return HTCLIENT;
+		return (*it)->HitTest(this, pt);
 	}
 
 	string Control::Text() const
@@ -93,6 +97,26 @@ namespace LIB_CONTROL
 	void Control::SetBackColor(COLORREF color)
 	{
 		mBackColor = color;
+	}
+
+	COLORREF Control::HoverBackColor() const
+	{
+		return mHonverBackColor;
+	}
+
+	void Control::SetHoverBackColor(COLORREF color)
+	{
+		mHonverBackColor = color;
+	}
+
+	COLORREF Control::HoverForceColor() const
+	{
+		return mHoverForceColor;
+	}
+
+	void Control::SetHoverForceColor(COLORREF color)
+	{
+		mHoverForceColor = color;
 	}
 
 	bool Control::IsVisible() const
@@ -127,19 +151,26 @@ namespace LIB_CONTROL
 
 	bool Control::IsMouseInteral() const
 	{	
-		return mMouseInternal;
+		return mMouseInternal?true:false;
+	}
+
+	Control::Control():Control("")
+	{
+
 	}
 	
-	Control::Control(RECT rc,string text):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
-		mForceColor(RGB(110,110,112)),mAlignType(ALIGN_CENTER_V|ALIGN_CENTER_H)
+	Control::Control(string text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
+		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
+		mAlignType(ALIGN_CENTER_V|ALIGN_CENTER_H)
 	{
 
 	}
 
-	Control::Control(RECT rc, string text, COLORREF forceColor, COLORREF backColor):Control(rc,text)
+	Control::Control(RECT rc, string text, COLORREF forceColor, COLORREF backColor,COLORREF hoverBackColor):Control(text,rc)
 	{
 		SetForceColor(forceColor);
 		SetBackColor(backColor);
+		SetHoverBackColor(hoverBackColor);
 	}
 
 	void Button::Draw(Listener * pListener)
@@ -161,8 +192,42 @@ namespace LIB_CONTROL
 	{
 
 	}
-	bool Button::HitTest(Listener * pListener)
+
+	UINT Button::HitTest(Listener * pListener,POINT pt)
 	{
-		return false;
+		return HTCLIENT;
+	}
+
+	void TitleBar::Draw(Listener * pListener)
+	{
+		auto ret = DrawManager.DrawRectWithText(mRect,mText,COLOREX(mBackColor),COLOREX(mForceColor),ALIGN_DEFAULT,true);
+		IS_ERROR_EXIT(!ret, "ªÊ÷∆±ÍÃ‚¿∏ ß∞‹!");
+	}
+
+	void TitleBar::Hover(Listener * pListener)
+	{
+	}
+
+	void TitleBar::LButtonDown(Listener * pListener)
+	{
+	}
+
+	void TitleBar::LButtonUp(Listener * pListener)
+	{
+	}
+
+	UINT TitleBar::HitTest(Listener * pListener, POINT pt)
+	{
+		return HTCAPTION;
+	}
+
+	TitleBar::TitleBar(string text, IPIC * pPic)
+	{
+		mText = text, mPic = pPic;
+	}
+
+	TitleBar::~TitleBar()
+	{
+
 	}
 }

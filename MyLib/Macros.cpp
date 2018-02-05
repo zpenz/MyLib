@@ -29,6 +29,12 @@ namespace Conver
 		return *pNeedRect;
 	}
 
+	bool PointInRect(int x, int y,RECT rc)
+	{
+		if (x<rc.right && x >rc.left && y > rc.top && y < rc.bottom) return true;
+		return false;
+	}
+
 	RECT  ClientToScreenRc(HWND hWnd,RECT & rc)
 	{
 		POINT lt = { rc.left,rc.top }, rt = {rc.right,rc.bottom};
@@ -92,6 +98,11 @@ namespace Conver
 
 	MyRect::MyRect(RECT desRect):mRect(desRect)
 	{
+	}
+
+	RECT MyRect::Rect() const
+	{
+		return mRect;
 	}
 
 	MyRect::operator RECT&()

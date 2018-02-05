@@ -1,3 +1,7 @@
+/************************************************************************/
+/* D2D1.0 Draw															*/
+/************************************************************************/
+
 #pragma once
 # include "Macros.h"
 # include <d2d1.h>
@@ -9,9 +13,10 @@
 # pragma comment(lib,"Dwrite.lib")
 # pragma comment(lib,"windowscodecs.lib")
 
-#define MyColor D2D1::ColorF
+using namespace Macros2D;
 
-using namespace DRAW2D;
+#define MyColor D2D1::ColorF
+#define IPIC    ID2D1Bitmap 
 
 class My2DDraw
 {

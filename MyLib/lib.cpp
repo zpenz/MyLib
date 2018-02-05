@@ -298,7 +298,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			if ((BOOL)wParam) return 0;
 			break;
 		case WM_NCHITTEST:
-			break;
+			return window->OnHitTest(lParam);
 		case WM_NCACTIVATE:
 			return(window->OnNcActive(wParam,lParam));
 			break;
@@ -365,31 +365,41 @@ void BaseWindow::Destory()
 
  void BaseWindow::AfterCreate()
  {
+	 //初始化D2D1.0
 	 auto ret = DrawManager.InitManager();
 	 IS_RETURN_ERROR(!ret, , "初始化D2D错误!");
-	 RECT windowRect;
-	 GetWindowRect(mBaseHwnd,&windowRect);
-	 IS_RETURN_ERROR(!mBaseHwnd, , "窗口句柄为空!");
+
 	 ret = DrawManager.SetRenderTarget(mBaseHwnd);
 	 IS_RETURN_ERROR(!ret, , "设置RenderTarget失败!");
-	 //转换为完全矩形 
+
+	 //窗口区域转换 
 	 auto Rgn = CreateRectRgn(0,0,mWidth,mHeight);
 	 SetWindowRgn(mBaseHwnd, Rgn,true);
 	 DeleteObject(Rgn);
+
+	 //TitleBar
+	 TitleBar * pBar = new TitleBar("pSong's Window",NULL);
+	 pBar->AdjustRect(Conver::MyRect(0,0,mWidth,35));
+	 pBar->SetBackColor(RGB(65,65,68));
+	 ControlListener.attach(pBar);
  }
 
  void BaseWindow::OnDraw()
  {
 	 DrawManager.Clear(MyColor::ColorF(45.0/256,45.0/256,48.0/256));
+	 ControlListener.Draw();
+
 	 RECT windowRect;
-	 GetWindowRect(mBaseHwnd,&windowRect);
-	 Conver::ScreenToClientRc(GetHwnd(),windowRect);
-	 auto cxFrame = GetSystemMetrics(SM_CXFRAME);
-	 auto cyFrame = GetSystemMetrics(SM_CYFRAME);
+	 GetWindowRect(mBaseHwnd, &windowRect);
+	 Conver::ScreenToClientRc(mBaseHwnd,windowRect);
 	 DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
-	 RECT rc = { 10,20,60,30 };
-	 DrawManager.DrawRectWithText(rc, "pSong", MyColor::ColorF(45.0 / 256, 45.0 / 256, 48.0 / 256), MyColor::ColorF(111.0 / 256, 111.0 / 256, 112.0 / 256)
-		 ,ALIGN_LEFT|ALIGN_CENTER_H,false);
+
+
+	 
+	 //RECT rc = { 10,20,60,30 };
+	 //DrawManager.DrawRectWithText(rc, "pSong", MyColor::ColorF(45.0 / 256, 45.0 / 256, 48.0 / 256), 
+		//	MyColor::ColorF(111.0 / 256, 111.0 / 256, 112.0 / 256)
+		// ,ALIGN_LEFT|ALIGN_CENTER_H,false);
  }
 
  void BaseWindow::OnNcPaint(HRGN rgn)
@@ -418,6 +428,13 @@ void BaseWindow::Destory()
  bool BaseWindow::OnNcActive(WPARAM wParam, LPARAM lParam)
  {
 	 return true;
+ }
+
+ UINT BaseWindow::OnHitTest(LPARAM lParam)
+ {
+	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y};
+	 ScreenToClient(mBaseHwnd,&pt);
+	 return ControlListener.HitTest(pt);
  }
 
  void BaseWindow::OnLButtonDown(WPARAM wParam, LPARAM lParam)
