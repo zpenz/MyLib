@@ -262,6 +262,15 @@ void BaseWindow::MessageLoop()
 			float fIntervalTime = static_cast<float>(GetTickCount())-fLastTime;
 			Update(fIntervalTime);
 			fLastTime = fIntervalTime;
+			
+			//re draw
+			//DrawManager.Clear(MyColor::ColorF(45.0 / 256, 45.0 / 256, 48.0 / 256));
+			ControlListener.Draw();
+
+			RECT windowRect;
+			GetWindowRect(mBaseHwnd, &windowRect);
+			Conver::ScreenToClientRc(mBaseHwnd, windowRect);
+			DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
 		}	
 	}
 }
@@ -387,13 +396,7 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnDraw()
  {
-	 DrawManager.Clear(MyColor::ColorF(45.0/256,45.0/256,48.0/256));
-	 ControlListener.Draw();
 
-	 RECT windowRect;
-	 GetWindowRect(mBaseHwnd, &windowRect);
-	 Conver::ScreenToClientRc(mBaseHwnd,windowRect);
-	 DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
  }
 
  void BaseWindow::OnNcPaint(HRGN rgn)
