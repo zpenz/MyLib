@@ -72,6 +72,8 @@ namespace LIB_CONTROL
 
 		bool IsMouseInteral() const;
 
+		void SetInternal(bool MouseInternal);
+
 		Control();
 
 		Control(string text, RECT rc = {0,0});

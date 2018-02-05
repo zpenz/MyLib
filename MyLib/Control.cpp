@@ -60,13 +60,18 @@ namespace LIB_CONTROL
 
 	UINT Listener::HitTest( POINT pt)
 	{
-		list<Control *>::iterator it;
-		for (it = mpControl.begin(); it != mpControl.end(); it++)
-		{
-			if (Conver::PointInRect(pt.x,pt.y,(*it)->getRect())) break;
-		}
-		if (it == mpControl.end()) return HTCLIENT;
-		return (*it)->HitTest(this, pt);
+		Control * pTempControl = NULL;
+		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
+			pControl->SetInternal(false);
+			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
+			{
+				pTempControl = pControl;
+				pControl->SetInternal(true);
+			}
+		});
+		if(!pTempControl)  return HTCLIENT;
+		return pTempControl->HitTest(this, pt);
+
 	}
 
 	string Control::Text() const
@@ -154,6 +159,11 @@ namespace LIB_CONTROL
 		return mMouseInternal?true:false;
 	}
 
+	void Control::SetInternal(bool MouseInternal)
+	{
+		mMouseInternal = MouseInternal;
+	}
+
 	Control::Control():Control("")
 	{
 
@@ -195,13 +205,23 @@ namespace LIB_CONTROL
 
 	UINT Button::HitTest(Listener * pListener,POINT pt)
 	{
+		mMouseInternal = true;
 		return HTCLIENT;
 	}
 
 	void TitleBar::Draw(Listener * pListener)
 	{
-		auto ret = DrawManager.DrawRectWithText(mRect,mText,COLOREX(mBackColor),COLOREX(mForceColor),ALIGN_DEFAULT,true);
-		IS_ERROR_EXIT(!ret, "绘制标题栏失败!");
+		if (!mMouseInternal)
+		{
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
+			IS_ERROR_EXIT(!ret, "绘制标题栏失败!");
+		}
+		else
+		{
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
+			IS_ERROR_EXIT(!ret, "绘制标题栏失败!");
+		}
+
 	}
 
 	void TitleBar::Hover(Listener * pListener)

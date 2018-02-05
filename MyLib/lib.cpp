@@ -381,6 +381,7 @@ void BaseWindow::Destory()
 	 TitleBar * pBar = new TitleBar("pSong's Window",NULL);
 	 pBar->AdjustRect(Conver::MyRect(0,0,mWidth,35));
 	 pBar->SetBackColor(RGB(65,65,68));
+	 pBar->SetHoverBackColor(RGB(116, 116, 119));
 	 ControlListener.attach(pBar);
  }
 
@@ -393,13 +394,6 @@ void BaseWindow::Destory()
 	 GetWindowRect(mBaseHwnd, &windowRect);
 	 Conver::ScreenToClientRc(mBaseHwnd,windowRect);
 	 DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
-
-
-	 
-	 //RECT rc = { 10,20,60,30 };
-	 //DrawManager.DrawRectWithText(rc, "pSong", MyColor::ColorF(45.0 / 256, 45.0 / 256, 48.0 / 256), 
-		//	MyColor::ColorF(111.0 / 256, 111.0 / 256, 112.0 / 256)
-		// ,ALIGN_LEFT|ALIGN_CENTER_H,false);
  }
 
  void BaseWindow::OnNcPaint(HRGN rgn)
