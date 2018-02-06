@@ -1,6 +1,5 @@
 # include "stdafx.h"
 # include "lib.h"
-# include <windows.h>
 
 namespace LIB_WINDOW
 {
@@ -350,10 +349,8 @@ void BaseWindow::Destory()
 
  void BaseWindow::ReDraw(bool bReDraw)
  {
-	RECT rect; GetClientRect(mBaseHwnd, &rect);
-	InvalidateRect(mBaseHwnd,&rect, bReDraw);
+	SendMessage(mBaseHwnd, WM_PAINT, NULL, NULL);
  }
-
 
  void BaseWindow::AfterCreate()
  {
@@ -363,6 +360,8 @@ void BaseWindow::Destory()
 
 	 ret = DrawManager.SetRenderTarget(mBaseHwnd);
 	 IS_RETURN_ERROR(!ret, , "设置RenderTarget失败!");
+
+	 DrawManager.UseTempRenderTarget();
 
 	 //窗口区域转换 
 	 auto Rgn = CreateRectRgn(0,0,mWidth,mHeight);
@@ -381,11 +380,15 @@ void BaseWindow::Destory()
  {
 	 DrawManager.Clear(MyColor::Gray);
 
+	 ControlListener.Draw();
+
 	 RECT windowRect;
 	 GetWindowRect(mBaseHwnd, &windowRect);
-
 	 Conver::ScreenToClientRc(mBaseHwnd, windowRect);
 	 DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
+
+	 DrawManager.Present(&windowRect);
+
  }
 
  void BaseWindow::Update(float delta)
@@ -394,7 +397,8 @@ void BaseWindow::Destory()
 
 	 ScreenToClient(mBaseHwnd, &pt);
 	 ControlListener.Hover(pt); 	 //hover
-	 ControlListener.Draw();
+
+	 ReDraw(true);
  }
 
  void BaseWindow::OnNcPaint(HRGN rgn)

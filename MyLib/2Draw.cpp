@@ -31,19 +31,18 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 	auto width = tempRect->right - tempRect->left;
 	auto height = tempRect->bottom - tempRect->top;
 
-	ID2D1HwndRenderTarget *pTempRenderTarget;
 	auto tp = D2D1::RenderTargetProperties();
 	auto hr = mFactory->CreateHwndRenderTarget(
 		tp,
 		D2D1::HwndRenderTargetProperties(
 			hTargetWindowHwnd,
 			D2D1::SizeU((int)width, (int)height)
-		),&pTempRenderTarget);
+		),&mHwndRenderTarget);
 
 	IS_RETURN_ERROR(FAILED(hr), false, "创建HWNDRenderTarget出错!");
 
 	///<warning>short-cut!</warning>
-	mRenderTarget = pTempRenderTarget;
+	mRenderTarget = mHwndRenderTarget;
 	
 
 	if (FAILED(hr)) return false;
@@ -51,32 +50,23 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 	return true;
 }
 
-bool My2DDraw::SetRenderTarget(HDC hDC,RECT * pRc)
+bool My2DDraw::UseTempRenderTarget()
 {
 	IS_RETURN_ERROR(!mFactory, false, "mFactory null");
-	if (mRenderTarget != nullptr) SAFE_RELEASE(mRenderTarget); //clean
+	IS_RETURN_ERROR(!mHwndRenderTarget, false, "mHwndRenderTarget null");
 
-	ID2D1DCRenderTarget * pTempDcRenderTarget;
-	D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(
-		D2D1_RENDER_TARGET_TYPE_DEFAULT,
-		D2D1::PixelFormat(
-			DXGI_FORMAT_B8G8R8A8_UNORM,
-			D2D1_ALPHA_MODE_IGNORE),
-		0,
-		0,
-		D2D1_RENDER_TARGET_USAGE_NONE,
-		D2D1_FEATURE_LEVEL_DEFAULT
-	);
-	auto hr = mFactory->CreateDCRenderTarget(&props,&pTempDcRenderTarget);
-	IS_RETURN_ERROR(FAILED(hr), false, "创建DcRenderTarget出错!");
-	
-	hr = pTempDcRenderTarget->BindDC(hDC, pRc);
-	IS_RETURN_ERROR(FAILED(hr), false, "绑定指定的DC和RECT失败!");
+	auto hr = mHwndRenderTarget->CreateCompatibleRenderTarget(&mTempTarget);
+	if (FAILED(hr)) return false;
 
-	///<warning>short-cut!</warning>
-	mRenderTarget = pTempDcRenderTarget;
-	IS_RETURN_ERROR(mRenderTarget == nullptr, false, "转换出错");
+	mRenderTarget = mTempTarget;
+	return true;
+}
 
+bool My2DDraw::SetCurrentRenderTarget(ID2D1RenderTarget * thisRenderTarget)
+{
+	if (!thisRenderTarget) return false;
+	mRenderTarget = thisRenderTarget; 
+	if (!mRenderTarget) return false;
 	return true;
 }
 
@@ -288,6 +278,20 @@ bool My2DDraw::Clear(MyColor color)
 	mRenderTarget->BeginDraw();
 	mRenderTarget->Clear(color);
 	return SUCCEEDED(mRenderTarget->EndDraw());
+}
+
+bool My2DDraw::Present(RECT  * pRect)
+{
+	if (!mTempTarget) return false;
+	ID2D1Bitmap * tempBitmap;
+	mTempTarget->GetBitmap(&tempBitmap);
+
+	SetCurrentRenderTarget(mHwndRenderTarget);
+	DrawPicture(tempBitmap,*pRect);
+	SetCurrentRenderTarget(mTempTarget);
+
+	SAFE_RELEASE(tempBitmap);
+	return true;
 }
 
 My2DDraw::~My2DDraw()

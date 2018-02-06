@@ -12,8 +12,6 @@ using namespace std;
 # pragma comment(lib,"d2d1.lib")
 # pragma comment(lib,"windowscodecs.lib")
 
-
-
 typedef struct PicStruct
 {
 public:

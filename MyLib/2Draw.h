@@ -26,13 +26,19 @@ private:
 
 	ID2D1RenderTarget * mRenderTarget;
 
+	ID2D1HwndRenderTarget * mHwndRenderTarget;
+
+	ID2D1BitmapRenderTarget * mTempTarget;
+
 	IDWriteFactory * mWriteFactory;
 public:
 	bool InitManager();
 
 	bool SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect = NULL);
 
-	bool SetRenderTarget(HDC hDC, RECT * pRc);
+	bool UseTempRenderTarget(); // double buffer
+
+	bool SetCurrentRenderTarget(ID2D1RenderTarget * thisRenderTarget);
 
 	ID2D1SolidColorBrush * CreateBrush(MyColor BrushColor = MyColor::Black);
 
@@ -47,6 +53,8 @@ public:
 	bool DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect);
 
 	bool Clear(MyColor color = MyColor::Black);
+
+	bool Present(RECT * pRect); // present temp render target
 
 	IDWriteTextLayout * CreateTextLayout(std::string text);
 
