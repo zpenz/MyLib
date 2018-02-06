@@ -265,12 +265,7 @@ void BaseWindow::MessageLoop()
 			
 			//re draw
 			//DrawManager.Clear(MyColor::ColorF(45.0 / 256, 45.0 / 256, 48.0 / 256));
-			ControlListener.Draw();
-
-			RECT windowRect;
-			GetWindowRect(mBaseHwnd, &windowRect);
-			Conver::ScreenToClientRc(mBaseHwnd, windowRect);
-			DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
+		
 		}	
 	}
 }
@@ -311,6 +306,8 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_NCACTIVATE:
 			return(window->OnNcActive(wParam,lParam));
 			break;
+		case WM_ERASEBKGND: // ²»²Á³ý±³¾°
+			return 1;
 		case WM_KEYUP:
 			break;
 		case WM_KEYDOWN:
@@ -339,9 +336,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
 }
 
-void BaseWindow::Update(float delta)
-{
-}
+
 
 void BaseWindow::Destory()
 {
@@ -396,20 +391,30 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnDraw()
  {
+	 DrawManager.Clear(MyColor::Gray);
 
+	 ControlListener.Draw();
+
+	 RECT windowRect;
+	 GetWindowRect(mBaseHwnd, &windowRect);
+
+	 Conver::ScreenToClientRc(mBaseHwnd, windowRect);
+	 DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
+ }
+
+ void BaseWindow::Update(float delta)
+ {
+	 POINT pt; GetCursorPos(&pt);
+	 RECT windowRect; GetWindowRect(mBaseHwnd, &windowRect);
+	 if (Conver::PointInRect(pt.x, pt.y, windowRect));
+	 ScreenToClient(mBaseHwnd, &pt);
+	 ControlListener.HitTest(pt);
+	 ControlListener.Draw();
  }
 
  void BaseWindow::OnNcPaint(HRGN rgn)
  {
-	 auto hdc = GetWindowDC(mBaseHwnd);
-	 // Paint into this DC
-	 if (hdc)
-	 {
-		 RECT windowRect;
-		 GetWindowRect(mBaseHwnd, &windowRect);
-		 TextOut(hdc, 400, 10, TEXT("abcd"), 4);
-		 ReleaseDC(mBaseHwnd, hdc);
-	 }
+	
  }
 
  void BaseWindow::OnNcCalcSize(WPARAM wParam,LPARAM lParam)
@@ -429,8 +434,8 @@ void BaseWindow::Destory()
 
  UINT BaseWindow::OnHitTest(LPARAM lParam)
  {
-	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y};
-	 ScreenToClient(mBaseHwnd,&pt);
+	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
+	 ScreenToClient(mBaseHwnd, &pt);
 	 return ControlListener.HitTest(pt);
  }
 
