@@ -54,6 +54,8 @@ public:
 
 	bool DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect);
 
+	bool DrawPicture(std::wstring strFileName, RECT decRect);
+
 	bool Clear(MyColor color = MyColor::Black);
 
 	bool Present(RECT * pRect); // present temp render target

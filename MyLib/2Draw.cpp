@@ -284,6 +284,12 @@ bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 	return SUCCEEDED(hr);
 }
 
+bool My2DDraw::DrawPicture(std::wstring strFileName, RECT decRect)
+{
+	auto ret = DrawPicture(CreateBitmap(const_cast<wchar_t *>(strFileName.c_str())), decRect);
+	return ret;
+}
+
 bool My2DDraw::Clear(MyColor color)
 {
 	if (!mRenderTarget) return false;
