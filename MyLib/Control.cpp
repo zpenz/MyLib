@@ -37,12 +37,20 @@ namespace LIB_CONTROL
 		});
 	}
 
-	void Listener::Hover()
+	void Listener::Hover(POINT pt)
 	{
+		Control * pTempControl = NULL;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
-			pControl->Hover(this);
+			pControl->SetInternal(false);
+			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
+			{
+				pTempControl = pControl;
+				pControl->SetInternal(true);
+				pTempControl->Hover(this, pt);
+			}
 		});
 	}
+		
 
 	void Listener::LButtonDown()
 	{
@@ -62,16 +70,13 @@ namespace LIB_CONTROL
 	{
 		Control * pTempControl = NULL;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
-			pControl->SetInternal(false);
 			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
 				pTempControl = pControl;
-				pControl->SetInternal(true);
 			}
 		});
 		if(!pTempControl)  return HTCLIENT;
 		return pTempControl->HitTest(this, pt);
-
 	}
 
 	string Control::Text() const
@@ -188,7 +193,7 @@ namespace LIB_CONTROL
 
 	}
 
-	void Button::Hover(Listener * pListener)
+	void Button::Hover(Listener * pListener,POINT pt)
 	{
 
 	}
@@ -224,7 +229,7 @@ namespace LIB_CONTROL
 
 	}
 
-	void TitleBar::Hover(Listener * pListener)
+	void TitleBar::Hover(Listener * pListener,POINT pt)
 	{
 	}
 

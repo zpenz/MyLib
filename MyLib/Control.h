@@ -30,7 +30,7 @@ namespace LIB_CONTROL
 
 		virtual void Draw(Listener * pListener) = 0;
 
-		virtual void Hover(Listener * pListener) = 0;
+		virtual void Hover(Listener * pListener, POINT pt) = 0;
 
 		virtual void LButtonDown(Listener * pListener) = 0;
 
@@ -96,7 +96,7 @@ namespace LIB_CONTROL
 
 		void Draw();
 
-		void Hover();
+		void Hover(POINT pt);
 
 		void LButtonDown();
 
@@ -111,7 +111,7 @@ namespace LIB_CONTROL
 	public:
 		void Draw(Listener * pListener) override;
 
-		void Hover(Listener * pListener) override;
+		void Hover(Listener * pListener, POINT pt) override;
 
 		void LButtonDown(Listener * pListener) override;
 
@@ -127,7 +127,7 @@ namespace LIB_CONTROL
 	public:
 		void Draw(Listener * pListener) override;
 
-		void Hover(Listener * pListener) override;
+		void Hover(Listener * pListener, POINT pt) override;
 
 		void LButtonDown(Listener * pListener) override;
 

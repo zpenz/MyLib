@@ -408,7 +408,7 @@ void BaseWindow::Destory()
 	 RECT windowRect; GetWindowRect(mBaseHwnd, &windowRect);
 	 if (Conver::PointInRect(pt.x, pt.y, windowRect));
 	 ScreenToClient(mBaseHwnd, &pt);
-	 ControlListener.HitTest(pt);
+	 ControlListener.Hover(pt);
 	 ControlListener.Draw();
  }
 
