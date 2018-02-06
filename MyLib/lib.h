@@ -1,11 +1,5 @@
 # pragma once
-# include <stdio.h>
-# include <cstdlib>
-# include <windows.h>
 # include "Control.h"
-# include <string>
-#include "Macros.h"
-#include "Control.h"
 
 namespace LIB_WINDOW
 {
@@ -59,8 +53,7 @@ public:
 
 	virtual ~BaseWindow();
 
-	//InvalidRect
-	void ReDraw();
+	void ReDraw(bool bReDraw); 	//InvalidRect
 
 	bool Show();
 

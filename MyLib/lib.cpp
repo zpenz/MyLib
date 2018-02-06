@@ -106,7 +106,6 @@ bool BaseWindow::Show()
 	auto proc = [](LPVOID lpParameter)-> DWORD 
 	{
 		BaseWindow * pWindow = reinterpret_cast<BaseWindow *>(lpParameter);
-		// -------------- 
 		pWindow->ShowThisWindow();
 		return 0;
 	};
@@ -147,8 +146,7 @@ void BaseWindow::SetHeight(int Height)
 void BaseWindow::SetWindowName(const string windowname)
 {
 	mWindowname = windowname;
-	if(mBaseHwnd)
-	::SetWindowText(GetHwnd(), mWindowname.c_str());
+	if(mBaseHwnd) ::SetWindowText(GetHwnd(), mWindowname.c_str());
 }
 
 void BaseWindow::AddWindowStyle(DWORD WindowStyle)
@@ -262,15 +260,10 @@ void BaseWindow::MessageLoop()
 			float fIntervalTime = static_cast<float>(GetTickCount())-fLastTime;
 			Update(fIntervalTime);
 			fLastTime = fIntervalTime;
-			
-			//re draw
-			//DrawManager.Clear(MyColor::ColorF(45.0 / 256, 45.0 / 256, 48.0 / 256));
-		
 		}	
 	}
 }
 
-//WM_NCCREATE posted before WM_CREATE
 LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
 	static HDC hDC;
@@ -306,8 +299,8 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_NCACTIVATE:
 			return(window->OnNcActive(wParam,lParam));
 			break;
-		case WM_ERASEBKGND: // ²»²Á³ý±³¾°
-			return 1;
+		case WM_ERASEBKGND: 
+			return 1; // ²»²Á³ý±³¾°
 		case WM_KEYUP:
 			break;
 		case WM_KEYDOWN:
@@ -336,8 +329,6 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
 }
 
-
-
 void BaseWindow::Destory()
 {
 	DestroyWindow(mBaseHwnd);
@@ -346,8 +337,6 @@ void BaseWindow::Destory()
  BaseWindow::~BaseWindow()
 {
 }
-
-
 
  void BaseWindow::OnCreate()
  { 
@@ -359,11 +348,10 @@ void BaseWindow::Destory()
 
  }
 
- void BaseWindow::ReDraw()
+ void BaseWindow::ReDraw(bool bReDraw)
  {
-	RECT rect;
-	GetClientRect(mBaseHwnd,&rect);
-	InvalidateRect(mBaseHwnd,&rect,true);
+	RECT rect; GetClientRect(mBaseHwnd, &rect);
+	InvalidateRect(mBaseHwnd,&rect, bReDraw);
  }
 
 
@@ -393,8 +381,6 @@ void BaseWindow::Destory()
  {
 	 DrawManager.Clear(MyColor::Gray);
 
-	 ControlListener.Draw();
-
 	 RECT windowRect;
 	 GetWindowRect(mBaseHwnd, &windowRect);
 
@@ -405,10 +391,9 @@ void BaseWindow::Destory()
  void BaseWindow::Update(float delta)
  {
 	 POINT pt; GetCursorPos(&pt);
-	 RECT windowRect; GetWindowRect(mBaseHwnd, &windowRect);
-	 if (Conver::PointInRect(pt.x, pt.y, windowRect));
+
 	 ScreenToClient(mBaseHwnd, &pt);
-	 ControlListener.Hover(pt);
+	 ControlListener.Hover(pt); 	 //hover
 	 ControlListener.Draw();
  }
 
@@ -419,12 +404,7 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnNcCalcSize(WPARAM wParam,LPARAM lParam)
  {
-	 if (wParam == FALSE) return;
-	 auto ncp = reinterpret_cast<NCCALCSIZE_PARAMS *>(lParam);
-	 RECT rc1 = ncp->rgrc[0];
-	 RECT rc2 = ncp->rgrc[1];
-	 RECT rc3 = ncp->rgrc[2];
-
+	
  }
 
  bool BaseWindow::OnNcActive(WPARAM wParam, LPARAM lParam)

@@ -172,7 +172,6 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle)
 {
 	IS_RETURN_ERROR(mRenderTarget==nullptr,false,"RenderTarget为空");
-	//create brush
 	auto tempSolidBrush = CreateBrush(RectColor);
 
 	mRenderTarget->BeginDraw();
@@ -204,9 +203,6 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 {
 	if(!DrawRectangle(Rect,RectColor, isFillRectangle)) return false;
 	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
-	float fMaxWidth; 
-	auto hr = tempTextLayout->DetermineMinWidth(&fMaxWidth);
-	IS_ERROR_EXIT(FAILED(hr),"计算最大宽度错误！");
 
 	///<LayOutBox>MaxWidth-MaxHeight</LayOutBox>
 	tempTextLayout->SetMaxWidth(static_cast<FLOAT>(RECTWIDTH(Rect)));
@@ -214,7 +210,7 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 
 	if (AlignType & ALIGN_LEFT)
 	{
-		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
+		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 	}
 	if (AlignType & ALIGN_RIGHT)
 	{
@@ -247,7 +243,7 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	}
 	
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)),tempTextLayout,CreateBrush(TextColor));
+	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)),tempTextLayout,CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
 	mRenderTarget->EndDraw();
 	return true;
 }

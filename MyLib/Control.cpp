@@ -219,12 +219,12 @@ namespace LIB_CONTROL
 		if (!mMouseInternal)
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
-			IS_ERROR_EXIT(!ret, "绘制current标题栏失败!");
+			IS_ERROR_EXIT(!ret, "Draw current Rect failed!");
 		}
 		else
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
-			IS_ERROR_EXIT(!ret, "绘制hover标题栏失败!");
+			IS_ERROR_EXIT(!ret, "Draw hover failed!");
 		}
 
 	}
