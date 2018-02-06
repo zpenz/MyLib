@@ -315,6 +315,8 @@ bool My2DDraw::Present(RECT  * pRect)
 My2DDraw::~My2DDraw()
 {
 	SAFE_RELEASE(mRenderTarget);
+	SAFE_RELEASE(mHwndRenderTarget);
+	SAFE_RELEASE(mTempTarget);
 	SAFE_RELEASE(mWriteFactory);
 	SAFE_RELEASE(mFactory);
 }
