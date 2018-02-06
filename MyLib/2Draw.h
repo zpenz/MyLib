@@ -46,6 +46,8 @@ public:
 
 	bool DrawRectWithText(RECT Rect,std::string text, MyColor RectColor, MyColor TextColor,UINT AlignType= ALIGN_DEFAULT,bool isFillRectangle = false);
 
+	bool DrawRectWithPicture(RECT Rect, MyColor RectColor, std::wstring strFileName, UINT uOffSetX = 0,UINT uOffSetY = 0,bool isFillRectangle = false);
+
 	bool DrawEllipse(POINT centerPoint, float r1, float r2, MyColor EllipseColor,bool isFillEllipse = false);
 
 	bool DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush = NULL);

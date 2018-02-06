@@ -238,6 +238,14 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	return true;
 }
 
+bool My2DDraw::DrawRectWithPicture(RECT Rect, MyColor RectColor, std::wstring strFileName, UINT uOffSetX , UINT uOffSetY, bool isFillRectangle)
+{
+	if (!DrawRectangle(Rect, RectColor, isFillRectangle)) return false;
+	OffsetRect(&Rect,uOffSetX,uOffSetY);
+	auto ret = DrawPicture(CreateBitmap(const_cast<wchar_t *>(strFileName.c_str())), Rect);
+	return ret;
+}
+
 bool My2DDraw::DrawEllipse(POINT centerPoint, float r1, float r2, MyColor EllipseColor,bool isFillEllipse)
 {
 	auto tempSolidBrush = CreateBrush(EllipseColor);
