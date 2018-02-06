@@ -238,11 +238,15 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	return true;
 }
 
+///<OffSet>ÄÚ±ß¾à</OffSet>
 bool My2DDraw::DrawRectWithPicture(RECT Rect, MyColor RectColor, std::wstring strFileName, UINT uOffSetX , UINT uOffSetY, bool isFillRectangle)
 {
 	if (!DrawRectangle(Rect, RectColor, isFillRectangle)) return false;
-	OffsetRect(&Rect,uOffSetX,uOffSetY);
-	auto ret = DrawPicture(CreateBitmap(const_cast<wchar_t *>(strFileName.c_str())), Rect);
+	auto dX = static_cast<LONG>(uOffSetX);
+	auto dY = static_cast<LONG>(uOffSetY);
+	RECT picRect = {Rect.left - dX,Rect.top + dY,Rect.right - dX,Rect.bottom - dY };
+	if (!RectInRect(picRect, Rect)) picRect = Rect;
+	auto ret = DrawPicture(CreateBitmap(const_cast<wchar_t *>(strFileName.c_str())), picRect);
 	return ret;
 }
 

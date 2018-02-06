@@ -87,6 +87,7 @@ namespace Conver
 	D2D1_RECT_F & RectToD2DRectF(RECT & rc);
 
 	bool PointInRect(int x, int y,RECT rc);
+	bool RectInRect(RECT smallRect, RECT bigRect);
 
 	class MyRect
 	{

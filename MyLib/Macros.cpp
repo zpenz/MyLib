@@ -35,6 +35,14 @@ namespace Conver
 		return false;
 	}
 
+	bool RectInRect(RECT smallRect, RECT bigRect)
+	{
+		POINT lp = {smallRect.left,smallRect.top};
+		POINT rb = {smallRect.right,smallRect.bottom};
+		if (PointInRect(lp.x, lp.y, bigRect) && PointInRect(rb.x, rb.y, bigRect)) return false;
+		return false;
+	}
+
 	RECT  ClientToScreenRc(HWND hWnd,RECT & rc)
 	{
 		POINT lt = { rc.left,rc.top }, rt = {rc.right,rc.bottom};
