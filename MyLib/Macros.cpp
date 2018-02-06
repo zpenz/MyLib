@@ -43,6 +43,12 @@ namespace Conver
 		return false;
 	}
 
+	RECT ClipRectBoard(RECT srcRect, LONG dx, LONG dy)
+	{
+		RECT tempRC = {srcRect.left-dx,srcRect.top+dy,srcRect.right-dx,srcRect.bottom-dy};
+		return tempRC;
+	}
+
 	RECT  ClientToScreenRc(HWND hWnd,RECT & rc)
 	{
 		POINT lt = { rc.left,rc.top }, rt = {rc.right,rc.bottom};
@@ -84,6 +90,24 @@ namespace Conver
 	POINT LeftTopPoint(RECT rc)
 	{
 		POINT pt = {rc.left,rc.top};
+		return pt;
+	}
+
+	POINT RightBottomPoint(RECT rc)
+	{
+		POINT pt = {rc.right,rc.bottom};
+		return pt;
+	}
+
+	POINT LeftBottomPoint(RECT rc)
+	{
+		POINT pt = { rc.left,rc.bottom };
+		return pt;
+	}
+
+	POINT RightTopPoint(RECT rc)
+	{
+		POINT pt = { rc.right,rc.top };
 		return pt;
 	}
 

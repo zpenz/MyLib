@@ -50,7 +50,7 @@ public:
 
 	bool DrawEllipse(POINT centerPoint, float r1, float r2, MyColor EllipseColor,bool isFillEllipse = false);
 
-	bool DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush = NULL);
+	bool DrawLine(POINT src, POINT des, MyColor lineColor);
 
 	bool DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect);
 

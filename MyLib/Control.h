@@ -108,16 +108,47 @@ namespace LIB_CONTROL
 	///<Button>∞¥≈•</Button>
 	class Button : public Control
 	{
+	protected:
+		COLORREF mBoardColor;
+
+		bool mDrawBoard;
 	public:
-		void Draw(Listener * pListener) override;
+		void SetBoardColor(COLORREF cBoardColor);
 
-		void Hover(Listener * pListener, POINT pt) override;
+		void NeedDrawBoard(bool bDrawBoard);
 
-		void LButtonDown(Listener * pListener) override;
+		virtual void Draw(Listener * pListener) override;
 
-		void LButtonUp(Listener * pListener) override;
+		virtual void Hover(Listener * pListener, POINT pt) override;
 
-		UINT HitTest(Listener * pListener,POINT pt) override;
+		virtual void LButtonDown(Listener * pListener) override;
+
+		virtual void LButtonUp(Listener * pListener) override;
+
+		virtual UINT HitTest(Listener * pListener,POINT pt) override;
+
+		Button();
+	};
+
+	class ImageAdapter
+	{
+	protected:
+		IPIC * pImage;
+	public:
+		bool SetImage(IPIC * img);
+
+		bool LoadFromFile(wstring strFileName);
+	};
+
+	class CloseButton : public Button ,public ImageAdapter
+	{
+		void Draw(Listener * pListener) override final;
+
+		void Hover(Listener * pListener, POINT pt) override final;
+
+		void LButtonDown(Listener * pListener) override final;
+
+		void LButtonUp(Listener * pListener) override final;
 	};
 
 	///<TitleBar>±ÍÃ‚¿∏</TitleBar>

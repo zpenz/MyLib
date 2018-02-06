@@ -188,6 +188,16 @@ namespace LIB_CONTROL
 		SetHoverBackColor(hoverBackColor);
 	}
 
+	void Button::SetBoardColor(COLORREF cBoardColor)
+	{
+		mBoardColor = cBoardColor;
+	}
+
+	void Button::NeedDrawBoard(bool bDrawBoard)
+	{
+		mBoardColor = bDrawBoard;
+	}
+
 	void Button::Draw(Listener * pListener)
 	{
 
@@ -210,8 +220,23 @@ namespace LIB_CONTROL
 
 	UINT Button::HitTest(Listener * pListener,POINT pt)
 	{
-		mMouseInternal = true;
 		return HTCLIENT;
+	}
+
+	Button::Button():mBoardColor(mBackColor),mDrawBoard(false) // ±ß¿òÊ¹ÓÃ±³¾°ÑÕÉ«
+	{
+		SetHoverForceColor(mForceColor);
+	}
+
+	bool ImageAdapter::SetImage(IPIC * img)
+	{
+		if (!img) return false;
+		pImage = img; return true;
+	}
+
+	bool ImageAdapter::LoadFromFile(wstring strFileName)
+	{
+		return SetImage(DrawManager.CreateBitmap(const_cast<wchar_t *>(strFileName.c_str())));
 	}
 
 	void TitleBar::Draw(Listener * pListener)
@@ -226,7 +251,6 @@ namespace LIB_CONTROL
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
 			IS_ERROR_EXIT(!ret, "Draw hover failed!");
 		}
-
 	}
 
 	void TitleBar::Hover(Listener * pListener,POINT pt)
@@ -255,4 +279,37 @@ namespace LIB_CONTROL
 	{
 
 	}
+
+	void CloseButton::Draw(Listener * pListener)
+	{
+		RECT drawRect = Conver::ClipRectBoard(mRect, 3, 3);
+		if (!mMouseInternal)
+		{
+			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
+			DrawManager.DrawLine(Conver::LeftTopPoint(drawRect), Conver::RightBottomPoint(drawRect), COLOREX(mForceColor));
+			DrawManager.DrawLine(Conver::LeftBottomPoint(drawRect), Conver::RightTopPoint(drawRect), COLOREX(mForceColor));
+			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
+		}
+		else
+		{
+			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
+			DrawManager.DrawLine(Conver::LeftTopPoint(drawRect), Conver::RightBottomPoint(drawRect), COLOREX(mHoverForceColor));
+			DrawManager.DrawLine(Conver::LeftBottomPoint(drawRect), Conver::RightTopPoint(drawRect), COLOREX(mHoverForceColor));
+			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
+		}
+	}
+
+	void CloseButton::Hover(Listener * pListener, POINT pt)
+	{
+
+	}
+
+	void CloseButton::LButtonDown(Listener * pListener)
+	{
+	}
+
+	void CloseButton::LButtonUp(Listener * pListener)
+	{
+	}
+
 }

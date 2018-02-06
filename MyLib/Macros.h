@@ -73,26 +73,44 @@ namespace Conver
 #define RECTHEIGHT(rc) rc.bottom - rc.top
 
 	using namespace std;
+
 	string Format(char * format,...);
+
 	POINT  CenterPoint(RECT rc, int offsetX = 0,int offsetY = 0);
+
 	POINT LeftTopPoint(RECT rc);
+
+	POINT RightBottomPoint(RECT rc);
+
+	POINT LeftBottomPoint(RECT rc);
+
+	POINT RightTopPoint(RECT rc);
+
 	RECT ClientToScreenRc(HWND hWnd, RECT & rc);
+
 	RECT ScreenToClientRc(HWND hWnd, RECT & rc);
+
 	///<ÏÈÁô×Å¿Ó>
 	char * WCharToAChar(wchar_t * Wchar);
+
 	wchar_t * ACharToWChar(wchar_t * Wchar);
 
 	///<d2dConver>some d2d conver</d2dConver>
 	D2D1_POINT_2F & PointToD2DPointF(POINT & pt);
+
 	D2D1_RECT_F & RectToD2DRectF(RECT & rc);
 
 	bool PointInRect(int x, int y,RECT rc);
+
 	bool RectInRect(RECT smallRect, RECT bigRect);
+
+	RECT ClipRectBoard(RECT srcRect,LONG dx,LONG dy);
 
 	class MyRect
 	{
 	private:
 		RECT mRect;
+
 		int mLeft, mRight, mTop, mBottom;
 	public:
 		MyRect(INT left, INT top, INT right, INT bottom);

@@ -177,6 +177,7 @@ bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle)
 
 IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text)
 {
+	if (text.empty()) return nullptr;
 	IDWriteTextFormat * tempTextFormat = NULL;
 	auto hr = mWriteFactory->CreateTextFormat(L"ÐÂËÎÌå",NULL,DWRITE_FONT_WEIGHT_REGULAR,
 	DWRITE_FONT_STYLE_NORMAL,DWRITE_FONT_STRETCH_NORMAL,18.0f,L"en-us",&tempTextFormat);
@@ -192,8 +193,9 @@ IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text)
 bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, MyColor TextColor, UINT AlignType,bool isFillRectangle)
 {
 	if(!DrawRectangle(Rect,RectColor, isFillRectangle)) return false;
-	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
+	if (text.empty()) return true;
 
+	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
 	///<LayOutBox>MaxWidth-MaxHeight</LayOutBox>
 	tempTextLayout->SetMaxWidth(static_cast<FLOAT>(RECTWIDTH(Rect)));
 	tempTextLayout->SetMaxHeight(static_cast<FLOAT>(RECTHEIGHT(Rect)));
@@ -241,7 +243,8 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 ///<OffSet>ÄÚ±ß¾à</OffSet>
 bool My2DDraw::DrawRectWithPicture(RECT Rect, MyColor RectColor, std::wstring strFileName, UINT uOffSetX , UINT uOffSetY, bool isFillRectangle)
 {
-	if (!DrawRectangle(Rect, RectColor, isFillRectangle)) return false;
+	if(!DrawRectangle(Rect, RectColor, isFillRectangle)) return false;
+	if (strFileName.empty()) return true;
 	auto dX = static_cast<LONG>(uOffSetX);
 	auto dY = static_cast<LONG>(uOffSetY);
 	RECT picRect = {Rect.left - dX,Rect.top + dY,Rect.right - dX,Rect.bottom - dY };
@@ -264,11 +267,10 @@ bool My2DDraw::DrawEllipse(POINT centerPoint, float r1, float r2, MyColor Ellips
 	return false;
 }
 
-bool My2DDraw::DrawLine(POINT src, POINT des, ID2D1SolidColorBrush * pSoildBrush)
+bool My2DDraw::DrawLine(POINT src, POINT des, MyColor lineColor)
 {
-	auto tempSolidBrush = pSoildBrush;
-	if (tempSolidBrush == NULL)
-		tempSolidBrush = CreateBrush();
+	auto tempSolidBrush = CreateBrush(lineColor);
+	if (tempSolidBrush == NULL) return false;
 	mRenderTarget->BeginDraw();
 	mRenderTarget->DrawLine(PointToD2DPointF(src), PointToD2DPointF(des), tempSolidBrush);
 	auto hr = mRenderTarget->EndDraw();
