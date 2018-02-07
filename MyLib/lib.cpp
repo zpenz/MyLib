@@ -389,7 +389,7 @@ void BaseWindow::Destory()
 	 pMax->AdjustRect(Conver::MyRect(1024 - 35*2, 0, mWidth-35, 35));
 	 pMax->SetBackColor(RGB(65, 65, 68));
 	 pMax->SetForceColor(RGB(255, 255, 255));
-	 pMax->SetHoverBackColor(RGB(110, 110, 110));
+	 pMax->SetHoverBackColor(RGB(216, 120, 17));
 	 ControlListener.attach(pMax);
 
 	 //Mini Button
@@ -397,7 +397,7 @@ void BaseWindow::Destory()
 	 pMin->AdjustRect(Conver::MyRect(1024 - 35*3, 0, mWidth-70, 35));
 	 pMin->SetBackColor(RGB(65, 65, 68));
 	 pMin->SetForceColor(RGB(255, 255, 255));
-	 pMin->SetHoverBackColor(RGB(110, 110, 110));
+	 pMin->SetHoverBackColor(RGB(216, 120, 17));
 	 ControlListener.attach(pMin);
  }
 

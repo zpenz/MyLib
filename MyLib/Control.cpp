@@ -394,7 +394,7 @@ namespace LIB_CONTROL
 		else
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
-			DrawManager.DrawRectangle(drawRect, COLOREX(mHoverForceColor), true);
+			DrawManager.DrawRectangle(drawRect, COLOREX(mHoverForceColor), false);
 			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
 		}
 	}
