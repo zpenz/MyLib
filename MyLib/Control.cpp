@@ -51,19 +51,26 @@ namespace LIB_CONTROL
 		});
 	}
 		
-
-	void Listener::LButtonDown()
+	UINT Listener::LButtonDown(POINT pt)
 	{
+		Control * pTempControl = nullptr;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
-			pControl->LButtonDown(this);
+				if(Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
+				  if(pControl->LButtonDown(this)!=SHOULD_DO_NOTHING) pTempControl = pControl;
 		});
+		if(pTempControl != nullptr) return pTempControl->LButtonDown(this);
+		return SHOULD_DO_NOTHING;
 	}
 
-	void Listener::LButtonUp()
+	UINT Listener::LButtonUp(POINT pt)
 	{
+		Control * pTempControl = NULL;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
-			pControl->LButtonUp(this);
+			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
+				if (pControl->LButtonUp(this) != SHOULD_DO_NOTHING) pTempControl = pControl;
 		});
+		if (pTempControl != nullptr) return pTempControl->LButtonUp(this);
+		return SHOULD_DO_NOTHING;
 	}
 
 	UINT Listener::HitTest( POINT pt)
@@ -188,6 +195,11 @@ namespace LIB_CONTROL
 		SetHoverBackColor(hoverBackColor);
 	}
 
+	void Button::SetButtonDownInternal(bool isDownInternal)
+	{
+		BDownInternal = isDownInternal;
+	}
+
 	void Button::SetBoardColor(COLORREF cBoardColor)
 	{
 		mBoardColor = cBoardColor;
@@ -208,14 +220,16 @@ namespace LIB_CONTROL
 
 	}
 
-	void Button::LButtonDown(Listener * pListener)
+	UINT Button::LButtonDown(Listener * pListener)
 	{
-
+		SetButtonDownInternal(false);
+		if (IsMouseInteral()) SetButtonDownInternal(true);
+		return SHOULD_DO_NOTHING;
 	}
 
-	void Button::LButtonUp(Listener * pListener)
+	UINT Button::LButtonUp(Listener * pListener)
 	{
-
+		return SHOULD_DO_NOTHING;
 	}
 
 	UINT Button::HitTest(Listener * pListener,POINT pt)
@@ -223,7 +237,7 @@ namespace LIB_CONTROL
 		return HTCLIENT;
 	}
 
-	Button::Button():mBoardColor(mBackColor),mDrawBoard(false) // ±ß¿òÊ¹ÓÃ±³¾°ÑÕÉ«
+	Button::Button():mBoardColor(mBackColor),mDrawBoard(false),BDownInternal(false)// ±ß¿òÊ¹ÓÃ±³¾°ÑÕÉ«
 	{
 		SetHoverForceColor(mForceColor);
 	}
@@ -237,6 +251,26 @@ namespace LIB_CONTROL
 	bool ImageAdapter::LoadFromFile(wstring strFileName)
 	{
 		return SetImage(DrawManager.CreateBitmap(const_cast<wchar_t *>(strFileName.c_str())));
+	}
+
+	void ImageAdapter::SetImgRect(RECT desRect)
+	{
+		mImgRec = desRect;
+	}
+
+	RECT ImageAdapter::ImgRect() const
+	{
+		return mImgRec;
+	}
+
+	ImageAdapter::ImageAdapter():pImage(nullptr),bDrawImage(false)
+	{
+
+	}
+
+	ImageAdapter::~ImageAdapter()
+	{
+		SAFE_RELEASE(pImage);
 	}
 
 	void TitleBar::Draw(Listener * pListener)
@@ -257,12 +291,14 @@ namespace LIB_CONTROL
 	{
 	}
 
-	void TitleBar::LButtonDown(Listener * pListener)
+	UINT TitleBar::LButtonDown(Listener * pListener)
 	{
+		return SHOULD_DO_NOTHING;
 	}
 
-	void TitleBar::LButtonUp(Listener * pListener)
+	UINT TitleBar::LButtonUp(Listener * pListener)
 	{
+		return SHOULD_DO_NOTHING;
 	}
 
 	UINT TitleBar::HitTest(Listener * pListener, POINT pt)
@@ -282,7 +318,7 @@ namespace LIB_CONTROL
 
 	void CloseButton::Draw(Listener * pListener)
 	{
-		RECT drawRect = Conver::ClipRectBoard(mRect, 3, 3);
+		RECT drawRect = Conver::ClipRectBoard(mRect, 10, 10);
 		if (!mMouseInternal)
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
@@ -304,12 +340,69 @@ namespace LIB_CONTROL
 
 	}
 
-	void CloseButton::LButtonDown(Listener * pListener)
+	UINT CloseButton::LButtonDown(Listener * pListener)
 	{
+		SetButtonDownInternal(false);
+		if (IsMouseInteral()) SetButtonDownInternal(true);
+		return SHOULD_DO_NOTHING;
 	}
 
-	void CloseButton::LButtonUp(Listener * pListener)
+	UINT CloseButton::LButtonUp(Listener * pListener)
 	{
+		if (BDownInternal) return SHOULD_CLOSE_WINDOW;
+		return SHOULD_DO_NOTHING;
+	}
+
+	UINT CloseButton::HitTest(Listener * pListener, POINT pt)
+	{
+		return HTCLIENT;
+	}
+
+	void MiniButton::Draw(Listener * pListener)
+	{
+		RECT drawRect = Conver::ClipRectBoard(mRect, 10, 24);
+		if (!mMouseInternal)
+		{
+			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
+			DrawManager.DrawLine(Conver::LeftTopPoint(drawRect), Conver::RightTopPoint(drawRect), COLOREX(mForceColor));
+			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
+		}
+		else
+		{
+			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
+			DrawManager.DrawLine(Conver::LeftTopPoint(drawRect), Conver::RightTopPoint(drawRect), COLOREX(mHoverForceColor));
+			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
+		}
+	}
+
+
+	UINT MiniButton::LButtonUp(Listener * pListener)
+	{
+		if (BDownInternal) return SHOULE_MINI_WINDOW;
+		return SHOULD_DO_NOTHING;
+	}
+
+	void MaxButton::Draw(Listener * pListener)
+	{
+		RECT drawRect = Conver::ClipRectBoard(mRect, 12, 12);
+		if (!mMouseInternal)
+		{
+			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
+			DrawManager.DrawRectangle(drawRect, COLOREX(mForceColor), false);
+			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
+		}
+		else
+		{
+			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
+			DrawManager.DrawRectangle(drawRect, COLOREX(mHoverForceColor), true);
+			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
+		}
+	}
+
+	UINT MaxButton::LButtonUp(Listener * pListener)
+	{
+		if (BDownInternal) return SHOULE_MAX_WINDOW;
+		return SHOULD_DO_NOTHING;
 	}
 
 }

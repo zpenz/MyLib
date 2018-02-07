@@ -310,6 +310,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			window->OnLButtonDown(wParam, lParam);
 			break;
 		case WM_LBUTTONUP:
+			window->OnLButtonUp(wParam, lParam);
 			break;
 		case WM_SIZING:
 			break;
@@ -370,10 +371,34 @@ void BaseWindow::Destory()
 
 	 //TitleBar
 	 TitleBar * pBar = new TitleBar("pSong's Window",NULL);
-	 pBar->AdjustRect(Conver::MyRect(0,0,mWidth,35));
+	 pBar->AdjustRect(Conver::MyRect(0,0,mWidth-3*35,35));
 	 pBar->SetBackColor(RGB(65,65,68));
 	 pBar->SetHoverBackColor(RGB(116, 116, 119));
 	 ControlListener.attach(pBar);
+
+	 //Close Button
+	 CloseButton * pClo = new CloseButton();
+	 pClo->AdjustRect(Conver::MyRect(1024-35, 0, mWidth, 35));
+	 pClo->SetBackColor(RGB(65, 65, 68));
+	 pClo->SetForceColor(RGB(255,255,255));
+	 pClo->SetHoverBackColor(RGB(228,0,0));
+	 ControlListener.attach(pClo);
+
+	 //Max Button
+	 MaxButton * pMax = new MaxButton();
+	 pMax->AdjustRect(Conver::MyRect(1024 - 35*2, 0, mWidth-35, 35));
+	 pMax->SetBackColor(RGB(65, 65, 68));
+	 pMax->SetForceColor(RGB(255, 255, 255));
+	 pMax->SetHoverBackColor(RGB(110, 110, 110));
+	 ControlListener.attach(pMax);
+
+	 //Mini Button
+	 MiniButton * pMin = new MiniButton();
+	 pMin->AdjustRect(Conver::MyRect(1024 - 35*3, 0, mWidth-70, 35));
+	 pMin->SetBackColor(RGB(65, 65, 68));
+	 pMin->SetForceColor(RGB(255, 255, 255));
+	 pMin->SetHoverBackColor(RGB(110, 110, 110));
+	 ControlListener.attach(pMin);
  }
 
  void BaseWindow::OnDraw()
@@ -420,12 +445,21 @@ void BaseWindow::Destory()
  {
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
 	 ScreenToClient(mBaseHwnd, &pt);
+
 	 return ControlListener.HitTest(pt);
  }
 
  void BaseWindow::OnLButtonDown(WPARAM wParam, LPARAM lParam)
  {
+	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
+	 auto ret = ControlListener.LButtonDown(pt);
+ }
 
+ void BaseWindow::OnLButtonUp(WPARAM wParam, LPARAM lParam)
+ {
+	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
+	 auto ret = ControlListener.LButtonUp(pt);
+	 if (ret == SHOULD_CLOSE_WINDOW) SendMessage(mBaseHwnd,WM_CLOSE,0,0);
  }
 
  }

@@ -109,6 +109,8 @@ public:
 
 	virtual void OnLButtonDown(WPARAM wParam,LPARAM lParam);
 
+	virtual void OnLButtonUp(WPARAM wParam, LPARAM lParam);
+
 	virtual bool OnNcActive(WPARAM wParam, LPARAM lParam);
 
 	virtual UINT OnHitTest(LPARAM lParam);

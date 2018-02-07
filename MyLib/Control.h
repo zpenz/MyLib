@@ -7,9 +7,35 @@ namespace LIB_CONTROL
 {
 	using namespace std;
 
+	using namespace MyMessage;
+
 	class Listener;
 
-	class Control
+	class ImageAdapter
+	{
+	protected:
+		IPIC * pImage;
+		
+		bool bDrawImage;
+
+		RECT mImgRec;
+
+	public:
+
+		bool SetImage(IPIC * img);
+
+		bool LoadFromFile(wstring strFileName);
+
+		void SetImgRect(RECT desRect);
+
+		RECT ImgRect() const; 
+
+		ImageAdapter();
+
+		~ImageAdapter();
+	};
+
+	class Control: public ImageAdapter
 	{
 	protected:
 		RECT mRect;
@@ -32,9 +58,9 @@ namespace LIB_CONTROL
 
 		virtual void Hover(Listener * pListener, POINT pt) = 0;
 
-		virtual void LButtonDown(Listener * pListener) = 0;
+		virtual UINT LButtonDown(Listener * pListener) = 0;
 
-		virtual void LButtonUp(Listener * pListener) = 0;
+		virtual UINT LButtonUp(Listener * pListener) = 0;
 
 		virtual UINT HitTest(Listener * pListener,POINT pt) = 0;
 
@@ -90,6 +116,7 @@ namespace LIB_CONTROL
 		list<Control *> mpControl;
 
 	public:
+
 		bool attach(Control * pControl);
 
 		bool detach(Control * pControl);
@@ -98,9 +125,9 @@ namespace LIB_CONTROL
 
 		void Hover(POINT pt);
 
-		void LButtonDown();
+		UINT LButtonDown(POINT pt);
 
-		void LButtonUp();
+		UINT LButtonUp(POINT pt);
 
 		UINT HitTest(POINT pt);
 	};
@@ -112,7 +139,13 @@ namespace LIB_CONTROL
 		COLORREF mBoardColor;
 
 		bool mDrawBoard;
+
+		bool BDownInternal;
+
 	public:
+
+		void SetButtonDownInternal(bool isDownInternal);
+
 		void SetBoardColor(COLORREF cBoardColor);
 
 		void NeedDrawBoard(bool bDrawBoard);
@@ -121,48 +154,57 @@ namespace LIB_CONTROL
 
 		virtual void Hover(Listener * pListener, POINT pt) override;
 
-		virtual void LButtonDown(Listener * pListener) override;
+		virtual UINT LButtonDown(Listener * pListener) override;
 
-		virtual void LButtonUp(Listener * pListener) override;
+		virtual UINT LButtonUp(Listener * pListener) override;
 
 		virtual UINT HitTest(Listener * pListener,POINT pt) override;
 
 		Button();
 	};
 
-	class ImageAdapter
-	{
-	protected:
-		IPIC * pImage;
-	public:
-		bool SetImage(IPIC * img);
-
-		bool LoadFromFile(wstring strFileName);
-	};
-
-	class CloseButton : public Button ,public ImageAdapter
+	class CloseButton : public Button 
 	{
 		void Draw(Listener * pListener) override final;
 
 		void Hover(Listener * pListener, POINT pt) override final;
 
-		void LButtonDown(Listener * pListener) override final;
+		UINT LButtonDown(Listener * pListener) override final;
 
-		void LButtonUp(Listener * pListener) override final;
+		UINT LButtonUp(Listener * pListener) override final;
+
+		UINT HitTest(Listener * pListener, POINT pt) override final;
+	};
+
+	class MiniButton : public Button
+	{
+		void Draw(Listener * pListener) override final;
+
+		UINT LButtonUp(Listener * pListener) override final;
+
+	};
+
+	class MaxButton : public Button
+	{
+		void Draw(Listener * pListener) override final;
+
+		UINT LButtonUp(Listener * pListener) override final;
+
 	};
 
 	///<TitleBar>±ÍÃ‚¿∏</TitleBar>
 	class TitleBar : public Control
 	{
 		IPIC * mPic;
+		 
 	public:
 		void Draw(Listener * pListener) override;
 
 		void Hover(Listener * pListener, POINT pt) override;
 
-		void LButtonDown(Listener * pListener) override;
+		UINT LButtonDown(Listener * pListener) override;
 
-		void LButtonUp(Listener * pListener) override;
+		UINT LButtonUp(Listener * pListener) override;
 
 		UINT HitTest(Listener * pListener,POINT pt) override;
 

@@ -40,12 +40,13 @@ namespace Conver
 		POINT lp = {smallRect.left,smallRect.top};
 		POINT rb = {smallRect.right,smallRect.bottom};
 		if (PointInRect(lp.x, lp.y, bigRect) && PointInRect(rb.x, rb.y, bigRect)) return false;
-		return false;
+		return true;
 	}
 
 	RECT ClipRectBoard(RECT srcRect, LONG dx, LONG dy)
 	{
-		RECT tempRC = {srcRect.left-dx,srcRect.top+dy,srcRect.right-dx,srcRect.bottom-dy};
+		RECT tempRC = {srcRect.left+dx,srcRect.top+dy,srcRect.right-dx,srcRect.bottom-dy};
+		//if (!RectInRect(tempRC, srcRect)) { LOG_WARNING("ºÙ«–æÿ–Œ ß∞‹!");  return srcRect; }
 		return tempRC;
 	}
 

@@ -31,6 +31,14 @@ namespace Macros2D
 #define COLOREX(colorRef) D2D1::ColorF(GetRValue(colorRef)/255.0f,GetGValue(colorRef)/255.0f,GetBValue(colorRef)/255.0f,1.0f)
 }
 
+namespace MyMessage
+{
+#define SHOULD_CLOSE_WINDOW 678
+#define SHOULE_MINI_WINDOW 679
+#define SHOULE_MAX_WINDOW 679
+#define SHOULD_DO_NOTHING 0
+}
+
 
 void ErrorMessage(const char * _error);
 
