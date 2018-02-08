@@ -177,16 +177,21 @@ bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle)
 
 IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text)
 {
+	return CreateTextLayout(text,18.0f);
+}
+
+IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text, float fSize)
+{
 	if (text.empty()) return nullptr;
 	IDWriteTextFormat * tempTextFormat = NULL;
-	auto hr = mWriteFactory->CreateTextFormat(L"新宋体",NULL,DWRITE_FONT_WEIGHT_REGULAR,
-	DWRITE_FONT_STYLE_NORMAL,DWRITE_FONT_STRETCH_NORMAL,18.0f,L"en-us",&tempTextFormat);
+	auto hr = mWriteFactory->CreateTextFormat(L"新宋体", NULL, DWRITE_FONT_WEIGHT_REGULAR,
+		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fSize, L"en-us", &tempTextFormat);
 
 	IDWriteTextLayout * tempTextLayout = NULL;
 	USES_CONVERSION;
-	hr = mWriteFactory->CreateTextLayout(A2W(text.c_str()),text.length(), tempTextFormat,100,0,
+	hr = mWriteFactory->CreateTextLayout(A2W(text.c_str()), text.length(), tempTextFormat, 100.0f, 0.0f,
 		&tempTextLayout);
-	IS_ERROR_EXIT(FAILED(hr),"创建TextLayout失败!");
+	IS_ERROR_EXIT(FAILED(hr), "创建TextLayout失败!");
 	return tempTextLayout;
 }
 
@@ -269,10 +274,15 @@ bool My2DDraw::DrawEllipse(POINT centerPoint, float r1, float r2, MyColor Ellips
 
 bool My2DDraw::DrawLine(POINT src, POINT des, MyColor lineColor)
 {
+	return DrawLine(src, des, lineColor, 1.0f);
+}
+
+bool My2DDraw::DrawLine(POINT src, POINT des, MyColor lineColor, float LineWidth)
+{
 	auto tempSolidBrush = CreateBrush(lineColor);
 	if (tempSolidBrush == NULL) return false;
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawLine(PointToD2DPointF(src), PointToD2DPointF(des), tempSolidBrush);
+	mRenderTarget->DrawLine(PointToD2DPointF(src), PointToD2DPointF(des), tempSolidBrush,LineWidth);
 	auto hr = mRenderTarget->EndDraw();
 	return SUCCEEDED(hr);
 }

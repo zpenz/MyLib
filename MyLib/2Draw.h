@@ -52,6 +52,8 @@ public:
 
 	bool DrawLine(POINT src, POINT des, MyColor lineColor);
 
+	bool DrawLine(POINT src, POINT des, MyColor lineColor,float LineWidth);
+
 	bool DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect);
 
 	bool DrawPicture(std::wstring strFileName, RECT decRect);
@@ -60,7 +62,9 @@ public:
 
 	bool Present(RECT * pRect); // present temp render target
 
-	IDWriteTextLayout * CreateTextLayout(std::string text);
+	IDWriteTextLayout * CreateTextLayout(std::string text); // default size 18.0f
+
+	IDWriteTextLayout * CreateTextLayout(std::string text,float fSize);
 
 	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth = 0, UINT dstHeight = 0);
 
