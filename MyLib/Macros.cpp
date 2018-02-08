@@ -114,13 +114,20 @@ namespace Conver
 
 	char * WCharToAChar(wchar_t * Wchar)
 	{
-		//WideCharToMultiByte(CP_ACP,);
-		return nullptr;
+		auto size = WideCharToMultiByte(CP_UTF8,0,Wchar,-1,NULL,0,NULL,NULL);
+		auto TheCoveredString = new char[size]();
+		auto ret  = WideCharToMultiByte(CP_UTF8, 0, Wchar, -1, TheCoveredString, size, NULL, NULL);
+		if (!ret) { SAFE_DELETE(TheCoveredString); return nullptr; }
+		return TheCoveredString;
 	}
 
-	wchar_t * ACharToWChar(wchar_t * Wchar)
+	wchar_t * ACharToWChar(char * Achar)
 	{
-		return nullptr;
+		auto size = MultiByteToWideChar(CP_ACP,0,Achar,-1,NULL,0);
+		auto TheCoveredString = new wchar_t[size]();
+		auto ret = MultiByteToWideChar(CP_UTF8, 0, Achar, -1, TheCoveredString, size);
+		if (!ret) { SAFE_DELETE(TheCoveredString); return nullptr; }
+		return TheCoveredString;
 	}
 
 	MyRect::MyRect(INT left, INT top, INT right, INT bottom):mLeft(left),mRight(right),

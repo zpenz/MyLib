@@ -1,9 +1,16 @@
 #include "2Draw.h"
 #include <DWrite.h>
 # include <wincodec.h>
-#include <atlbase.h>
 
 using namespace Conver;
+
+bool My2DDraw::ReSize(UINT uWidth, UINT uHeight)
+{
+	IS_RETURN_ERROR(mHwndRenderTarget==nullptr,false,"HwndRenderTargetŒ™ø’");
+	auto ret = mHwndRenderTarget->Resize(D2D1::SizeU(uWidth,uHeight));
+	if(mTempTarget) UseTempRenderTarget();
+	return SUCCEEDED(ret);
+}
 
 bool My2DDraw::InitManager()
 {
@@ -188,8 +195,7 @@ IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text, float fSize)
 		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fSize, L"en-us", &tempTextFormat);
 
 	IDWriteTextLayout * tempTextLayout = NULL;
-	USES_CONVERSION;
-	hr = mWriteFactory->CreateTextLayout(A2W(text.c_str()), text.length(), tempTextFormat, 100.0f, 0.0f,
+	hr = mWriteFactory->CreateTextLayout(Conver::ACharToWChar(const_cast<char *>(text.c_str())), text.length(), tempTextFormat, 100.0f, 0.0f,
 		&tempTextLayout);
 	IS_ERROR_EXIT(FAILED(hr), "¥¥Ω®TextLayout ß∞‹!");
 	return tempTextLayout;

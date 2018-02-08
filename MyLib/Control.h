@@ -52,6 +52,8 @@ namespace LIB_CONTROL
 
 		bool mMouseInternal;
 
+		bool mActive;
+
 	public:
 
 		virtual void Draw(Listener * pListener) = 0;
@@ -63,6 +65,10 @@ namespace LIB_CONTROL
 		virtual UINT LButtonUp(Listener * pListener) = 0;
 
 		virtual UINT HitTest(Listener * pListener,POINT pt) = 0;
+
+		bool Active() const;
+
+		void SetActive(bool bActive);
 
 		string Text() const;
 
@@ -107,6 +113,27 @@ namespace LIB_CONTROL
 		Control(RECT rc, string text, COLORREF forceColor, COLORREF backColor,COLORREF hoverBackColor);
 
 		virtual ~Control();
+	};
+
+	class ComposeControl:public Control
+	{
+	protected:
+
+		list<Control *>  mControl;
+
+	public:
+
+		bool Add(Control * pControl);
+
+		virtual void Draw(Listener * pListener);
+
+		virtual UINT HitTest(Listener * pListener, POINT pt);
+
+		virtual void Hover(Listener * pListener, POINT pt);
+
+		virtual UINT LButtonDown(Listener * pListener);
+
+		virtual UINT LButtonUp(Listener * pListener);
 	};
 
 	class Listener

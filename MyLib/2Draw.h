@@ -32,6 +32,7 @@ private:
 
 	IDWriteFactory * mWriteFactory;
 public:
+
 	bool InitManager();
 
 	bool SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect = NULL);
@@ -57,6 +58,8 @@ public:
 	bool DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect);
 
 	bool DrawPicture(std::wstring strFileName, RECT decRect);
+
+	bool ReSize(UINT uWidth, UINT uHeight); //resize 
 
 	bool Clear(MyColor color = MyColor::Black);
 

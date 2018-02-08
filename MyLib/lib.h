@@ -113,6 +113,8 @@ public:
 
 	virtual bool OnNcActive(WPARAM wParam, LPARAM lParam);
 
+	virtual UINT OnSize(WPARAM wParam,LPARAM lParam);
+
 	virtual UINT OnHitTest(LPARAM lParam);
 
 	operator HDC()  {return mHdc;}

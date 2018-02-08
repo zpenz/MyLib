@@ -34,11 +34,10 @@ namespace Macros2D
 namespace MyMessage
 {
 #define SHOULD_CLOSE_WINDOW 678
-#define SHOULE_MINI_WINDOW 679
-#define SHOULE_MAX_WINDOW 679
+#define SHOULD_MINI_WINDOW 679
+#define SHOULD_MAX_WINDOW 680
 #define SHOULD_DO_NOTHING 0
 }
-
 
 void ErrorMessage(const char * _error);
 
@@ -98,10 +97,10 @@ namespace Conver
 
 	RECT ScreenToClientRc(HWND hWnd, RECT & rc);
 
-	///<先留着坑>
+	///宽字节和ASCI互相转换
 	char * WCharToAChar(wchar_t * Wchar);
 
-	wchar_t * ACharToWChar(wchar_t * Wchar);
+	wchar_t * ACharToWChar(char * Achar);
 
 	///<d2dConver>some d2d conver</d2dConver>
 	D2D1_POINT_2F & PointToD2DPointF(POINT & pt);

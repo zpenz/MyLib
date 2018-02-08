@@ -86,7 +86,7 @@ bool BaseWindow::ShowThisWindow()
 void BaseWindow::MoveWindow() const
 {
 	if(mBaseHwnd)
-	::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, true);
+	::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, false);
 }
 
 void BaseWindow::UpdateCache(bool topMost)
@@ -306,13 +306,16 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			break;
 		case WM_MOUSEMOVE:
 			break;
+		case WM_NCLBUTTONDBLCLK:
+			return 0;
 		case WM_LBUTTONDOWN:
 			window->OnLButtonDown(wParam, lParam);
 			break;
 		case WM_LBUTTONUP:
 			window->OnLButtonUp(wParam, lParam);
 			break;
-		case WM_SIZING:
+		case WM_SIZE:
+			return window->OnSize(wParam,lParam);
 			break;
 		case WM_MOVE:
 			window->UpdatePosition(wParam,lParam);
@@ -365,9 +368,9 @@ void BaseWindow::Destory()
 	 DrawManager.UseTempRenderTarget();
 
 	 //´°¿ÚÇøÓò×ª»» 
-	 auto Rgn = CreateRectRgn(0,0,mWidth,mHeight);
-	 SetWindowRgn(mBaseHwnd, Rgn,true);
-	 DeleteObject(Rgn);
+	 //auto Rgn = CreateRectRgn(0,0,mWidth,mHeight);
+	 //SetWindowRgn(mBaseHwnd, Rgn,true);
+	 //DeleteObject(Rgn);
 
 	 //TitleBar
 	 TitleBar * pBar = new TitleBar("pSong's Window",NULL);
@@ -433,12 +436,24 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnNcCalcSize(WPARAM wParam,LPARAM lParam)
  {
-	
+
  }
 
  bool BaseWindow::OnNcActive(WPARAM wParam, LPARAM lParam)
  {
 	 return true;
+ }
+
+ UINT BaseWindow::OnSize(WPARAM wParam, LPARAM lParam)
+ {
+	 auto newWidth  =  LOWORD(lParam);
+	 auto newHeight =  HIWORD(lParam);
+
+	 mBaseHwnd;
+
+
+	// DrawManager.ReSize(GetWidth(), GetHeight());
+	 return 0;
  }
 
  UINT BaseWindow::OnHitTest(LPARAM lParam)
@@ -460,6 +475,19 @@ void BaseWindow::Destory()
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
 	 auto ret = ControlListener.LButtonUp(pt);
 	 if (ret == SHOULD_CLOSE_WINDOW) SendMessage(mBaseHwnd,WM_CLOSE,0,0);
+	 if (ret == SHOULD_MINI_WINDOW)  ShowWindow(mBaseHwnd, SW_MINIMIZE);
+	 if (ret == SHOULD_MAX_WINDOW)
+	 {
+		 //ShowWindow(mBaseHwnd, SW_MAXIMIZE);
+		 POINT ltpt = { 0,0 };
+		 SetLeftTopPos(ltpt);
+		 SetWidth(1920);
+		 SetHeight(1080);
+		 
+		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd);
+		 //ret = DrawManager.UseTempRenderTarget();
+
+	 }
  }
 
  }

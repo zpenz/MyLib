@@ -86,6 +86,16 @@ namespace LIB_CONTROL
 		return pTempControl->HitTest(this, pt);
 	}
 
+	bool Control::Active() const
+	{
+		return mActive;
+	}
+
+	void Control::SetActive(bool bActive)
+	{
+		mActive = bActive;
+	}
+
 	string Control::Text() const
 	{
 		return mText;
@@ -378,7 +388,7 @@ namespace LIB_CONTROL
 
 	UINT MiniButton::LButtonUp(Listener * pListener)
 	{
-		if (BDownInternal) return SHOULE_MINI_WINDOW;
+		if (BDownInternal) return SHOULD_MINI_WINDOW;
 		return SHOULD_DO_NOTHING;
 	}
 
@@ -401,8 +411,56 @@ namespace LIB_CONTROL
 
 	UINT MaxButton::LButtonUp(Listener * pListener)
 	{
-		if (BDownInternal) return SHOULE_MAX_WINDOW;
+		if (BDownInternal) return SHOULD_MAX_WINDOW;
 		return SHOULD_DO_NOTHING;
+	}
+
+	bool ComposeControl::Add(Control * pControl)
+	{
+		auto it = std::find_if(mControl.begin(), mControl.end(), [&pControl](Control * ItControl) {
+			if (ItControl == pControl) return false;
+			return true;
+		});
+		if (it != mControl.end()) return false;
+		return true;
+	}
+
+	void ComposeControl::Draw(Listener * pListener)
+	{
+		for_each(mControl.begin(), mControl.end(), [&pListener](Control * ItControl){
+			ItControl->Draw(pListener);
+		});
+	}
+
+	UINT ComposeControl::HitTest(Listener * pListener, POINT pt)
+	{
+		for_each(mControl.begin(), mControl.end(), [&pListener,pt](Control * ItControl) {
+			ItControl->HitTest(pListener,pt);
+		});
+		return 0;
+	}
+
+	void ComposeControl::Hover(Listener * pListener, POINT pt)
+	{
+		for_each(mControl.begin(), mControl.end(), [&pListener, pt](Control * ItControl) {
+			ItControl->Hover(pListener, pt);
+		});
+	}
+
+	UINT ComposeControl::LButtonDown(Listener * pListener)
+	{
+		for_each(mControl.begin(), mControl.end(), [&pListener](Control * ItControl) {
+			ItControl->LButtonDown(pListener);
+		});		
+		return 0;
+	}
+
+	UINT ComposeControl::LButtonUp(Listener * pListener)
+	{
+		for_each(mControl.begin(), mControl.end(), [&pListener](Control * ItControl) {
+			ItControl->LButtonUp(pListener);
+		});
+		return 0;
 	}
 
 }
