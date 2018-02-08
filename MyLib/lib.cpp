@@ -449,10 +449,7 @@ void BaseWindow::Destory()
 	 auto newWidth  =  LOWORD(lParam);
 	 auto newHeight =  HIWORD(lParam);
 
-	 mBaseHwnd;
-
-
-	// DrawManager.ReSize(GetWidth(), GetHeight());
+	 //DrawManager.ReSize(GetWidth(), GetHeight());
 	 return 0;
  }
 
@@ -483,9 +480,9 @@ void BaseWindow::Destory()
 		 SetLeftTopPos(ltpt);
 		 SetWidth(1920);
 		 SetHeight(1080);
-		 
+
 		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd);
-		 //ret = DrawManager.UseTempRenderTarget();
+		 ret = DrawManager.UseTempRenderTarget();
 
 	 }
  }
