@@ -15,6 +15,8 @@ protected:
 
 	bool mIsfullscreen;
 
+	RECT mWindowRect; ///<包括标题栏和边框>
+
 	const string mClassname; 
 
 	string mWindowname;
@@ -36,11 +38,16 @@ protected:
 	Listener ControlListener;
 
 private:
+
+	RECT Rect() const;
+
+	bool SetRect(RECT desRect);
+
 	void MoveCenterWindow();
 
 	bool ShowThisWindow(void); //show this window
 
-	void MoveWindow()const;
+	void UpdateSize()const;
 
 	void UpdateCache(bool topMost);
 

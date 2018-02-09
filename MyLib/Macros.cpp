@@ -43,11 +43,36 @@ namespace Conver
 		return true;
 	}
 
+	bool VaildRect(RECT targetRect)
+	{
+		if (targetRect.left > targetRect.right || targetRect.top > targetRect.bottom) return false;
+		return true;
+	}
+
 	RECT ClipRectBoard(RECT srcRect, LONG dx, LONG dy)
 	{
 		RECT tempRC = {srcRect.left+dx,srcRect.top+dy,srcRect.right-dx,srcRect.bottom-dy};
 		//if (!RectInRect(tempRC, srcRect)) { LOG_WARNING("¼ôÇÐ¾ØÐÎÊ§°Ü!");  return srcRect; }
 		return tempRC;
+	}
+
+	RECT ClipRectBoardEx(RECT srcRect, LONG lLeft, LONG lTop, LONG lRight, LONG lBottom)
+	{
+		RECT tempRC = { srcRect.left - lLeft ,srcRect.top - lTop ,
+			srcRect.right - lRight,srcRect.bottom - lBottom };
+		return tempRC;
+	}
+
+	RECT GetMaxSizeRect()
+	{
+		RECT srcRect = {0,0,SCREEN_WIDTH,SCREEN_HEIGHT};
+		auto ret = FindWindowA("Shell_TrayWnd",NULL);
+		if (!ret) return srcRect;
+		RECT desRect;
+		BOOL bOk = GetWindowRect(ret,&desRect);
+		IS_RETURN_ERROR(!bOk, RECT{}, "GetMaxSizeRect³ö´í");
+		desRect = ClipRectBoardEx(srcRect, 0, 0, 0, RECTHEIGHT(desRect));
+		return desRect;
 	}
 
 	RECT  ClientToScreenRc(HWND hWnd,RECT & rc)

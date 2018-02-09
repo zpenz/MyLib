@@ -78,7 +78,7 @@ namespace Conver
 
 #define RECTWIDTH(rc) rc.right - rc.left
 #define RECTHEIGHT(rc) rc.bottom - rc.top
-
+#define nullRect MyRect{0,0,0,0}
 	using namespace std;
 
 	string Format(char * format,...);
@@ -111,9 +111,15 @@ namespace Conver
 
 	bool RectInRect(RECT smallRect, RECT bigRect);
 
+	bool VaildRect(RECT targetRect); //矩形是否合理
+
 	RECT ClipRectBoard(RECT srcRect,LONG dx,LONG dy);
 
-	class MyRect
+	RECT ClipRectBoardEx(RECT srcRect, LONG lLeft, LONG lTop,LONG lRight,LONG lBottom);
+
+	RECT GetMaxSizeRect(); //获取最大化区域
+
+	class MyRect 
 	{
 	private:
 		RECT mRect;

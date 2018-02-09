@@ -3,7 +3,27 @@
 
 namespace LIB_WINDOW
 {
- void BaseWindow::MoveCenterWindow()
+	RECT BaseWindow::Rect() const
+	{
+		if (!mBaseHwnd) return Conver::nullRect;
+		RECT currentRect;
+		GetWindowRect(mBaseHwnd,&currentRect);
+		return currentRect;
+	}
+
+	bool BaseWindow::SetRect(RECT desRect)
+	{
+		if (!Conver::VaildRect(desRect)) return false;
+		if (!mBaseHwnd) return false;
+ 		mWindowRect = desRect;
+		mLeftTop = {desRect.left,desRect.top};
+		mWidth = RECTWIDTH(desRect);
+		mHeight = RECTHEIGHT(desRect);
+		UpdateSize();
+		return true;
+	}
+
+	void BaseWindow::MoveCenterWindow()
  {
 	 int tempWidth = SCREEN_WIDTH;
 	 int tempHeight = SCREEN_HEIGHT;
@@ -83,7 +103,7 @@ bool BaseWindow::ShowThisWindow()
 	return true;
 }
 
-void BaseWindow::MoveWindow() const
+void BaseWindow::UpdateSize() const
 {
 	if(mBaseHwnd)
 	::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, false);
@@ -133,13 +153,13 @@ void BaseWindow::SetInstance(HINSTANCE hInstance)
 void BaseWindow::SetWidth(int Width)
 {
 	mWidth = Width;
-	if (mBaseHwnd) MoveWindow();
+	if (mBaseHwnd) UpdateSize();
 }
 
 void BaseWindow::SetHeight(int Height)
 {
 	mHeight = Height;
-	if (mBaseHwnd) MoveWindow();
+	if (mBaseHwnd) UpdateSize();
 }
 
 void BaseWindow::SetWindowName(const string windowname)
@@ -199,7 +219,7 @@ void BaseWindow::ReduceWindowStyleEx(DWORD WindowStyleEx)
 void BaseWindow::SetLeftTopPos(POINT leftUpper)
 {
 	mLeftTop = leftUpper;  
-	if(mBaseHwnd) MoveWindow();
+	if(mBaseHwnd) UpdateSize();
 }
 
 void BaseWindow::SetWindowAlpha(int alpha)
@@ -475,13 +495,10 @@ void BaseWindow::Destory()
 	 if (ret == SHOULD_MINI_WINDOW)  ShowWindow(mBaseHwnd, SW_MINIMIZE);
 	 if (ret == SHOULD_MAX_WINDOW)
 	 {
-		 //ShowWindow(mBaseHwnd, SW_MAXIMIZE);
 		 POINT ltpt = { 0,0 };
-		 SetLeftTopPos(ltpt);
-		 SetWidth(1920);
-		 SetHeight(1080);
-
-		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd);
+		 RECT desRect = Conver::GetMaxSizeRect();
+		 SetRect(desRect);
+		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd,&desRect);
 		 ret = DrawManager.UseTempRenderTarget();
 
 	 }
