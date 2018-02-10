@@ -1,6 +1,6 @@
 #pragma once
 #include <list>
-#include <functional>
+#include <algorithm>
 #include "2Draw.h"
 
 namespace LIB_CONTROL
@@ -37,7 +37,9 @@ namespace LIB_CONTROL
 
 	class Control: public ImageAdapter
 	{
+
 	protected:
+
 		RECT mRect;
 
 		string mText;
@@ -54,6 +56,10 @@ namespace LIB_CONTROL
 
 		bool mActive;
 
+		UINT mControlTypeId;
+
+		void SetID(UINT typeId);
+
 	public:
 
 		virtual void Draw(Listener * pListener) = 0;
@@ -65,6 +71,8 @@ namespace LIB_CONTROL
 		virtual UINT LButtonUp(Listener * pListener) = 0;
 
 		virtual UINT HitTest(Listener * pListener,POINT pt) = 0;
+
+		UINT TypeId() const;
 
 		bool Active() const;
 
@@ -105,6 +113,10 @@ namespace LIB_CONTROL
 		bool IsMouseInteral() const;
 
 		void SetInternal(bool MouseInternal);
+
+		LONG width() const;
+
+		LONG height() const;
 
 		Control();
 
@@ -157,6 +169,8 @@ namespace LIB_CONTROL
 		UINT LButtonUp(POINT pt);
 
 		UINT HitTest(POINT pt);
+
+		list<Control *> & Obj();
 	};
 
 	///<Button>°´Å¥</Button>
@@ -192,6 +206,10 @@ namespace LIB_CONTROL
 
 	class CloseButton : public Button 
 	{
+	public:
+
+		CloseButton();
+
 		void Draw(Listener * pListener) override final;
 
 		void Hover(Listener * pListener, POINT pt) override final;
@@ -205,6 +223,10 @@ namespace LIB_CONTROL
 
 	class MiniButton : public Button
 	{
+	public:
+
+		MiniButton();
+
 		void Draw(Listener * pListener) override final;
 
 		UINT LButtonUp(Listener * pListener) override final;
@@ -213,6 +235,10 @@ namespace LIB_CONTROL
 
 	class MaxButton : public Button
 	{
+	public:
+
+		MaxButton();
+
 		void Draw(Listener * pListener) override final;
 
 		UINT LButtonUp(Listener * pListener) override final;

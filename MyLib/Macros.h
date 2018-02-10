@@ -39,6 +39,16 @@ namespace MyMessage
 #define SHOULD_DO_NOTHING 0
 }
 
+namespace LIB_CONTROL
+{
+#define CONTROL_TYPE_NONE     0
+#define CONTROL_TYPE_TITLEBAR 1
+#define CONTROL_TYPE_BUTTON   2
+#define CONTROL_TYPE_MAXI_BUTTON   3
+#define CONTROL_TYPE_MINI_BUTTON   4
+#define CONTROL_TYPE_CLOSE_BUTTON  5
+}
+
 void ErrorMessage(const char * _error);
 
 #define SINGLE_INSTANCE(classname) \

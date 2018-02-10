@@ -1,5 +1,5 @@
 #include "Control.h"
-#include <algorithm>
+
 
 namespace LIB_CONTROL
 {
@@ -84,6 +84,21 @@ namespace LIB_CONTROL
 		});
 		if(!pTempControl)  return HTCLIENT;
 		return pTempControl->HitTest(this, pt);
+	}
+
+	list<Control*>& Listener::Obj()
+	{
+		return mpControl;
+	}
+
+	void Control::SetID(UINT typeId)
+	{
+		mControlTypeId = typeId;
+	}
+
+	UINT Control::TypeId() const
+	{
+		return mControlTypeId;
 	}
 
 	bool Control::Active() const
@@ -186,6 +201,16 @@ namespace LIB_CONTROL
 		mMouseInternal = MouseInternal;
 	}
 
+	LONG Control::width() const
+	{
+		return mRect.right - mRect.left;
+	}
+
+	LONG Control::height() const
+	{
+		return mRect.bottom - mRect.top;
+	}
+
 	Control::Control():Control("")
 	{
 
@@ -249,6 +274,7 @@ namespace LIB_CONTROL
 
 	Button::Button():mBoardColor(mBackColor),mDrawBoard(false),BDownInternal(false)// ±ß¿òÊ¹ÓÃ±³¾°ÑÕÉ«
 	{
+		SetID(CONTROL_TYPE_BUTTON);
 		SetHoverForceColor(mForceColor);
 	}
 
@@ -318,12 +344,18 @@ namespace LIB_CONTROL
 
 	TitleBar::TitleBar(string text, IPIC * pPic)
 	{
+		SetID(CONTROL_TYPE_TITLEBAR);
 		mText = text, mPic = pPic;
 	}
 
 	TitleBar::~TitleBar()
 	{
 
+	}
+
+	CloseButton::CloseButton()
+	{
+		SetID(CONTROL_TYPE_CLOSE_BUTTON);
 	}
 
 	void CloseButton::Draw(Listener * pListener)
@@ -368,6 +400,11 @@ namespace LIB_CONTROL
 		return HTCLIENT;
 	}
 
+	MiniButton::MiniButton()
+	{
+		SetID(CONTROL_TYPE_MINI_BUTTON);
+	}
+
 	void MiniButton::Draw(Listener * pListener)
 	{
 		RECT drawRect = Conver::ClipRectBoard(mRect, 10, 24);
@@ -390,6 +427,11 @@ namespace LIB_CONTROL
 	{
 		if (BDownInternal) return SHOULD_MINI_WINDOW;
 		return SHOULD_DO_NOTHING;
+	}
+
+	MaxButton::MaxButton()
+	{
+		SetID(CONTROL_TYPE_MAXI_BUTTON);
 	}
 
 	void MaxButton::Draw(Listener * pListener)
@@ -462,5 +504,6 @@ namespace LIB_CONTROL
 		});
 		return 0;
 	}
+
 
 }

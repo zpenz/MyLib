@@ -422,6 +422,7 @@ void BaseWindow::Destory()
 	 pMin->SetForceColor(RGB(255, 255, 255));
 	 pMin->SetHoverBackColor(RGB(216, 120, 17));
 	 ControlListener.attach(pMin);
+
  }
 
  void BaseWindow::OnDraw()
@@ -498,10 +499,32 @@ void BaseWindow::Destory()
 		 POINT ltpt = { 0,0 };
 		 RECT desRect = Conver::GetMaxSizeRect();
 		 SetRect(desRect);
-		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd,&desRect);
-		 ret = DrawManager.UseTempRenderTarget();
 
+
+		 auto ControlLists = ControlListener.Obj();
+		 for_each(ControlLists.begin(), ControlLists.end(), [&](Control * itCol) {
+			 if (itCol->TypeId() == CONTROL_TYPE_TITLEBAR)
+			 {
+				 itCol->AdjustRect(Conver::MyRect(0, 0, RECTWIDTH(desRect) - 3 * 35, RECTHEIGHT(itCol->getRect())));
+			 }
+			 if (itCol->TypeId() == CONTROL_TYPE_MINI_BUTTON)
+			 {
+				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 3 * 35,0 , RECTWIDTH(desRect) - 2 * 35, itCol->height()));
+			 }
+			 if (itCol->TypeId() == CONTROL_TYPE_MAXI_BUTTON)
+			 {
+				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 2 * 35,0, RECTWIDTH(desRect) - 1 * 35, itCol->height()));
+			 }
+			 if (itCol->TypeId() == CONTROL_TYPE_CLOSE_BUTTON)
+			 {
+				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 1 * 35, 0,  RECTWIDTH(desRect), itCol->height()));
+			 }
+		 });
+
+		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd, &desRect);
+		 ret = DrawManager.UseTempRenderTarget();
 	 }
+
  }
 
  }
