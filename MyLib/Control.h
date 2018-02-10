@@ -245,6 +245,18 @@ namespace LIB_CONTROL
 
 	};
 
+	class RestoreButton : public Button
+	{
+	public:
+
+		RestoreButton();
+
+		void Draw(Listener * pListener) override final;
+
+		UINT LButtonUp(Listener * pListener) override final;
+
+	};
+
 	///<TitleBar>±ÍÃ‚¿∏</TitleBar>
 	class TitleBar : public Control
 	{

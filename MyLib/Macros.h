@@ -15,7 +15,7 @@
 #define SCREEN_HEIGHT GetDeviceCaps(GetDC(NULL),VERTRES)
 #define MAX_KEYS 256
 #define SAFE_RELEASE(p) if(p){p->Release(); p = NULL;}
-#define SAFE_DELETE(p)  if(p){delete p; p = NULL;} 
+#define SAFE_DELETE(p)  if(p!=nullptr){delete p; p = NULL;} 
 
 namespace Macros2D
 {
@@ -33,20 +33,22 @@ namespace Macros2D
 
 namespace MyMessage
 {
-#define SHOULD_CLOSE_WINDOW 678
-#define SHOULD_MINI_WINDOW 679
-#define SHOULD_MAX_WINDOW 680
-#define SHOULD_DO_NOTHING 0
+#define SHOULD_DO_NOTHING	   0
+#define SHOULD_CLOSE_WINDOW    678
+#define SHOULD_MINI_WINDOW     679
+#define SHOULD_MAX_WINDOW      680
+#define SHOULD_RESTORE_WINDOW  681
 }
 
 namespace LIB_CONTROL
 {
-#define CONTROL_TYPE_NONE     0
-#define CONTROL_TYPE_TITLEBAR 1
-#define CONTROL_TYPE_BUTTON   2
-#define CONTROL_TYPE_MAXI_BUTTON   3
-#define CONTROL_TYPE_MINI_BUTTON   4
-#define CONTROL_TYPE_CLOSE_BUTTON  5
+#define CONTROL_TYPE_NONE			0
+#define CONTROL_TYPE_TITLEBAR		1
+#define CONTROL_TYPE_BUTTON			2
+#define CONTROL_TYPE_MAXI_BUTTON    3
+#define CONTROL_TYPE_MINI_BUTTON    4
+#define CONTROL_TYPE_CLOSE_BUTTON   5
+#define CONTROL_TYPE_RESTORE_BUTTON 6
 }
 
 void ErrorMessage(const char * _error);
@@ -145,6 +147,21 @@ namespace Conver
 		operator RECT &();
 
 		operator D2D1_RECT_F&();
+	};
+
+	class Point 
+	{
+	public:
+		int x, y;
+
+		Point operator= (POINT & pt);
+
+		Point(int _x,int _y);
+
+		Point(POINT pt) ;
+
+		Point();
+	
 	};
 }
 

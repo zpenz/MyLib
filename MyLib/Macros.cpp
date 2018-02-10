@@ -179,5 +179,25 @@ namespace Conver
 	{
 		return RectToD2DRectF(*this);
 	}
+
+	Point Point::operator=(POINT & pt)
+	{
+		Point tempPoint = {pt.x,pt.y};
+		return tempPoint;
+	}
+
+	Point::Point(int _x, int _y):x(_x),y(_y)
+	{
+
+	}
+
+	Point::Point(POINT pt):x(pt.x),y(pt.y)
+	{
+	}
+
+	Point::Point() : Point(0,0)
+	{
+
+	}
 }
 

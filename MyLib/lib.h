@@ -27,7 +27,7 @@ protected:
 
 	HINSTANCE mInstance;
 
-	POINT mLeftTop;
+	Conver::Point mLeftTop;
 
 	HDC  mHdc;
 
@@ -38,7 +38,7 @@ protected:
 	Listener ControlListener;
 
 private:
-
+	 
 	RECT Rect() const;
 
 	bool SetRect(RECT desRect);

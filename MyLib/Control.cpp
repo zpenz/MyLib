@@ -26,8 +26,10 @@ namespace LIB_CONTROL
 			return false;
 		});
 		if(it == mpControl.end()) return false;
+		auto tempIt = *it;
 		mpControl.erase(it);
-		return false;
+		SAFE_DELETE(tempIt);
+		return true;
 	}
 
 	void Listener::Draw()
@@ -505,5 +507,37 @@ namespace LIB_CONTROL
 		return 0;
 	}
 
+
+	RestoreButton::RestoreButton()
+	{
+		SetID(CONTROL_TYPE_RESTORE_BUTTON);
+	}
+
+	void RestoreButton::Draw(Listener * pListener) 
+	{
+
+		RECT drawRect = Conver::ClipRectBoard(mRect, 13, 13);
+		auto centerPt = Conver::CenterPoint(drawRect);
+		RECT rightTopRect = { centerPt.x , centerPt.y - 9, centerPt.x + 9,centerPt.y };
+		if (!mMouseInternal)
+		{
+			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
+			DrawManager.DrawRectangle(rightTopRect, COLOREX(mForceColor), false);
+			DrawManager.DrawRectangle(drawRect, COLOREX(mForceColor), false);
+			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
+		}
+		else
+		{
+			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
+			DrawManager.DrawRectangle(rightTopRect, COLOREX(mHoverForceColor), false);
+			DrawManager.DrawRectangle(drawRect, COLOREX(mHoverForceColor), false);
+			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
+		}
+	}
+
+	UINT RestoreButton::LButtonUp(Listener * pListener)
+	{
+		return SHOULD_RESTORE_WINDOW;
+	}
 
 }

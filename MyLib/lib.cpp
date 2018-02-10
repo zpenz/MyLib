@@ -117,7 +117,8 @@ void BaseWindow::UpdateCache(bool topMost)
 
 void BaseWindow::UpdatePosition(WPARAM wParam, LPARAM lParam)
 {
-	mLeftTop = { LOWORD(lParam),HIWORD(lParam) };
+	mLeftTop.x = (int)(short)LOWORD(lParam);
+	mLeftTop.y = (int)(short)HIWORD(lParam);
 }
 
 bool BaseWindow::Show()
@@ -218,7 +219,7 @@ void BaseWindow::ReduceWindowStyleEx(DWORD WindowStyleEx)
 
 void BaseWindow::SetLeftTopPos(POINT leftUpper)
 {
-	mLeftTop = leftUpper;  
+	mLeftTop = { leftUpper.x,leftUpper.y};
 	if(mBaseHwnd) UpdateSize();
 }
 
@@ -490,16 +491,17 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnLButtonUp(WPARAM wParam, LPARAM lParam)
  {
+	 static RECT RestoreRect; //±£´æµ±Ç°×´Ì¬
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
 	 auto ret = ControlListener.LButtonUp(pt);
 	 if (ret == SHOULD_CLOSE_WINDOW) SendMessage(mBaseHwnd,WM_CLOSE,0,0);
 	 if (ret == SHOULD_MINI_WINDOW)  ShowWindow(mBaseHwnd, SW_MINIMIZE);
 	 if (ret == SHOULD_MAX_WINDOW)
 	 {
+		 RestoreRect = {mLeftTop.x,mLeftTop.y, mLeftTop.x + GetWidth(),mLeftTop.y + GetHeight()};
 		 POINT ltpt = { 0,0 };
 		 RECT desRect = Conver::GetMaxSizeRect();
 		 SetRect(desRect);
-
 
 		 auto ControlLists = ControlListener.Obj();
 		 for_each(ControlLists.begin(), ControlLists.end(), [&](Control * itCol) {
@@ -514,10 +516,58 @@ void BaseWindow::Destory()
 			 if (itCol->TypeId() == CONTROL_TYPE_MAXI_BUTTON)
 			 {
 				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 2 * 35,0, RECTWIDTH(desRect) - 1 * 35, itCol->height()));
+				 auto tempRect = itCol->getRect();
+				 RestoreButton * pBt = new RestoreButton();
+				 pBt->SetBackColor(RGB(65, 65, 68));
+				 pBt->SetForceColor(RGB(255, 255, 255));
+				 pBt->SetHoverBackColor(RGB(216, 120, 17));
+				 pBt->AdjustRect(tempRect);
+				 ControlListener.detach(itCol);
+				 ControlListener.attach(pBt);
+
+
 			 }
 			 if (itCol->TypeId() == CONTROL_TYPE_CLOSE_BUTTON)
 			 {
 				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 1 * 35, 0,  RECTWIDTH(desRect), itCol->height()));
+			 }
+		 });
+
+		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd, &desRect);
+		 ret = DrawManager.UseTempRenderTarget();
+	 }
+
+	 if (ret == SHOULD_RESTORE_WINDOW)
+	 {
+		 POINT ltpt = { 0,0 };
+		 RECT desRect = RestoreRect;
+		 SetRect(desRect);
+
+		 auto ControlLists = ControlListener.Obj();
+		 for_each(ControlLists.begin(), ControlLists.end(), [&](Control * itCol) {
+			 if (itCol->TypeId() == CONTROL_TYPE_TITLEBAR)
+			 {
+				 itCol->AdjustRect(Conver::MyRect(0, 0, RECTWIDTH(desRect) - 3 * 35, RECTHEIGHT(itCol->getRect())));
+			 }
+			 if (itCol->TypeId() == CONTROL_TYPE_MINI_BUTTON)
+			 {
+				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 3 * 35, 0, RECTWIDTH(desRect) - 2 * 35, itCol->height()));
+			 }
+			 if (itCol->TypeId() == CONTROL_TYPE_RESTORE_BUTTON)
+			 {
+				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 2 * 35, 0, RECTWIDTH(desRect) - 1 * 35, itCol->height()));
+				 auto tempRect = itCol->getRect();
+				 MaxButton * pBt = new MaxButton();
+				 pBt->SetBackColor(RGB(65, 65, 68));
+				 pBt->SetForceColor(RGB(255, 255, 255));
+				 pBt->SetHoverBackColor(RGB(216, 120, 17));
+				 pBt->AdjustRect(tempRect);
+				 ControlListener.detach(itCol);
+				 ControlListener.attach(pBt);
+			 }
+			 if (itCol->TypeId() == CONTROL_TYPE_CLOSE_BUTTON)
+			 {
+				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 1 * 35, 0, RECTWIDTH(desRect), itCol->height()));
 			 }
 		 });
 
