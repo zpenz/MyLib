@@ -260,7 +260,6 @@ namespace LIB_CONTROL
 	///<TitleBar>±ÍÃ‚¿∏</TitleBar>
 	class TitleBar : public Control
 	{
-		IPIC * mPic;
 		 
 	public:
 		void Draw(Listener * pListener) override;
@@ -273,7 +272,7 @@ namespace LIB_CONTROL
 
 		UINT HitTest(Listener * pListener,POINT pt) override;
 
-		TitleBar(string text,IPIC * pPic);
+		TitleBar(string text,wstring filename);
 
 		~TitleBar();
 	};

@@ -316,11 +316,13 @@ namespace LIB_CONTROL
 		if (!mMouseInternal)
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
+			DrawManager.DrawPicture(pImage, Conver::MyRect(0, 0, RECTHEIGHT(mRect), RECTHEIGHT(mRect)));
 			IS_ERROR_EXIT(!ret, "Draw current Rect failed!");
 		}
 		else
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
+			DrawManager.DrawPicture(pImage, Conver::MyRect(0, 0, RECTHEIGHT(mRect), RECTHEIGHT(mRect)));
 			IS_ERROR_EXIT(!ret, "Draw hover failed!");
 		}
 	}
@@ -344,10 +346,11 @@ namespace LIB_CONTROL
 		return HTCAPTION;
 	}
 
-	TitleBar::TitleBar(string text, IPIC * pPic)
+	TitleBar::TitleBar(string text, wstring filename)
 	{
 		SetID(CONTROL_TYPE_TITLEBAR);
-		mText = text, mPic = pPic;
+		mText = text;
+		LoadFromFile(filename);
 	}
 
 	TitleBar::~TitleBar()

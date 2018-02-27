@@ -394,7 +394,7 @@ void BaseWindow::Destory()
 	 //DeleteObject(Rgn);
 
 	 //TitleBar
-	 TitleBar * pBar = new TitleBar("pSong's Window",NULL);
+	 TitleBar * pBar = new TitleBar("pSong's Window",L"1.png");
 	 pBar->AdjustRect(Conver::MyRect(0,0,mWidth-3*35,35));
 	 pBar->SetBackColor(RGB(65,65,68));
 	 pBar->SetHoverBackColor(RGB(116, 116, 119));
