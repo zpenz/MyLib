@@ -2,6 +2,7 @@
 #include <list>
 #include <algorithm>
 #include "2Draw.h"
+#include "Sprite.h"
 
 namespace LIB_CONTROL
 {
@@ -260,7 +261,8 @@ namespace LIB_CONTROL
 	///<TitleBar>±ÍÃ‚¿∏</TitleBar>
 	class TitleBar : public Control
 	{
-		 
+		Sprite::Sprite mIconSprite;
+
 	public:
 		void Draw(Listener * pListener) override;
 

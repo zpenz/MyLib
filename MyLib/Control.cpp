@@ -313,6 +313,7 @@ namespace LIB_CONTROL
 
 	void TitleBar::Draw(Listener * pListener)
 	{
+		mIconSprite.Render();
 		if (!mMouseInternal)
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
@@ -351,6 +352,9 @@ namespace LIB_CONTROL
 		SetID(CONTROL_TYPE_TITLEBAR);
 		mText = text;
 		LoadFromFile(filename);
+
+		mIconSprite.Load(L"effect/0.png", L"effect/1.png", L"effect/2.png", L"effect/3.png", L"effect/4.png", L"effect/5.png");
+		mIconSprite.ChangeRect(Conver::MyRect(0,0,35,35));
 	}
 
 	TitleBar::~TitleBar()
@@ -366,6 +370,7 @@ namespace LIB_CONTROL
 	void CloseButton::Draw(Listener * pListener)
 	{
 		RECT drawRect = Conver::ClipRectBoard(mRect, 10, 10);
+
 		if (!mMouseInternal)
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);

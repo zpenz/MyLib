@@ -60,6 +60,9 @@
     <ClInclude Include="2Draw.h">
       <Filter>头文件\Draw</Filter>
     </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>头文件\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -87,6 +90,9 @@
       <Filter>头文件\Macro</Filter>
     </ClCompile>
     <ClCompile Include="2Draw.cpp">
+      <Filter>头文件\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
       <Filter>头文件\Draw</Filter>
     </ClCompile>
   </ItemGroup>
