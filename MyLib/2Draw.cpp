@@ -166,6 +166,11 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 	return nullptr;
 }
 
+ID2D1RenderTarget * My2DDraw::getRenderTarget()
+{
+	return mRenderTarget; 
+}
+
 bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle)
 {
 	IS_RETURN_ERROR(mRenderTarget==nullptr,false,"RenderTargetÎª¿Õ");
@@ -306,6 +311,33 @@ bool My2DDraw::DrawPicture(std::wstring strFileName, RECT decRect)
 {
 	auto ret = DrawPicture(CreateBitmap(const_cast<wchar_t *>(strFileName.c_str())), decRect);
 	return ret;
+}
+
+ID2D1Layer * My2DDraw::CreateLayer(ID2D1RenderTarget * thisRenderTarget)
+{
+	if (!thisRenderTarget) return nullptr;
+	ID2D1Layer * mTempLayer = nullptr;
+	auto hr = thisRenderTarget->CreateLayer(&mTempLayer);
+	IS_RETURN_ERROR(FAILED(hr), nullptr, "CreateLayerÊ§°Ü!");
+	return mTempLayer;
+}
+
+void My2DDraw::PushLayer(ID2D1Layer * layer)
+{
+	mRenderTarget->PushLayer(D2D1::LayerParameters(
+		D2D1::InfiniteRect(),
+		NULL,
+		D2D1_ANTIALIAS_MODE_PER_PRIMITIVE,
+		D2D1::IdentityMatrix(),
+		1.0,
+		NULL,
+		D2D1_LAYER_OPTIONS_NONE),
+		layer);
+}
+
+void My2DDraw::PopLayer(ID2D1Layer * layer)
+{
+	mRenderTarget->PopLayer();
 }
 
 bool My2DDraw::Clear(MyColor color)

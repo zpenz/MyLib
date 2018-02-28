@@ -16,7 +16,7 @@ namespace Sprite {
 
 	unsigned int Sprite::Inc()
 	{
-		if (mCurrentFrame < mTotalFrames) mCurrentFrame++;
+		if (mCurrentFrame < mTotalFrames-1) mCurrentFrame++;
 		else
 		{
 			if (!mIsLoop) mIsDead = true;
@@ -64,42 +64,27 @@ namespace Sprite {
 		return true;
 	}
 
-	bool Sprite::Load(wchar_t * filename, ...)
+	bool Sprite::Load(unsigned int size, ...)
 	{
 		va_list va;
-		va_start(va,filename);
-		auto arg = va_arg(va, wchar_t *);
-		while (arg)
+		va_start(va, size);
+		
+		for (auto it = 0; it < size; it++)
 		{
-			LoadAFrame(arg);
-			arg = va_arg(va, wchar_t *);
+			wchar_t * filename = va_arg(va,wchar_t*);
+			LoadAFrame(filename);
 		}
-		 
+
 		va_end(va);
 		return false;
 	}
 
 	bool Sprite::Render()
 	{
-		if (mAlreadyRun) return false;  //¶à´ÎÆô¶¯...
+		DrawManager.DrawPicture(getCurrentFrame(), mRect);
+		//Sleep(static_cast<int>(1.0 / this->getSpeed() * 1000));
+		this->Inc();
 
-		auto Run = [](LPVOID lpParameter)->DWORD
-		{
-			Sprite * sp = (Sprite *)lpParameter;
-			do 
-			{
-				DrawManager.DrawPicture(sp->getCurrentFrame(),sp->mRect);
-				Sleep(static_cast<int>(1.0/sp->getSpeed()*1000));
-				sp->Inc();
-			} while (!sp->Dead());
-			return 0;
-		};
-
-		DWORD hThreadId = 0;
-		mAlreadyRun = true;
-		auto handle = CreateThread(NULL, 0, Run, this, 0, &hThreadId);
-		if (!handle) return false;
-		CloseHandle(handle);
 		return true;
 	}
 

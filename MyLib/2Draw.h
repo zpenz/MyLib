@@ -59,6 +59,12 @@ public:
 
 	bool DrawPicture(std::wstring strFileName, RECT decRect);
 
+	ID2D1Layer * CreateLayer(ID2D1RenderTarget * thisRenderTarget);
+
+	void PushLayer(ID2D1Layer * layer);
+
+	void PopLayer(ID2D1Layer * layer);
+
 	bool ReSize(UINT uWidth, UINT uHeight); //resize 
 
 	bool Clear(MyColor color = MyColor::Black);
@@ -71,7 +77,7 @@ public:
 
 	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth = 0, UINT dstHeight = 0);
 
-	ID2D1RenderTarget * getRenderTarget() { return mRenderTarget; }
+	ID2D1RenderTarget * getRenderTarget();
 
 	~My2DDraw();
 };

@@ -45,7 +45,7 @@ namespace Sprite
 
 		bool LoadAFrame(wstring filename);
 
-		bool Load(wchar_t * filename,...);
+		bool Load(unsigned int size,...);
 
 		bool Render(); //only one time run...
 

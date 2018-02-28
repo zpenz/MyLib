@@ -313,19 +313,18 @@ namespace LIB_CONTROL
 
 	void TitleBar::Draw(Listener * pListener)
 	{
-		mIconSprite.Render();
+		mIconSprite.ChangeRect(Conver::MyRect(0, 0, RECTHEIGHT(mRect), RECTHEIGHT(mRect)));
 		if (!mMouseInternal)
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
-			DrawManager.DrawPicture(pImage, Conver::MyRect(0, 0, RECTHEIGHT(mRect), RECTHEIGHT(mRect)));
 			IS_ERROR_EXIT(!ret, "Draw current Rect failed!");
 		}
 		else
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
-			DrawManager.DrawPicture(pImage, Conver::MyRect(0, 0, RECTHEIGHT(mRect), RECTHEIGHT(mRect)));
 			IS_ERROR_EXIT(!ret, "Draw hover failed!");
 		}
+		mIconSprite.Render();
 	}
 
 	void TitleBar::Hover(Listener * pListener,POINT pt)
@@ -353,8 +352,9 @@ namespace LIB_CONTROL
 		mText = text;
 		LoadFromFile(filename);
 
-		mIconSprite.Load(L"effect/0.png", L"effect/1.png", L"effect/2.png", L"effect/3.png", L"effect/4.png", L"effect/5.png");
-		mIconSprite.ChangeRect(Conver::MyRect(0,0,35,35));
+		mIconSprite.Load(8,L"effect/0.png", L"effect/1.png", L"effect/2.png", L"effect/3.png", L"effect/4.png", L"effect/5.png",L"effect/6.png"
+		,L"effect/7.png");
+		mIconSprite.SetSpeed(5);
 	}
 
 	TitleBar::~TitleBar()
