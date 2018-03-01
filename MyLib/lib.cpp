@@ -525,7 +525,6 @@ void BaseWindow::Destory()
 				 ControlListener.detach(itCol);
 				 ControlListener.attach(pBt);
 
-
 			 }
 			 if (itCol->TypeId() == CONTROL_TYPE_CLOSE_BUTTON)
 			 {

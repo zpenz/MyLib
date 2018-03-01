@@ -25,11 +25,13 @@ namespace Sprite
 		bool mAlreadyRun;
 
 	public:
-		bool IsAlreayRen() const;
+		bool IsAlreayRun() const;
 
-		IPIC * getCurrentFrame();
+		IPIC * getCurrentFrame() const;
 
-		unsigned int Inc();
+		bool Inc();  
+
+		void IncreaseFrame(unsigned int skipFrame);
 
 		float getSpeed() const;
 

@@ -4,25 +4,52 @@
 
 namespace Sprite {
 
-	bool Sprite::IsAlreayRen() const
+	bool Sprite::IsAlreayRun() const
 	{
 		return mAlreadyRun;
 	}
 
-	IPIC * Sprite::getCurrentFrame()
+	IPIC * Sprite::getCurrentFrame() const
 	{
 		return mFrameList[mCurrentFrame];
 	}
 
-	unsigned int Sprite::Inc()
+	bool Sprite::Inc()
 	{
-		if (mCurrentFrame < mTotalFrames-1) mCurrentFrame++;
+		auto changeFrame = [](LPVOID  lpParam)->DWORD
+		{
+			auto pSprite = (Sprite *)lpParam;
+			while (!pSprite->Dead())
+			{
+				Sleep(static_cast<int>(1.0 / pSprite->getSpeed() * 1000));
+				pSprite->IncreaseFrame(1);
+			}
+
+			return 0;
+		};
+
+		if (IsAlreayRun()) return false;
+
+		DWORD threadId = 0;
+		auto handle = CreateThread(NULL, 0, changeFrame, this, 0, &threadId);
+		if (!handle) return false;
+		CloseHandle(handle);
+
+		mAlreadyRun = true;
+		return true;
+	}
+
+	void Sprite::IncreaseFrame(unsigned int skipFrame)
+	{
+		if(skipFrame+mCurrentFrame<mTotalFrames)
+		{
+			mCurrentFrame += skipFrame;
+		}
 		else
 		{
-			if (!mIsLoop) mIsDead = true;
-			mCurrentFrame = 0; 
+			if (!mIsLoop) SetState(true);
+			else mCurrentFrame = 0;
 		}
-		return mCurrentFrame;
 	}
 
 	float Sprite::getSpeed() const
@@ -69,7 +96,7 @@ namespace Sprite {
 		va_list va;
 		va_start(va, size);
 		
-		for (auto it = 0; it < size; it++)
+		for (unsigned int it = 0; it < size; it++)
 		{
 			wchar_t * filename = va_arg(va,wchar_t*);
 			LoadAFrame(filename);
@@ -81,9 +108,10 @@ namespace Sprite {
 
 	bool Sprite::Render()
 	{
+		if (mTotalFrames == 0) return false;
 		DrawManager.DrawPicture(getCurrentFrame(), mRect);
-		//Sleep(static_cast<int>(1.0 / this->getSpeed() * 1000));
-		this->Inc();
+
+		Inc();  
 
 		return true;
 	}
