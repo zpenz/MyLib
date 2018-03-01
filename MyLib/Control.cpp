@@ -313,7 +313,8 @@ namespace LIB_CONTROL
 
 	void TitleBar::Draw(Listener * pListener)
 	{
-		mIconSprite.ChangeRect(Conver::MyRect(0, 0, RECTHEIGHT(mRect), RECTHEIGHT(mRect)));
+		//mIconSprite.ChangeRect(Conver::MyRect(0, 0, RECTHEIGHT(mRect), RECTHEIGHT(mRect)));
+		mIconSprite.ChangeRect(Conver::MyRect(100, 100, 800, 800));
 		if (!mMouseInternal)
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
@@ -354,7 +355,7 @@ namespace LIB_CONTROL
 
 		/*	mIconSprite.Load(8,L"effect/0.png", L"effect/1.png", L"effect/2.png", L"effect/3.png", L"effect/4.png", L"effect/5.png",L"effect/6.png"
 			,L"effect/7.png");*/
-		mIconSprite.LoadEx(L"effect\\*.png");
+		mIconSprite.LoadEx(L"effect/hit/*.png");
 		mIconSprite.SetSpeed(3);
 	}
 

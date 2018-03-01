@@ -83,7 +83,7 @@ namespace Conver
 		if (pos2 < pos1) pos1 = pos2;
 		if (pos1 == string::npos && pos2 == string::npos) pos1 = 0;
 
-		wstring tempString = path.substr(0,path.length()-pos1+1);
+		wstring tempString = path.substr(0,pos1+1);
 		return tempString;
 	}
 
