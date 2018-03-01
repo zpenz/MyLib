@@ -8,6 +8,8 @@ namespace Sprite
 
 	class Sprite
 	{
+	protected:
+
 		unsigned int mCurrentFrame;
 
 		unsigned int mTotalFrames;
@@ -24,12 +26,12 @@ namespace Sprite
 
 		bool mAlreadyRun;
 
+		bool Inc();
+
 	public:
 		bool IsAlreayRun() const;
 
 		IPIC * getCurrentFrame() const;
-
-		bool Inc();  
 
 		void IncreaseFrame(unsigned int skipFrame);
 
@@ -49,7 +51,7 @@ namespace Sprite
 
 		bool Load(unsigned int size,...);
 
-		bool Render(); //only one time run...
+		bool Render(); 
 
 		void ChangeRect(RECT rc);
 
