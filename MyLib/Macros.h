@@ -163,6 +163,8 @@ namespace Conver
 		Point();
 	
 	};
+
+	wstring GetDirName(wstring path);
 }
 
 typedef LRESULT(_stdcall *pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

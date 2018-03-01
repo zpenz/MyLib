@@ -428,7 +428,7 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnDraw()
  {
-	 DrawManager.Clear(MyColor::Gray);
+	 DrawManager.Clear(MyColor::Black);
 
 	 ControlListener.Draw();
 

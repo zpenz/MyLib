@@ -1,12 +1,25 @@
 #include "stdafx.h"
 #include "Sprite.h"
 #include <algorithm>
+#include <io.h>
+#include <list>
+#include <memory>
 
 namespace Sprite {
 
 	bool Sprite::IsAlreayRun() const
 	{
 		return mAlreadyRun;
+	}
+
+	void Sprite::Stop()
+	{
+		mPause = true;
+	}
+
+	void Sprite::Reseume()
+	{
+		mPause = false;
 	}
 
 	IPIC * Sprite::getCurrentFrame() const
@@ -41,8 +54,10 @@ namespace Sprite {
 
 	void Sprite::IncreaseFrame(unsigned int skipFrame)
 	{
+		if (mPause) return;
 		if(skipFrame+mCurrentFrame<mTotalFrames)
 		{
+
 			mCurrentFrame += skipFrame;
 		}
 		else
@@ -106,6 +121,34 @@ namespace Sprite {
 		return false;
 	}
 
+	bool Sprite::LoadEx(wstring dirPath)
+	{
+		wstring dir = Conver::GetDirName(dirPath);
+
+		struct _wfinddata_t fileInfo;
+		auto handle = _wfindfirst(dirPath.c_str(), &fileInfo);
+
+		shared_ptr<void> pEixt(NULL, [&handle](void *) {
+			if (handle) _findclose(handle);
+		});
+
+		IS_RETURN_ERROR(handle==-1,false,"遍历文件错误! 可能文件夹为空");
+		list<wstring> fileList;
+		fileList.emplace_back(fileInfo.name);
+		while (!_wfindnext(handle, &fileInfo)) // 成功返回0 否则-1
+		{
+			fileList.emplace_back(fileInfo.name);
+		}
+
+		//排序
+		fileList.sort();
+		for (auto element : fileList)
+		{
+			LoadAFrame(dir + element);
+		}
+		return false;
+	}
+
 	bool Sprite::Render()
 	{
 		if (mTotalFrames == 0) return false;
@@ -126,7 +169,7 @@ namespace Sprite {
 		return mRect;
 	}
 
-	Sprite::Sprite():mCurrentFrame(0),mTotalFrames(0),mIsLoop(true),mPlaySpeed(1.0),mIsDead(false),mAlreadyRun(false)
+	Sprite::Sprite():mCurrentFrame(0),mTotalFrames(0),mIsLoop(true),mPlaySpeed(1.0),mIsDead(false),mAlreadyRun(false),mPause(false)
 	{
 	}
 

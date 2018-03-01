@@ -352,8 +352,9 @@ namespace LIB_CONTROL
 		mText = text;
 		LoadFromFile(filename);
 
-		mIconSprite.Load(8,L"effect/0.png", L"effect/1.png", L"effect/2.png", L"effect/3.png", L"effect/4.png", L"effect/5.png",L"effect/6.png"
-		,L"effect/7.png");
+		/*	mIconSprite.Load(8,L"effect/0.png", L"effect/1.png", L"effect/2.png", L"effect/3.png", L"effect/4.png", L"effect/5.png",L"effect/6.png"
+			,L"effect/7.png");*/
+		mIconSprite.LoadEx(L"effect\\*.png");
 		mIconSprite.SetSpeed(3);
 	}
 

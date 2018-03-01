@@ -75,6 +75,18 @@ namespace Conver
 		return desRect;
 	}
 
+	wstring GetDirName(wstring path)
+	{
+		unsigned int pos1 =0 ,pos2 = 0;
+		pos1 = path.rfind(L'/');
+		pos2 = path.rfind(L'\\');
+		if (pos2 < pos1) pos1 = pos2;
+		if (pos1 == string::npos && pos2 == string::npos) pos1 = 0;
+
+		wstring tempString = path.substr(0,path.length()-pos1+1);
+		return tempString;
+	}
+
 	RECT  ClientToScreenRc(HWND hWnd,RECT & rc)
 	{
 		POINT lt = { rc.left,rc.top }, rt = {rc.right,rc.bottom};

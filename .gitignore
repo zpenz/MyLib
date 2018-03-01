@@ -6,3 +6,4 @@
 /lib.VC.VC.opendb
 *.jpg
 *.png
+/test/Debug/test.tlog/unsuccessfulbuild

@@ -22,6 +22,8 @@ namespace Sprite
 
 		bool mIsDead;
 
+		bool mPause; 
+
 		RECT mRect;
 
 		bool mAlreadyRun;
@@ -43,6 +45,10 @@ namespace Sprite
 
 		bool Dead();
 
+		void Stop();
+
+		void Reseume();
+
 		void SetState(bool state);
 
 		void SetSpeed(float newSpeed);
@@ -50,6 +56,8 @@ namespace Sprite
 		bool LoadAFrame(wstring filename);
 
 		bool Load(unsigned int size,...);
+
+		bool LoadEx(wstring dirPath); //load dir
 
 		bool Render(); 
 
