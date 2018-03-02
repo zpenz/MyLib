@@ -45,7 +45,7 @@ namespace Sprite
 
 		bool Dead();
 
-		void Stop();
+		void Pause();
 
 		void Reseume();
 

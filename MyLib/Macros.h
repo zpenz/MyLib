@@ -129,6 +129,8 @@ namespace Conver
 
 	RECT ClipRectBoardEx(RECT srcRect, LONG lLeft, LONG lTop,LONG lRight,LONG lBottom);
 
+	RECT RectOffSet(RECT srcRect, LONG lLeft, LONG lTop, LONG lRight, LONG lBottom); // default + 
+
 	RECT GetMaxSizeRect(); //获取最大化区域
 
 	class MyRect 
@@ -141,6 +143,8 @@ namespace Conver
 		MyRect(INT left, INT top, INT right, INT bottom);
 
 		MyRect(RECT desRect);
+
+		MyRect(POINT pointLeftTop, POINT pointRightBottom);
 
 		RECT Rect() const;
 

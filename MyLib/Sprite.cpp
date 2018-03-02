@@ -12,7 +12,7 @@ namespace Sprite {
 		return mAlreadyRun;
 	}
 
-	void Sprite::Stop()
+	void Sprite::Pause()
 	{
 		mPause = true;
 	}

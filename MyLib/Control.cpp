@@ -98,6 +98,17 @@ namespace LIB_CONTROL
 		mControlTypeId = typeId;
 	}
 
+	RECT & Control::Sizing(POINT pointLeftTop, POINT pointRightBottom)
+	{
+		AdjustRect(Conver::MyRect(pointLeftTop,pointRightBottom));
+		return mRect;
+	}
+
+	bool Control::Stretch()
+	{
+		return mCanStretch;
+	}
+
 	UINT Control::TypeId() const
 	{
 		return mControlTypeId;
@@ -220,7 +231,7 @@ namespace LIB_CONTROL
 	
 	Control::Control(string text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
-		mAlignType(ALIGN_CENTER_V|ALIGN_CENTER_H)
+		mAlignType(ALIGN_CENTER_V|ALIGN_CENTER_H),mCanStretch(false)
 	{
 
 	}

@@ -75,7 +75,7 @@ public:
 
 	IDWriteTextLayout * CreateTextLayout(std::string text,float fSize);
 
-	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth = 0, UINT dstHeight = 0);
+	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth = 0, UINT dstHeight = 0,RECT * pClipRect = nullptr); //Ä¬ÈÏ²»²Ã¼ô
 
 	ID2D1RenderTarget * getRenderTarget();
 

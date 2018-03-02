@@ -63,6 +63,13 @@ namespace Conver
 		return tempRC;
 	}
 
+	RECT RectOffSet(RECT srcRect, LONG lLeft, LONG lTop, LONG lRight, LONG lBottom)
+	{
+		srcRect = { srcRect.left + lLeft, srcRect.top + lTop,
+			srcRect.right + lRight, srcRect.bottom + lBottom };
+		return srcRect;
+	}
+
 	RECT GetMaxSizeRect()
 	{
 		RECT srcRect = {0,0,SCREEN_WIDTH,SCREEN_HEIGHT};
@@ -175,6 +182,11 @@ namespace Conver
 
 	MyRect::MyRect(RECT desRect):mRect(desRect)
 	{
+	}
+
+	MyRect::MyRect(POINT pointLeftTop, POINT pointRightBottom): MyRect(pointLeftTop.x,pointLeftTop.y,pointRightBottom.x,pointRightBottom.y)
+	{
+
 	}
 
 	RECT MyRect::Rect() const

@@ -57,6 +57,8 @@ namespace LIB_CONTROL
 
 		bool mActive;
 
+		bool mCanStretch; //拉伸控件
+
 		UINT mControlTypeId;
 
 		void SetID(UINT typeId);
@@ -72,6 +74,10 @@ namespace LIB_CONTROL
 		virtual UINT LButtonUp(Listener * pListener) = 0;
 
 		virtual UINT HitTest(Listener * pListener,POINT pt) = 0;
+		
+		virtual RECT & Sizing(POINT pointLeftTop, POINT pointRightBottom);
+
+		bool Stretch(); //是否是一个随着窗口大小变化而改变的控件
 
 		UINT TypeId() const;
 

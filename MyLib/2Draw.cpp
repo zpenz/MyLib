@@ -1,6 +1,7 @@
 #include "2Draw.h"
 #include <DWrite.h>
-# include <wincodec.h>
+#include <wincodec.h>
+#include <memory>
 
 using namespace Conver;
 
@@ -85,15 +86,19 @@ ID2D1SolidColorBrush * My2DDraw::CreateBrush(MyColor penColor)
 	return NULL;
 }
 
-ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UINT dstHeight)
+ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UINT dstHeight,RECT * pClipRect)
 {
 	ID2D1Bitmap * pD2DBitmap = nullptr;
+
 	CoInitialize(NULL);
+
 	IWICImagingFactory * pImagingFactory = nullptr;
+
 	auto hr = CoCreateInstance(CLSID_WICImagingFactory1, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pImagingFactory));
 	IS_RETURN_ERROR(FAILED(hr), nullptr, "创建IWICImagingFactory接口Instance失败!");
 
 	IWICBitmapDecoder * pDecoder = nullptr;
+
 	hr = pImagingFactory->CreateDecoderFromFilename(
 		BitmapFileName,
 		NULL,
@@ -102,22 +107,23 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 		&pDecoder);
 	IS_RETURN_ERROR(FAILED(hr), nullptr, "从图片文件创建解码器失败!");
 
-	//get zero frame
-	IWICBitmapFrameDecode * pSource = nullptr;
-	hr = pDecoder->GetFrame(0, &pSource);
-	IS_RETURN_ERROR(FAILED(hr), nullptr, "获取第一frame图片失败!");
+	IWICBitmapFrameDecode * pFrameDecode = nullptr;
+	hr = pDecoder->GetFrame(0, &pFrameDecode); IS_RETURN_ERROR(FAILED(hr), nullptr, "获取第一frame图片失败!");
+	
+	UINT oldSizeWidth = 0, oldSizeHeight = 0;
+	pFrameDecode->GetSize(&oldSizeWidth, &oldSizeHeight);
 
-	UINT oldSizeWidth, oldSizeHeight;
-	pSource->GetSize(&oldSizeWidth, &oldSizeHeight);
-	//scale
 	IWICFormatConverter * pFormatConverter = nullptr;
-	hr = pImagingFactory->CreateFormatConverter(&pFormatConverter);
-	IS_RETURN_ERROR(FAILED(hr), nullptr, "创建格式转换器失败");
-
-	IWICBitmapScaler * pScaler = nullptr;
-	if (dstHeight == 0 && dstWidth == 0)
+	hr = pImagingFactory->CreateFormatConverter(&pFormatConverter); IS_RETURN_ERROR(FAILED(hr), nullptr, "创建FormatConverter失败");
+	
+	IWICBitmapScaler * pScaler = nullptr; 
+	IWICBitmap * pWICBitmap = nullptr;
+	if (dstHeight == 0 && dstWidth == 0)  //in case width and height = 0
 	{
-		hr = pFormatConverter->Initialize(pSource,
+
+		if (pClipRect != nullptr) pImagingFactory->CreateBitmapFromSourceRect(pFrameDecode, pClipRect->left, pClipRect->top, RECTWIDTH((*pClipRect)), RECTHEIGHT((*pClipRect)), &pWICBitmap);
+
+		hr = pFormatConverter->Initialize(pFrameDecode,
 			GUID_WICPixelFormat32bppPBGRA,
 			WICBitmapDitherTypeNone,
 			NULL,
@@ -126,7 +132,7 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 	}
 	else
 	{
-		//
+		///in case width = 0 or height = 0
 		if (dstWidth == 0)
 		{
 			FLOAT scalar = static_cast<FLOAT>(dstHeight) / static_cast<FLOAT>(oldSizeHeight);
@@ -137,12 +143,13 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 			FLOAT scalar = static_cast<FLOAT>(dstWidth) / static_cast<FLOAT>(oldSizeWidth);
 			dstHeight = static_cast<UINT>(scalar * static_cast<FLOAT>(dstHeight));
 		}
-		//
-		hr = pImagingFactory->CreateBitmapScaler(&pScaler);
-		IS_RETURN_ERROR(FAILED(hr), nullptr, "创建缩放Scaler失败!");
-		hr = pScaler->Initialize(pSource, dstWidth, dstHeight, WICBitmapInterpolationModeCubic);
-		IS_RETURN_ERROR(FAILED(hr), nullptr, "初始化缩放Scaler失败!");
+		///
+		if (pClipRect != nullptr) pImagingFactory->CreateBitmapFromSourceRect(pFrameDecode, pClipRect->left, pClipRect->top, RECTWIDTH((*pClipRect)), RECTHEIGHT((*pClipRect)), &pWICBitmap);
 
+		hr = pImagingFactory->CreateBitmapScaler(&pScaler); IS_RETURN_ERROR(FAILED(hr), nullptr, "创建缩放Scaler失败!");
+		
+		hr = pScaler->Initialize(pFrameDecode, dstWidth, dstHeight, WICBitmapInterpolationModeCubic); IS_RETURN_ERROR(FAILED(hr), nullptr, "初始化缩放Scaler失败!");
+	
 		hr = pFormatConverter->Initialize(pScaler,
 			GUID_WICPixelFormat32bppPBGRA,
 			WICBitmapDitherTypeNone,
@@ -150,19 +157,25 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 			0.f,
 			WICBitmapPaletteTypeMedianCut);
 	}
+
 	IS_RETURN_ERROR(FAILED(hr), nullptr, "转换图片失败!");
 
-	hr = mRenderTarget->CreateBitmapFromWicBitmap(pFormatConverter, NULL, &pD2DBitmap);
-	if (SUCCEEDED(hr))
-	{
+	if(pClipRect==nullptr)
+		hr = mRenderTarget->CreateBitmapFromWicBitmap(pFormatConverter, NULL, &pD2DBitmap);
+	else
+		hr = mRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap,NULL,&pD2DBitmap);
+
+	std::shared_ptr<void> pExit(NULL, [&](void *) {
+		CoUninitialize();
 		SAFE_RELEASE(pScaler);
 		SAFE_RELEASE(pFormatConverter);
-		SAFE_RELEASE(pSource);
+		SAFE_RELEASE(pFrameDecode);
 		SAFE_RELEASE(pDecoder);
 		SAFE_RELEASE(pImagingFactory);
-		CoUninitialize();
-		return pD2DBitmap;
-	}
+	});
+
+	if (SUCCEEDED(hr)) return pD2DBitmap;
+
 	return nullptr;
 }
 
