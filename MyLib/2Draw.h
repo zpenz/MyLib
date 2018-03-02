@@ -59,6 +59,8 @@ public:
 
 	bool DrawPicture(std::wstring strFileName, RECT decRect);
 
+	bool DrawPicture(std::wstring strFileName, RECT decRect, RECT srcRect);
+
 	ID2D1Layer * CreateLayer(ID2D1RenderTarget * thisRenderTarget);
 
 	void PushLayer(ID2D1Layer * layer);
@@ -75,7 +77,8 @@ public:
 
 	IDWriteTextLayout * CreateTextLayout(std::string text,float fSize);
 
-	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth = 0, UINT dstHeight = 0,RECT * pClipRect = nullptr); //默认不裁剪
+	/// pClipRect 裁剪区域 从图片的左上角开始 不能超过图片区域 否则结果是未定义的
+	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth = 0, UINT dstHeight = 0,RECT * pClipRect = nullptr); 
 
 	ID2D1RenderTarget * getRenderTarget();
 

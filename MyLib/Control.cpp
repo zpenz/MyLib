@@ -330,11 +330,13 @@ namespace LIB_CONTROL
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
 			IS_ERROR_EXIT(!ret, "Draw current Rect failed!");
+			DrawManager.DrawPicture(L"1.png", Conver::MyRect(100, 100, 200, 200));
 		}
 		else
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
 			IS_ERROR_EXIT(!ret, "Draw hover failed!");
+			DrawManager.DrawPicture(L"1.png", Conver::MyRect(100, 100, 200, 200), Conver::MyRect(0, 0, 200, 200));
 		}
 		mIconSprite.Render();
 	}

@@ -120,9 +120,6 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 	IWICBitmap * pWICBitmap = nullptr;
 	if (dstHeight == 0 && dstWidth == 0)  //in case width and height = 0
 	{
-
-		if (pClipRect != nullptr) pImagingFactory->CreateBitmapFromSourceRect(pFrameDecode, pClipRect->left, pClipRect->top, RECTWIDTH((*pClipRect)), RECTHEIGHT((*pClipRect)), &pWICBitmap);
-
 		hr = pFormatConverter->Initialize(pFrameDecode,
 			GUID_WICPixelFormat32bppPBGRA,
 			WICBitmapDitherTypeNone,
@@ -144,7 +141,6 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 			dstHeight = static_cast<UINT>(scalar * static_cast<FLOAT>(dstHeight));
 		}
 		///
-		if (pClipRect != nullptr) pImagingFactory->CreateBitmapFromSourceRect(pFrameDecode, pClipRect->left, pClipRect->top, RECTWIDTH((*pClipRect)), RECTHEIGHT((*pClipRect)), &pWICBitmap);
 
 		hr = pImagingFactory->CreateBitmapScaler(&pScaler); IS_RETURN_ERROR(FAILED(hr), nullptr, "´´½¨Ëõ·ÅScalerÊ§°Ü!");
 		
@@ -158,12 +154,16 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 			WICBitmapPaletteTypeMedianCut);
 	}
 
-	IS_RETURN_ERROR(FAILED(hr), nullptr, "×ª»»Í¼Æ¬Ê§°Ü!");
+	IS_RETURN_ERROR(FAILED(hr), nullptr, "InitializeÊ§°Ü!");
 
-	if(pClipRect==nullptr)
-		hr = mRenderTarget->CreateBitmapFromWicBitmap(pFormatConverter, NULL, &pD2DBitmap);
+	if(pClipRect != nullptr)
+	{
+		pImagingFactory->CreateBitmapFromSourceRect(pFormatConverter, pClipRect->left, pClipRect->top, RECTWIDTH((*pClipRect)), RECTHEIGHT((*pClipRect)), &pWICBitmap);
+		IS_RETURN_ERROR(FAILED(hr), nullptr, "InitializeÊ§°Ü!");
+		hr = mRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap, NULL, &pD2DBitmap);
+	}
 	else
-		hr = mRenderTarget->CreateBitmapFromWicBitmap(pWICBitmap,NULL,&pD2DBitmap);
+	hr = mRenderTarget->CreateBitmapFromWicBitmap(pFormatConverter,NULL,&pD2DBitmap);
 
 	std::shared_ptr<void> pExit(NULL, [&](void *) {
 		CoUninitialize();
@@ -323,6 +323,13 @@ bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 bool My2DDraw::DrawPicture(std::wstring strFileName, RECT decRect)
 {
 	auto ret = DrawPicture(CreateBitmap(const_cast<wchar_t *>(strFileName.c_str())), decRect);
+	return ret;
+}
+
+
+bool My2DDraw::DrawPicture(std::wstring strFileName, RECT decRect, RECT srcRect)
+{
+	auto ret = DrawPicture(CreateBitmap(const_cast<wchar_t *>(strFileName.c_str()),0,0,&srcRect), decRect);
 	return ret;
 }
 
