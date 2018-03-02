@@ -122,6 +122,8 @@ public:
 
 	virtual UINT OnSize(WPARAM wParam,LPARAM lParam);
 
+	virtual bool OnSizing(WPARAM wParam, LPARAM lParam);
+
 	virtual UINT OnHitTest(LPARAM lParam);
 
 	operator HDC()  {return mHdc;}

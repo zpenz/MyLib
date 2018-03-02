@@ -75,7 +75,7 @@ namespace LIB_CONTROL
 
 		virtual UINT HitTest(Listener * pListener,POINT pt) = 0;
 		
-		virtual RECT & Sizing(POINT pointLeftTop, POINT pointRightBottom);
+		virtual void Sizing(RECT newRect);
 
 		bool Stretch(); //是否是一个随着窗口大小变化而改变的控件
 
@@ -177,6 +177,8 @@ namespace LIB_CONTROL
 
 		UINT HitTest(POINT pt);
 
+		void ChangeSize(RECT newRect);
+
 		list<Control *> & Obj();
 	};
 
@@ -226,6 +228,8 @@ namespace LIB_CONTROL
 		UINT LButtonUp(Listener * pListener) override final;
 
 		UINT HitTest(Listener * pListener, POINT pt) override final;
+
+		void Sizing(RECT newRect) override;
 	};
 
 	class MiniButton : public Button
@@ -238,6 +242,7 @@ namespace LIB_CONTROL
 
 		UINT LButtonUp(Listener * pListener) override final;
 
+		void Sizing(RECT newRect) override;
 	};
 
 	class MaxButton : public Button
@@ -250,6 +255,7 @@ namespace LIB_CONTROL
 
 		UINT LButtonUp(Listener * pListener) override final;
 
+		void Sizing(RECT newRect) override;
 	};
 
 	class RestoreButton : public Button
@@ -262,6 +268,7 @@ namespace LIB_CONTROL
 
 		UINT LButtonUp(Listener * pListener) override final;
 
+		void Sizing(RECT newRect) override final;
 	};
 
 	///<TitleBar>标题栏</TitleBar>
@@ -280,7 +287,9 @@ namespace LIB_CONTROL
 
 		UINT HitTest(Listener * pListener,POINT pt) override;
 
-		TitleBar(string text,wstring filename);
+		void Sizing(RECT newRect) override final;
+
+		TitleBar(string text, wstring filename);
 
 		~TitleBar();
 	};

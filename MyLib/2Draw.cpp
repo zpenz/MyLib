@@ -326,7 +326,6 @@ bool My2DDraw::DrawPicture(std::wstring strFileName, RECT decRect)
 	return ret;
 }
 
-
 bool My2DDraw::DrawPicture(std::wstring strFileName, RECT decRect, RECT srcRect)
 {
 	auto ret = DrawPicture(CreateBitmap(const_cast<wchar_t *>(strFileName.c_str()),0,0,&srcRect), decRect);

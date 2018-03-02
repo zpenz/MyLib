@@ -335,6 +335,9 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_LBUTTONUP:
 			window->OnLButtonUp(wParam, lParam);
 			break;
+		case WM_SIZING:
+			window->OnSizing(wParam, lParam);
+			break;
 		case WM_SIZE:
 			return window->OnSize(wParam,lParam);
 			break;
@@ -470,9 +473,16 @@ void BaseWindow::Destory()
  {
 	 auto newWidth  =  LOWORD(lParam);
 	 auto newHeight =  HIWORD(lParam);
-
+	 ControlListener.ChangeSize(Conver::MyRect(mLeftTop.x,mLeftTop.y,mLeftTop.x+newWidth,mLeftTop.y+newHeight));
 	 //DrawManager.ReSize(GetWidth(), GetHeight());
 	 return 0;
+ }
+
+ bool BaseWindow::OnSizing(WPARAM wParam, LPARAM lParam)
+ {
+	 RECT * pNewRect = reinterpret_cast<RECT *>(lParam);
+	 ControlListener.ChangeSize(*pNewRect);
+	 return true;
  }
 
  UINT BaseWindow::OnHitTest(LPARAM lParam)
@@ -505,13 +515,9 @@ void BaseWindow::Destory()
 
 		 auto ControlLists = ControlListener.Obj();
 		 for_each(ControlLists.begin(), ControlLists.end(), [&](Control * itCol) {
-			 if (itCol->TypeId() == CONTROL_TYPE_TITLEBAR)
-			 {
-				 itCol->AdjustRect(Conver::MyRect(0, 0, RECTWIDTH(desRect) - 3 * 35, RECTHEIGHT(itCol->getRect())));
-			 }
 			 if (itCol->TypeId() == CONTROL_TYPE_MINI_BUTTON)
 			 {
-				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 3 * 35,0 , RECTWIDTH(desRect) - 2 * 35, itCol->height()));
+		//		 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 3 * 35,0 , RECTWIDTH(desRect) - 2 * 35, itCol->height()));
 			 }
 			 if (itCol->TypeId() == CONTROL_TYPE_MAXI_BUTTON)
 			 {
@@ -524,7 +530,6 @@ void BaseWindow::Destory()
 				 pBt->AdjustRect(tempRect);
 				 ControlListener.detach(itCol);
 				 ControlListener.attach(pBt);
-
 			 }
 			 if (itCol->TypeId() == CONTROL_TYPE_CLOSE_BUTTON)
 			 {
@@ -544,13 +549,9 @@ void BaseWindow::Destory()
 
 		 auto ControlLists = ControlListener.Obj();
 		 for_each(ControlLists.begin(), ControlLists.end(), [&](Control * itCol) {
-			 if (itCol->TypeId() == CONTROL_TYPE_TITLEBAR)
-			 {
-				 itCol->AdjustRect(Conver::MyRect(0, 0, RECTWIDTH(desRect) - 3 * 35, RECTHEIGHT(itCol->getRect())));
-			 }
 			 if (itCol->TypeId() == CONTROL_TYPE_MINI_BUTTON)
 			 {
-				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 3 * 35, 0, RECTWIDTH(desRect) - 2 * 35, itCol->height()));
+			//	 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 3 * 35, 0, RECTWIDTH(desRect) - 2 * 35, itCol->height()));
 			 }
 			 if (itCol->TypeId() == CONTROL_TYPE_RESTORE_BUTTON)
 			 {

@@ -88,6 +88,13 @@ namespace LIB_CONTROL
 		return pTempControl->HitTest(this, pt);
 	}
 
+	void Listener::ChangeSize(RECT newRect)
+	{
+		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
+			pControl->Sizing(newRect);
+		});
+	}
+
 	list<Control*>& Listener::Obj()
 	{
 		return mpControl;
@@ -98,10 +105,9 @@ namespace LIB_CONTROL
 		mControlTypeId = typeId;
 	}
 
-	RECT & Control::Sizing(POINT pointLeftTop, POINT pointRightBottom)
+	void Control::Sizing(RECT newRect)
 	{
-		AdjustRect(Conver::MyRect(pointLeftTop,pointRightBottom));
-		return mRect;
+
 	}
 
 	bool Control::Stretch()
@@ -360,6 +366,12 @@ namespace LIB_CONTROL
 		return HTCAPTION;
 	}
 
+	void TitleBar::Sizing(RECT newRect)
+	{
+		auto titleBarHeight = height();
+		AdjustRect(Conver::MyRect(0, 0, RECTWIDTH(newRect)-3*titleBarHeight, titleBarHeight));
+	}
+
 	TitleBar::TitleBar(string text, wstring filename)
 	{
 		SetID(CONTROL_TYPE_TITLEBAR);
@@ -425,6 +437,12 @@ namespace LIB_CONTROL
 		return HTCLIENT;
 	}
 
+	void CloseButton::Sizing(RECT newRect)
+	{
+		auto btnHeight = height();
+		AdjustRect(Conver::MyRect(RECTWIDTH(newRect)-btnHeight,0, RECTWIDTH(newRect), btnHeight));
+	}
+
 	MiniButton::MiniButton()
 	{
 		SetID(CONTROL_TYPE_MINI_BUTTON);
@@ -454,6 +472,12 @@ namespace LIB_CONTROL
 		return SHOULD_DO_NOTHING;
 	}
 
+	void MiniButton::Sizing(RECT newRect)
+	{
+		auto btnHeight = height();
+		AdjustRect(Conver::MyRect(RECTWIDTH(newRect) - 3*btnHeight, 0, RECTWIDTH(newRect)-2*btnHeight, btnHeight));
+	}
+
 	MaxButton::MaxButton()
 	{
 		SetID(CONTROL_TYPE_MAXI_BUTTON);
@@ -480,6 +504,12 @@ namespace LIB_CONTROL
 	{
 		if (BDownInternal) return SHOULD_MAX_WINDOW;
 		return SHOULD_DO_NOTHING;
+	}
+
+	void MaxButton::Sizing(RECT newRect)
+	{
+		auto btnHeight = height();
+		AdjustRect(Conver::MyRect(RECTWIDTH(newRect) - 2*btnHeight, 0, RECTWIDTH(newRect) - btnHeight, btnHeight));
 	}
 
 	bool ComposeControl::Add(Control * pControl)
@@ -563,4 +593,10 @@ namespace LIB_CONTROL
 		return SHOULD_RESTORE_WINDOW;
 	}
 
-}
+	void RestoreButton::Sizing(RECT newRect)
+	{
+		auto btnHeight = height();
+		AdjustRect(Conver::MyRect(RECTWIDTH(newRect) - 2 * btnHeight, 0, RECTWIDTH(newRect) - btnHeight, btnHeight));
+	}
+
+} 
