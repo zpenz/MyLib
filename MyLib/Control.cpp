@@ -334,14 +334,14 @@ namespace LIB_CONTROL
 		if (!mMouseInternal)
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
-			//IS_ERROR_EXIT(!ret, "Draw TitleBar failed!");
-			DrawManager.DrawPicture(L"1.png", Conver::MyRect(100, 100, 200, 200));
+			IS_ERROR_EXIT(!ret, "Draw TitleBar failed!");
+			DrawManager.DrawPicture(this->pImage, Conver::MyRect(100, 100, 200, 200));
 		}
 		else
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
 			IS_ERROR_EXIT(!ret, "Draw  honvered TitleBar failed!");
-			DrawManager.DrawPicture(L"1.png", Conver::MyRect(100, 100, 200, 200), Conver::MyRect(0, 0, 200, 200));
+			//DrawManager.DrawPicture(L"1.png", Conver::MyRect(100, 100, 200, 200), Conver::MyRect(0, 0, 200, 200));
 		}
 		mIconSprite.Render();
 	}
@@ -377,8 +377,6 @@ namespace LIB_CONTROL
 		mText = text;
 		LoadFromFile(filename);
 
-		/*	mIconSprite.Load(8,L"effect/0.png", L"effect/1.png", L"effect/2.png", L"effect/3.png", L"effect/4.png", L"effect/5.png",L"effect/6.png"
-			,L"effect/7.png");*/
 		mIconSprite.LoadEx(L"effect/hit/*.png");
 		mIconSprite.SetSpeed(3);
 	}

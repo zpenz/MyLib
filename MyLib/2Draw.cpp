@@ -173,8 +173,11 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 		SAFE_RELEASE(pImagingFactory);
 	});
 
+	auto time = GetTickCount();
 	if (SUCCEEDED(hr)) return pD2DBitmap;
 
+	time = GetTickCount() - time;
+	IS_ERROR_EXIT(1,Format("CreateBitmap ß∞‹ timeout: %s",time).c_str());
 	return nullptr;
 }
 
@@ -370,9 +373,10 @@ bool My2DDraw::Clear(MyColor color)
 
 bool My2DDraw::Present(RECT  * pRect)
 {
-	IS_RETURN_ERROR(!mTempTarget,false,"mTempTargetŒ™ø’");
+	IS_ERROR_EXIT(!mTempTarget,"mTempTargetŒ™ø’");
 	ID2D1Bitmap * tempBitmap = nullptr;
-	mTempTarget->GetBitmap(&tempBitmap);
+	auto hr = mTempTarget->GetBitmap(&tempBitmap);
+	IS_ERROR_EXIT(FAILED(hr), "GetBitmap ß∞‹!");
 
 	SetCurrentRenderTarget(mHwndRenderTarget);
 	DrawPicture(tempBitmap,*pRect);
