@@ -330,18 +330,17 @@ namespace LIB_CONTROL
 
 	void TitleBar::Draw(Listener * pListener)
 	{
-		//mIconSprite.ChangeRect(Conver::MyRect(0, 0, RECTHEIGHT(mRect), RECTHEIGHT(mRect)));
 		mIconSprite.ChangeRect(Conver::MyRect(100, 100, 800, 800));
 		if (!mMouseInternal)
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
-			IS_ERROR_EXIT(!ret, "Draw current Rect failed!");
+			//IS_ERROR_EXIT(!ret, "Draw TitleBar failed!");
 			DrawManager.DrawPicture(L"1.png", Conver::MyRect(100, 100, 200, 200));
 		}
 		else
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
-			IS_ERROR_EXIT(!ret, "Draw hover failed!");
+			IS_ERROR_EXIT(!ret, "Draw  honvered TitleBar failed!");
 			DrawManager.DrawPicture(L"1.png", Conver::MyRect(100, 100, 200, 200), Conver::MyRect(0, 0, 200, 200));
 		}
 		mIconSprite.Render();
@@ -478,12 +477,7 @@ namespace LIB_CONTROL
 		AdjustRect(Conver::MyRect(RECTWIDTH(newRect) - 3*btnHeight, 0, RECTWIDTH(newRect)-2*btnHeight, btnHeight));
 	}
 
-	MaxButton::MaxButton()
-	{
-		SetID(CONTROL_TYPE_MAXI_BUTTON);
-	}
-
-	void MaxButton::Draw(Listener * pListener)
+	void MaxButton::DrawMaxImg()
 	{
 		RECT drawRect = Conver::ClipRectBoard(mRect, 12, 12);
 		if (!mMouseInternal)
@@ -500,9 +494,56 @@ namespace LIB_CONTROL
 		}
 	}
 
+	void MaxButton::DrawRestoreImg()
+	{
+		RECT drawRect = Conver::ClipRectBoard(mRect, 13, 13);
+		auto centerPt = Conver::CenterPoint(drawRect);
+		RECT rightTopRect = { centerPt.x , centerPt.y - 9, centerPt.x + 9,centerPt.y };
+		if (!mMouseInternal)
+		{
+			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
+			DrawManager.DrawRectangle(rightTopRect, COLOREX(mForceColor), false);
+			DrawManager.DrawRectangle(drawRect, COLOREX(mForceColor), false);
+			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
+		}
+		else
+		{
+			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
+			DrawManager.DrawRectangle(rightTopRect, COLOREX(mHoverForceColor), false);
+			DrawManager.DrawRectangle(drawRect, COLOREX(mHoverForceColor), false);
+			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
+		}
+	}
+
+	void MaxButton::setState(bool isMax)
+	{
+		this->isMax = isMax;
+	}
+
+	MaxButton::MaxButton():isMax(false)
+	{
+		SetID(CONTROL_TYPE_MAXI_BUTTON);
+	}
+
+	void MaxButton::Draw(Listener * pListener)
+	{
+		if (!isMax)
+		{
+			DrawMaxImg();
+		}
+		else DrawRestoreImg();
+	}
+
 	UINT MaxButton::LButtonUp(Listener * pListener)
 	{
-		if (BDownInternal) return SHOULD_MAX_WINDOW;
+		if (BDownInternal) 
+		{
+			if (isMax) 
+				return SHOULD_RESTORE_WINDOW;
+			else 
+				return SHOULD_MAX_WINDOW;
+		}
+
 		return SHOULD_DO_NOTHING;
 	}
 
@@ -558,45 +599,6 @@ namespace LIB_CONTROL
 			ItControl->LButtonUp(pListener);
 		});
 		return 0;
-	}
-
-
-	RestoreButton::RestoreButton()
-	{
-		SetID(CONTROL_TYPE_RESTORE_BUTTON);
-	}
-
-	void RestoreButton::Draw(Listener * pListener) 
-	{
-
-		RECT drawRect = Conver::ClipRectBoard(mRect, 13, 13);
-		auto centerPt = Conver::CenterPoint(drawRect);
-		RECT rightTopRect = { centerPt.x , centerPt.y - 9, centerPt.x + 9,centerPt.y };
-		if (!mMouseInternal)
-		{
-			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
-			DrawManager.DrawRectangle(rightTopRect, COLOREX(mForceColor), false);
-			DrawManager.DrawRectangle(drawRect, COLOREX(mForceColor), false);
-			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
-		}
-		else
-		{
-			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
-			DrawManager.DrawRectangle(rightTopRect, COLOREX(mHoverForceColor), false);
-			DrawManager.DrawRectangle(drawRect, COLOREX(mHoverForceColor), false);
-			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
-		}
-	}
-
-	UINT RestoreButton::LButtonUp(Listener * pListener)
-	{
-		return SHOULD_RESTORE_WINDOW;
-	}
-
-	void RestoreButton::Sizing(RECT newRect)
-	{
-		auto btnHeight = height();
-		AdjustRect(Conver::MyRect(RECTWIDTH(newRect) - 2 * btnHeight, 0, RECTWIDTH(newRect) - btnHeight, btnHeight));
 	}
 
 } 

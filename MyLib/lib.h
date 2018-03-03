@@ -60,7 +60,7 @@ public:
 
 	virtual ~BaseWindow();
 
-	void ReDraw(bool bReDraw); 	//InvalidRect
+	void ReDraw(bool bReDraw); 	//WM_PAINT
 
 	bool Show();
 

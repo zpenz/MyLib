@@ -245,9 +245,19 @@ namespace LIB_CONTROL
 		void Sizing(RECT newRect) override;
 	};
 
-	class MaxButton : public Button
+	class MaxButton : public Button // max and restore button...
 	{
+	protected:
+
+		void DrawMaxImg();
+
+		void DrawRestoreImg();
+
+		bool isMax;
+
 	public:
+
+		void setState(bool isMax);
 
 		MaxButton();
 
@@ -256,19 +266,6 @@ namespace LIB_CONTROL
 		UINT LButtonUp(Listener * pListener) override final;
 
 		void Sizing(RECT newRect) override;
-	};
-
-	class RestoreButton : public Button
-	{
-	public:
-
-		RestoreButton();
-
-		void Draw(Listener * pListener) override final;
-
-		UINT LButtonUp(Listener * pListener) override final;
-
-		void Sizing(RECT newRect) override final;
 	};
 
 	///<TitleBar>±ÍÃ‚¿∏</TitleBar>

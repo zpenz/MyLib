@@ -52,7 +52,6 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 	///<warning>short-cut!</warning>
 	mRenderTarget = mHwndRenderTarget;
 	
-
 	if (FAILED(hr)) return false;
 	mRenderTarget->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE);
 	return true;
@@ -225,6 +224,7 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	if (text.empty()) return true;
 
 	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
+
 	///<LayOutBox>MaxWidth-MaxHeight</LayOutBox>
 	tempTextLayout->SetMaxWidth(static_cast<FLOAT>(RECTWIDTH(Rect)));
 	tempTextLayout->SetMaxHeight(static_cast<FLOAT>(RECTHEIGHT(Rect)));
@@ -264,8 +264,8 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	}
 	
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)),tempTextLayout,CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
-	mRenderTarget->EndDraw();
+	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)),tempTextLayout,CreateBrush(TextColor),D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
+	auto ret = mRenderTarget->EndDraw();
 	return true;
 }
 
@@ -313,7 +313,8 @@ bool My2DDraw::DrawLine(POINT src, POINT des, MyColor lineColor, float LineWidth
 
 bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 {
-	IS_RETURN_ERROR(pBitmap == NULL, false, "位图结构为空");
+	IS_ERROR_EXIT(!mRenderTarget,"mRenderTarget为空");
+	IS_ERROR_EXIT(!pBitmap, "位图结构为空");
 	mRenderTarget->BeginDraw();
 	mRenderTarget->DrawBitmap(pBitmap, RectToD2DRectF(decRect));
 	auto hr = mRenderTarget->EndDraw();
@@ -369,8 +370,8 @@ bool My2DDraw::Clear(MyColor color)
 
 bool My2DDraw::Present(RECT  * pRect)
 {
-	if (!mTempTarget) return false;
-	ID2D1Bitmap * tempBitmap;
+	IS_RETURN_ERROR(!mTempTarget,false,"mTempTarget为空");
+	ID2D1Bitmap * tempBitmap = nullptr;
 	mTempTarget->GetBitmap(&tempBitmap);
 
 	SetCurrentRenderTarget(mHwndRenderTarget);
@@ -383,9 +384,8 @@ bool My2DDraw::Present(RECT  * pRect)
 
 My2DDraw::~My2DDraw()
 {
-	SAFE_RELEASE(mRenderTarget);
-	SAFE_RELEASE(mHwndRenderTarget);
 	SAFE_RELEASE(mTempTarget);
+	SAFE_RELEASE(mHwndRenderTarget);
 	SAFE_RELEASE(mWriteFactory);
 	SAFE_RELEASE(mFactory);
 }

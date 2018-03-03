@@ -515,25 +515,10 @@ void BaseWindow::Destory()
 
 		 auto ControlLists = ControlListener.Obj();
 		 for_each(ControlLists.begin(), ControlLists.end(), [&](Control * itCol) {
-			 if (itCol->TypeId() == CONTROL_TYPE_MINI_BUTTON)
-			 {
-		//		 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 3 * 35,0 , RECTWIDTH(desRect) - 2 * 35, itCol->height()));
-			 }
 			 if (itCol->TypeId() == CONTROL_TYPE_MAXI_BUTTON)
 			 {
-				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 2 * 35,0, RECTWIDTH(desRect) - 1 * 35, itCol->height()));
-				 auto tempRect = itCol->getRect();
-				 RestoreButton * pBt = new RestoreButton();
-				 pBt->SetBackColor(RGB(65, 65, 68));
-				 pBt->SetForceColor(RGB(255, 255, 255));
-				 pBt->SetHoverBackColor(RGB(216, 120, 17));
-				 pBt->AdjustRect(tempRect);
-				 ControlListener.detach(itCol);
-				 ControlListener.attach(pBt);
-			 }
-			 if (itCol->TypeId() == CONTROL_TYPE_CLOSE_BUTTON)
-			 {
-				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 1 * 35, 0,  RECTWIDTH(desRect), itCol->height()));
+				 MaxButton *  thisButton = reinterpret_cast<MaxButton *>(itCol);
+				 thisButton->setState(true);
 			 }
 		 });
 
@@ -543,31 +528,15 @@ void BaseWindow::Destory()
 
 	 if (ret == SHOULD_RESTORE_WINDOW)
 	 {
-		 POINT ltpt = { 0,0 };
 		 RECT desRect = RestoreRect;
 		 SetRect(desRect);
 
 		 auto ControlLists = ControlListener.Obj();
 		 for_each(ControlLists.begin(), ControlLists.end(), [&](Control * itCol) {
-			 if (itCol->TypeId() == CONTROL_TYPE_MINI_BUTTON)
+			 if (itCol->TypeId() == CONTROL_TYPE_MAXI_BUTTON)
 			 {
-			//	 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 3 * 35, 0, RECTWIDTH(desRect) - 2 * 35, itCol->height()));
-			 }
-			 if (itCol->TypeId() == CONTROL_TYPE_RESTORE_BUTTON)
-			 {
-				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 2 * 35, 0, RECTWIDTH(desRect) - 1 * 35, itCol->height()));
-				 auto tempRect = itCol->getRect();
-				 MaxButton * pBt = new MaxButton();
-				 pBt->SetBackColor(RGB(65, 65, 68));
-				 pBt->SetForceColor(RGB(255, 255, 255));
-				 pBt->SetHoverBackColor(RGB(216, 120, 17));
-				 pBt->AdjustRect(tempRect);
-				 ControlListener.detach(itCol);
-				 ControlListener.attach(pBt);
-			 }
-			 if (itCol->TypeId() == CONTROL_TYPE_CLOSE_BUTTON)
-			 {
-				 itCol->AdjustRect(Conver::MyRect(RECTWIDTH(desRect) - 1 * 35, 0, RECTWIDTH(desRect), itCol->height()));
+				 MaxButton *  thisButton = reinterpret_cast<MaxButton *>(itCol);
+				 thisButton->setState(false);
 			 }
 		 });
 
