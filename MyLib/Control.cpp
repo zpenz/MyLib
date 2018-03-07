@@ -318,9 +318,9 @@ namespace LIB_CONTROL
 		return mImgRec;
 	}
 
-	ImageAdapter::ImageAdapter():pImage(nullptr),bDrawImage(false)
+	ImageAdapter::ImageAdapter() :pImage(nullptr), bDrawImage(false)
 	{
-
+		mImgRec = {0,0,0,0};
 	}
 
 	ImageAdapter::~ImageAdapter()
@@ -335,7 +335,7 @@ namespace LIB_CONTROL
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
 			IS_ERROR_EXIT(!ret, "Draw TitleBar failed!");
-			DrawManager.DrawPicture(this->pImage, Conver::MyRect(100, 100, 200, 200));
+			//DrawManager.DrawPicture(this->pImage, Conver::MyRect(100, 100, 200, 200));
 		}
 		else
 		{
@@ -378,7 +378,7 @@ namespace LIB_CONTROL
 		LoadFromFile(filename);
 
 		mIconSprite.LoadEx(L"effect/hit/*.png");
-		mIconSprite.SetSpeed(3);
+		mIconSprite.SetSpeed(30);
 	}
 
 	TitleBar::~TitleBar()
@@ -599,4 +599,33 @@ namespace LIB_CONTROL
 		return 0;
 	}
 
-} 
+	void ImageButton::Draw(Listener * pListener)
+	{
+		IS_RETURN_ERROR(!pImage,,"ImageButton Í¼ÏñÎª¿Õ");
+		if (pHonverImage == nullptr) pHonverImage = pImage;
+		if (Conver::ZeroRect(mImgRec)) mImgRec = mRect;
+		if (!mMouseInternal)
+		{
+			DrawManager.DrawRectangle(mRect,mBackColor,true);
+			DrawManager.DrawPicture(pImage, mImgRec);
+		}
+		else
+		{
+			DrawManager.DrawRectangle(mRect, mHonverBackColor, true);
+			DrawManager.DrawPicture(pHonverImage, mImgRec);
+		}
+	}
+
+	ImageButton::ImageButton(wstring picLoc, RECT rImgRect)
+	{
+		pImage = DrawManager.CreateBitmap(const_cast<wchar_t *>(picLoc.c_str()));
+		mRect = rImgRect;
+	}
+
+	ImageButton::ImageButton(IPIC * pBitmap, RECT rImgRect)
+	{
+		pImage = pBitmap;
+		mRect = rImgRect;
+	}
+
+}

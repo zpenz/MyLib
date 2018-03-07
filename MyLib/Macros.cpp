@@ -43,8 +43,16 @@ namespace Conver
 		return true;
 	}
 
+	bool ZeroRect(RECT targetRect)
+	{
+		if (targetRect.left == 0 && targetRect.right == 0
+			&& targetRect.right == 0 && targetRect.bottom == 0) return true;
+		return false;
+	}
+
 	bool VaildRect(RECT targetRect)
 	{
+		IS_RETURN_ERROR(ZeroRect(targetRect),false,"Áã¾ØĞÎ");
 		if (targetRect.left > targetRect.right || targetRect.top > targetRect.bottom) return false;
 		return true;
 	}

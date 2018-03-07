@@ -123,6 +123,8 @@ namespace Conver
 
 	bool RectInRect(RECT smallRect, RECT bigRect);
 
+	bool ZeroRect(RECT targetRect); //零矩形...
+
 	bool VaildRect(RECT targetRect); //矩形是否合理
 
 	RECT ClipRectBoard(RECT srcRect,LONG dx,LONG dy);

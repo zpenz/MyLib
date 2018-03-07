@@ -291,6 +291,19 @@ namespace LIB_CONTROL
 		~TitleBar();
 	};
 
+	///<ImageButton>Í¼ÐÎ°´Å¥</ImageButton>
+	class ImageButton : public Button
+	{
+		IPIC * pHonverImage;
+
+	public:
+
+		void Draw(Listener * pListener) override;
+
+		ImageButton(wstring picLoc,RECT rImgRect);
+
+		ImageButton(IPIC * pBitmap, RECT rImgRect);
+	};
 }
 
 
