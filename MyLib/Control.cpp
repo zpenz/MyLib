@@ -3,6 +3,12 @@
 
 namespace LIB_CONTROL
 {
+
+	bool DragAdapter::IsDraging()
+	{
+		return mBDraging;
+	}
+
 	Control::~Control()
 	{
 	}
@@ -66,13 +72,13 @@ namespace LIB_CONTROL
 
 	UINT Listener::LButtonUp(POINT pt)
 	{
-		UINT ret = 0;
+		UINT ret = SHOULD_DO_NOTHING;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
 				ret = pControl->LButtonUp(this);
 				if (ret != SHOULD_DO_NOTHING) return ret; 
+				return ret;
 		});
-		int nop = 0;
 		return ret;
 	}
 
@@ -659,5 +665,4 @@ namespace LIB_CONTROL
 		pImage = pBitmap;
 		mRect = rImgRect;
 	}
-
 }

@@ -36,6 +36,19 @@ namespace LIB_CONTROL
 		~ImageAdapter();
 	};
 
+	class DragAdapter
+	{
+	protected:
+		bool mBDraging;
+
+		int mLeft, mTop;
+
+	public:
+		bool IsDraging();
+
+		virtual void Drag(Listener * pListener,POINT mousePoint)=0;
+	};
+
 	class Control: public ImageAdapter
 	{
 
@@ -178,6 +191,8 @@ namespace LIB_CONTROL
 		UINT HitTest(POINT pt);
 
 		void ChangeSize(RECT newRect);
+
+		void OnDrag(POINT newPt);
 
 		list<Control *> & Obj();
 	};

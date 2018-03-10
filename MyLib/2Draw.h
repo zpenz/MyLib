@@ -67,7 +67,7 @@ public:
 
 	void PopLayer(ID2D1Layer * layer);
 
-	bool ReSize(UINT uWidth, UINT uHeight); //resize 
+	bool ReSize(UINT uWidth, UINT uHeight); //resize uWidth:新宽度 uHeight:新高度 
 
 	bool Clear(MyColor color = MyColor::Black);
 

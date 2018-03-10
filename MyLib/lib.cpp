@@ -398,23 +398,23 @@ void BaseWindow::Destory()
 
 	 //TitleBar
 	 TitleBar * pBar = new TitleBar("pSong's Window", Conver::MyRect(0, 0, mWidth - 3 * 35, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(116, 116, 119));
-	 ControlListener.attach(pBar);
+	 mListener.attach(pBar);
 	 //Close Button
 	 CloseButton * pClo = new CloseButton("",Conver::MyRect(1024 - 35, 0, mWidth, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(228, 0, 0));
-	 ControlListener.attach(pClo);
+	 mListener.attach(pClo);
 	 //Max Button
 	 MaxButton * pMax = new MaxButton("",Conver::MyRect(1024 - 35 * 2, 0, mWidth - 35,35),  RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0),RGB(216, 120, 17));
-	 ControlListener.attach(pMax);
+	 mListener.attach(pMax);
 	 //Mini Button
 	 MiniButton * pMin = new MiniButton("", Conver::MyRect(1024 - 35 * 3, 0, mWidth - 70,35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(216, 120, 17));
-	 ControlListener.attach(pMin);
+	 mListener.attach(pMin);
  }
 
  void BaseWindow::OnDraw()
  {
 	 DrawManager.Clear(MyColor::Black);
 
-	 ControlListener.Draw();
+	 mListener.Draw();
 
 	 RECT windowRect;
 	 GetWindowRect(mBaseHwnd, &windowRect);
@@ -430,7 +430,7 @@ void BaseWindow::Destory()
 	 POINT pt; GetCursorPos(&pt);
 
 	 ScreenToClient(mBaseHwnd, &pt);
-	 ControlListener.Hover(pt); 	 //hover
+	 mListener.Hover(pt); 	 //hover
 
 	 ReDraw(true);
  }
@@ -454,15 +454,14 @@ void BaseWindow::Destory()
  {
 	 auto newWidth  =  LOWORD(lParam);
 	 auto newHeight =  HIWORD(lParam);
-	 ControlListener.ChangeSize(Conver::MyRect(mLeftTop.x,mLeftTop.y,mLeftTop.x+newWidth,mLeftTop.y+newHeight));
-	 //DrawManager.ReSize(GetWidth(), GetHeight());
+	 mListener.ChangeSize(Conver::MyRect(mLeftTop.x,mLeftTop.y,mLeftTop.x+newWidth,mLeftTop.y+newHeight));
 	 return 0;
  }
 
  bool BaseWindow::OnSizing(WPARAM wParam, LPARAM lParam)
  {
 	 RECT * pNewRect = reinterpret_cast<RECT *>(lParam);
-	 ControlListener.ChangeSize(*pNewRect);
+	 mListener.ChangeSize(*pNewRect);
 	 return true;
  }
 
@@ -471,21 +470,28 @@ void BaseWindow::Destory()
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
 	 ScreenToClient(mBaseHwnd, &pt);
 
-	 return ControlListener.HitTest(pt);
+	 return mListener.HitTest(pt);
  }
 
  void BaseWindow::OnLButtonDown(WPARAM wParam, LPARAM lParam)
  {
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
-	 auto ret = ControlListener.LButtonDown(pt);
+	 auto ret = mListener.LButtonDown(pt);
+	 mMouse.x = pt.x;
+	 mMouse.y = pt.y;
+	 mMouse.mMouseState = MOUSE_STATE_LEFTBUTTONDOWN;
  }
 
  void BaseWindow::OnLButtonUp(WPARAM wParam, LPARAM lParam)
  {
-	 static RECT RestoreRect; //保存当前状态
+	 static RECT RestoreRect; //保存当前区域
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
-	 auto ret = ControlListener.LButtonUp(pt);
 
+	 mMouse.x = pt.x;
+	 mMouse.y = pt.y;
+	 mMouse.mMouseState = MOUSE_STATE_LEFTBUTTONUP;
+
+	 auto ret = mListener.LButtonUp(pt);
 	 if (ret == SHOULD_CLOSE_WINDOW) SendMessage(mBaseHwnd,WM_CLOSE,0,0);
 	 if (ret == SHOULD_MINI_WINDOW)  ShowWindow(mBaseHwnd, SW_MINIMIZE);
 	 if (ret == SHOULD_MAX_WINDOW)
@@ -493,17 +499,41 @@ void BaseWindow::Destory()
 		 RestoreRect = { mLeftTop.x,mLeftTop.y, mLeftTop.x + GetWidth(),mLeftTop.y + GetHeight() };
 		 RECT desRect = Conver::GetMaxSizeRect();
 		 SetRect(desRect);
-		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd, &desRect);
-		 ret = DrawManager.UseTempRenderTarget();
+		 DrawManager.ReSize(RECTWIDTH(desRect),RECTHEIGHT(desRect));
 	 }
 
 	 if (ret == SHOULD_RESTORE_WINDOW)
 	 {
 		 SetRect(RestoreRect);
-		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd, &RestoreRect);
-		 ret = DrawManager.UseTempRenderTarget();
+		 DrawManager.ReSize(RECTWIDTH(RestoreRect), RECTHEIGHT(RestoreRect));
 	 }
 
+	 mMouse.mMouseState = MOUSE_STATE_IDLE;
  }
 
+ void BaseWindow::OnMouseMove(WPARAM wParam, LPARAM lParam)
+ {
+	 auto pt = MAKEPOINTS(lParam);
+	 mMouse.mMouseState |= MOUSE_STATE_MOUSEMOVE;
+	 if (mMouse.mMouseState & MOUSE_STATE_LEFTBUTTONDOWN) mListener.OnDrag(Conver::Point(pt.x,pt.y));
+
+	 mMouse.x = pt.x;
+	 mMouse.y = pt.y;
  }
+
+
+
+
+ namespace MOUSE
+ {
+	 Mouse::Mouse()
+	 {
+		 x = y = -1;
+		 mMouseState = MOUSE_STATE_IDLE;
+	 }
+ }
+
+
+ }
+
+

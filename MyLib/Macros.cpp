@@ -218,6 +218,12 @@ namespace Conver
 		return tempPoint;
 	}
 
+	Point::operator POINT()
+	{
+		POINT pt = {x,y};
+		return pt;
+	}
+
 	Point::Point(int _x, int _y):x(_x),y(_y)
 	{
 

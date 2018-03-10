@@ -3,6 +3,19 @@
 
 namespace LIB_WINDOW
 {
+	namespace MOUSE
+	{
+		class Mouse
+		{
+		public:
+
+			int x,y;
+			
+			UINT mMouseState;
+
+			Mouse();
+		};
+	}
 
 using namespace LIB_CONTROL;
 
@@ -29,13 +42,15 @@ protected:
 
 	Conver::Point mLeftTop;
 
+	MOUSE::Mouse mMouse;
+
 	HDC  mHdc;
 
 	HWND mBaseHwnd; 
 
 	pCallBackFunc mCallBackFunc;
 
-	Listener ControlListener;
+	Listener mListener;
 
 private:
 	 
@@ -117,6 +132,8 @@ public:
 	virtual void OnLButtonDown(WPARAM wParam,LPARAM lParam);
 
 	virtual void OnLButtonUp(WPARAM wParam, LPARAM lParam);
+
+	virtual void OnMouseMove(WPARAM wParam, LPARAM lParam);
 
 	virtual bool OnNcActive(WPARAM wParam, LPARAM lParam);
 

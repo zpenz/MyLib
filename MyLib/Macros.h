@@ -51,6 +51,22 @@ namespace LIB_CONTROL
 #define CONTROL_TYPE_RESTORE_BUTTON 6
 }
 
+namespace LIB_WINDOW
+{
+	namespace MOUSE
+	{
+#define MOUSE_STATE_IDLE              0  
+#define MOUSE_STATE_LEFTBUTTONDOWN    1	
+#define MOUSE_STATE_RIGHTBUTTONDOWN   2
+#define MOUSE_STATE_LEFTBUTTONUP      3
+#define MOUSE_STATE_RIGHTBUTTONUP     4
+#define MOUSE_STATE_MOUSEMOVE         5
+#define MOUSE_STATE_STROLLWHEEL       6
+#define MOUSE_STATE_UP                7
+#define MOUSE_STATE_DOWN              8
+	}
+}
+
 void ErrorMessage(const char * _error);
 
 #define SINGLE_INSTANCE(classname) \
@@ -161,6 +177,8 @@ namespace Conver
 		int x, y;
 
 		Point operator= (POINT & pt);
+
+		operator POINT();
 
 		Point(int _x,int _y);
 
