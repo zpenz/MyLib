@@ -485,43 +485,22 @@ void BaseWindow::Destory()
 	 static RECT RestoreRect; //±£´æµ±Ç°×´Ì¬
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
 	 auto ret = ControlListener.LButtonUp(pt);
+
 	 if (ret == SHOULD_CLOSE_WINDOW) SendMessage(mBaseHwnd,WM_CLOSE,0,0);
 	 if (ret == SHOULD_MINI_WINDOW)  ShowWindow(mBaseHwnd, SW_MINIMIZE);
 	 if (ret == SHOULD_MAX_WINDOW)
 	 {
-		 RestoreRect = {mLeftTop.x,mLeftTop.y, mLeftTop.x + GetWidth(),mLeftTop.y + GetHeight()};
-		 POINT ltpt = { 0,0 };
+		 RestoreRect = { mLeftTop.x,mLeftTop.y, mLeftTop.x + GetWidth(),mLeftTop.y + GetHeight() };
 		 RECT desRect = Conver::GetMaxSizeRect();
 		 SetRect(desRect);
-
-		 auto ControlLists = ControlListener.Obj();
-		 for_each(ControlLists.begin(), ControlLists.end(), [&](Control * itCol) {
-			 if (itCol->TypeId() == CONTROL_TYPE_MAXI_BUTTON)
-			 {
-				 MaxButton *  thisButton = reinterpret_cast<MaxButton *>(itCol);
-				 thisButton->setState(true);
-			 }
-		 });
-
 		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd, &desRect);
 		 ret = DrawManager.UseTempRenderTarget();
 	 }
 
 	 if (ret == SHOULD_RESTORE_WINDOW)
 	 {
-		 RECT desRect = RestoreRect;
-		 SetRect(desRect);
-
-		 auto ControlLists = ControlListener.Obj();
-		 for_each(ControlLists.begin(), ControlLists.end(), [&](Control * itCol) {
-			 if (itCol->TypeId() == CONTROL_TYPE_MAXI_BUTTON)
-			 {
-				 MaxButton *  thisButton = reinterpret_cast<MaxButton *>(itCol);
-				 thisButton->setState(false);
-			 }
-		 });
-
-		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd, &desRect);
+		 SetRect(RestoreRect);
+		 auto ret = DrawManager.SetRenderTarget(mBaseHwnd, &RestoreRect);
 		 ret = DrawManager.UseTempRenderTarget();
 	 }
 

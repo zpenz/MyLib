@@ -66,13 +66,14 @@ namespace LIB_CONTROL
 
 	UINT Listener::LButtonUp(POINT pt)
 	{
-		Control * pTempControl = NULL;
+		UINT ret = 0;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
-				if (pControl->LButtonUp(this) != SHOULD_DO_NOTHING) pTempControl = pControl;
+				ret = pControl->LButtonUp(this);
+				if (ret != SHOULD_DO_NOTHING) return ret; 
 		});
-		if (pTempControl != nullptr) return pTempControl->LButtonUp(this);
-		return SHOULD_DO_NOTHING;
+		int nop = 0;
+		return ret;
 	}
 
 	UINT Listener::HitTest( POINT pt)
@@ -563,11 +564,16 @@ namespace LIB_CONTROL
 		if (BDownInternal) 
 		{
 			if (isMax) 
+			{
+				isMax = !isMax;
 				return SHOULD_RESTORE_WINDOW;
+			}	
 			else 
+			{
+				isMax = !isMax;
 				return SHOULD_MAX_WINDOW;
+			}
 		}
-
 		return SHOULD_DO_NOTHING;
 	}
 
