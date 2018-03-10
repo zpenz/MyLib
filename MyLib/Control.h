@@ -129,7 +129,7 @@ namespace LIB_CONTROL
 
 		Control(string text, RECT rc = {0,0});
 
-		Control(RECT rc, string text, COLORREF forceColor, COLORREF backColor,COLORREF hoverBackColor);
+		Control(string text, RECT rc,COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 
 		virtual ~Control();
 	};
@@ -211,13 +211,15 @@ namespace LIB_CONTROL
 		virtual UINT HitTest(Listener * pListener,POINT pt) override;
 
 		Button();
+
+		Button(string text,RECT rc);
+
+		Button(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 	};
 
 	class CloseButton : public Button 
 	{
 	public:
-
-		CloseButton();
 
 		void Draw(Listener * pListener) override final;
 
@@ -230,19 +232,26 @@ namespace LIB_CONTROL
 		UINT HitTest(Listener * pListener, POINT pt) override final;
 
 		void Sizing(RECT newRect) override;
+
+		CloseButton();
+
+		CloseButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+
 	};
 
 	class MiniButton : public Button
 	{
 	public:
 
-		MiniButton();
-
 		void Draw(Listener * pListener) override final;
 
 		UINT LButtonUp(Listener * pListener) override final;
 
 		void Sizing(RECT newRect) override;
+
+		MiniButton();
+
+		MiniButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 	};
 
 	class MaxButton : public Button // max and restore button...
@@ -259,13 +268,15 @@ namespace LIB_CONTROL
 
 		void setState(bool isMax);
 
-		MaxButton();
-
 		void Draw(Listener * pListener) override final;
 
 		UINT LButtonUp(Listener * pListener) override final;
 
 		void Sizing(RECT newRect) override;
+
+		MaxButton();
+
+		MaxButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 	};
 
 	///<TitleBar>±ÍÃ‚¿∏</TitleBar>
@@ -286,7 +297,9 @@ namespace LIB_CONTROL
 
 		void Sizing(RECT newRect) override final;
 
-		TitleBar(string text, wstring filename);
+		TitleBar(string text, RECT rc);
+
+		TitleBar(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 
 		~TitleBar();
 	};

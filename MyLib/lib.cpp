@@ -397,36 +397,17 @@ void BaseWindow::Destory()
 	 //DeleteObject(Rgn);
 
 	 //TitleBar
-	 TitleBar * pBar = new TitleBar("pSong's Window",L"1.png");
-	 pBar->AdjustRect(Conver::MyRect(0,0,mWidth-3*35,35));
-	 pBar->SetBackColor(RGB(65,65,68));
-	 pBar->SetHoverBackColor(RGB(116, 116, 119));
+	 TitleBar * pBar = new TitleBar("pSong's Window", Conver::MyRect(0, 0, mWidth - 3 * 35, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(116, 116, 119));
 	 ControlListener.attach(pBar);
-
 	 //Close Button
-	 CloseButton * pClo = new CloseButton();
-	 pClo->AdjustRect(Conver::MyRect(1024-35, 0, mWidth, 35));
-	 pClo->SetBackColor(RGB(65, 65, 68));
-	 pClo->SetForceColor(RGB(255,255,255));
-	 pClo->SetHoverBackColor(RGB(228,0,0));
+	 CloseButton * pClo = new CloseButton("",Conver::MyRect(1024 - 35, 0, mWidth, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(228, 0, 0));
 	 ControlListener.attach(pClo);
-
 	 //Max Button
-	 MaxButton * pMax = new MaxButton();
-	 pMax->AdjustRect(Conver::MyRect(1024 - 35*2, 0, mWidth-35, 35));
-	 pMax->SetBackColor(RGB(65, 65, 68));
-	 pMax->SetForceColor(RGB(255, 255, 255));
-	 pMax->SetHoverBackColor(RGB(216, 120, 17));
+	 MaxButton * pMax = new MaxButton("",Conver::MyRect(1024 - 35 * 2, 0, mWidth - 35,35),  RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0),RGB(216, 120, 17));
 	 ControlListener.attach(pMax);
-
 	 //Mini Button
-	 MiniButton * pMin = new MiniButton();
-	 pMin->AdjustRect(Conver::MyRect(1024 - 35*3, 0, mWidth-70, 35));
-	 pMin->SetBackColor(RGB(65, 65, 68));
-	 pMin->SetForceColor(RGB(255, 255, 255));
-	 pMin->SetHoverBackColor(RGB(216, 120, 17));
+	 MiniButton * pMin = new MiniButton("", Conver::MyRect(1024 - 35 * 3, 0, mWidth - 70,35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(216, 120, 17));
 	 ControlListener.attach(pMin);
-
  }
 
  void BaseWindow::OnDraw()

@@ -242,11 +242,12 @@ namespace LIB_CONTROL
 
 	}
 
-	Control::Control(RECT rc, string text, COLORREF forceColor, COLORREF backColor,COLORREF hoverBackColor):Control(text,rc)
+	Control::Control(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,rc)
 	{
 		SetForceColor(forceColor);
 		SetBackColor(backColor);
 		SetHoverBackColor(hoverBackColor);
+		SetHoverForceColor(hoverForceColor);
 	}
 
 	void Button::SetButtonDownInternal(bool isDownInternal)
@@ -297,6 +298,16 @@ namespace LIB_CONTROL
 		SetHoverForceColor(mForceColor);
 	}
 
+	Button::Button(string text, RECT rc):Control(text,rc),mBoardColor(mBackColor), mDrawBoard(false), BDownInternal(false)
+	{
+
+	}
+
+	Button::Button(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,
+		rc,forceColor,backColor,hoverForceColor,hoverBackColor), mBoardColor(mBackColor), mDrawBoard(false), BDownInternal(false)
+	{
+	}
+
 	bool ImageAdapter::SetImage(IPIC * img)
 	{
 		if (!img) return false;
@@ -335,13 +346,11 @@ namespace LIB_CONTROL
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
 			IS_ERROR_EXIT(!ret, "Draw TitleBar failed!");
-			//DrawManager.DrawPicture(this->pImage, Conver::MyRect(100, 100, 200, 200));
 		}
 		else
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), ALIGN_DEFAULT, true);
 			IS_ERROR_EXIT(!ret, "Draw  honvered TitleBar failed!");
-			//DrawManager.DrawPicture(L"1.png", Conver::MyRect(100, 100, 200, 200), Conver::MyRect(0, 0, 200, 200));
 		}
 		mIconSprite.Render();
 	}
@@ -371,15 +380,16 @@ namespace LIB_CONTROL
 		AdjustRect(Conver::MyRect(0, 0, RECTWIDTH(newRect)-3*titleBarHeight, titleBarHeight));
 	}
 
-	TitleBar::TitleBar(string text, wstring filename)
+	TitleBar::TitleBar(string text,RECT rc):Control(text,rc)
 	{
 		SetID(CONTROL_TYPE_TITLEBAR);
-		mText = text;
-		LoadFromFile(filename);
-
+		//test
 		mIconSprite.LoadEx(L"effect/hit/*.png");
 		mIconSprite.SetSpeed(30);
 	}
+
+	TitleBar::TitleBar(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text, rc, forceColor, backColor,
+		hoverForceColor, hoverBackColor) {}
 
 	TitleBar::~TitleBar()
 	{
@@ -389,6 +399,11 @@ namespace LIB_CONTROL
 	CloseButton::CloseButton()
 	{
 		SetID(CONTROL_TYPE_CLOSE_BUTTON);
+	}
+
+	CloseButton::CloseButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
+		hoverForceColor, hoverBackColor) {
+		CloseButton();
 	}
 
 	void CloseButton::Draw(Listener * pListener)
@@ -443,6 +458,11 @@ namespace LIB_CONTROL
 	MiniButton::MiniButton()
 	{
 		SetID(CONTROL_TYPE_MINI_BUTTON);
+	}
+
+	MiniButton::MiniButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
+		hoverForceColor, hoverBackColor) {
+		MiniButton();
 	}
 
 	void MiniButton::Draw(Listener * pListener)
@@ -521,6 +541,12 @@ namespace LIB_CONTROL
 	MaxButton::MaxButton():isMax(false)
 	{
 		SetID(CONTROL_TYPE_MAXI_BUTTON);
+	}
+
+	MaxButton::MaxButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
+		hoverForceColor, hoverBackColor) {
+		MaxButton();
+		isMax = false;
 	}
 
 	void MaxButton::Draw(Listener * pListener)
