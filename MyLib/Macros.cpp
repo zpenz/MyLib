@@ -177,7 +177,7 @@ namespace Conver
 	{
 		auto size = MultiByteToWideChar(CP_ACP,0,Achar,-1,NULL,0);
 		auto TheCoveredString = new wchar_t[size]();
-		auto ret = MultiByteToWideChar(CP_UTF8, 0, Achar, -1, TheCoveredString, size);
+		auto ret = MultiByteToWideChar(CP_ACP, 0, Achar, -1, TheCoveredString, size);
 		if (!ret) { SAFE_DELETE(TheCoveredString); return nullptr; }
 		return TheCoveredString;
 	}

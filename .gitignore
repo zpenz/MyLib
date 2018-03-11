@@ -9,3 +9,4 @@
 *.png
 /test/Debug/test.tlog/unsuccessfulbuild
 /lib.VC.db
+*.sdf

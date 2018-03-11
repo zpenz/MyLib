@@ -215,7 +215,8 @@ IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text, float fSize)
 		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fSize, L"en-us", &tempTextFormat);
 
 	IDWriteTextLayout * tempTextLayout = NULL;
-	hr = mWriteFactory->CreateTextLayout(Conver::ACharToWChar(const_cast<char *>(text.c_str())), text.length(), tempTextFormat, 100.0f, 0.0f,
+	auto wstrDesText = Conver::ACharToWChar(const_cast<char *>(text.c_str()));
+	hr = mWriteFactory->CreateTextLayout(wstrDesText, wcslen(wstrDesText), tempTextFormat, 100.0f, 0.0f,
 		&tempTextLayout);
 	IS_ERROR_EXIT(FAILED(hr), "¥¥Ω®TextLayout ß∞‹!");
 	return tempTextLayout;

@@ -39,17 +39,24 @@ namespace LIB_CONTROL
 	class DragAdapter
 	{
 	protected:
-		bool mBDraging;
+
+		bool mCanDrag; //Drag
+
+		RECT mRect;   //Rect
 
 		int mLeft, mTop;
 
 	public:
 		bool IsDraging();
 
-		virtual void Drag(Listener * pListener,POINT mousePoint)=0;
+		void SetDrag(bool DragState);
+
+		virtual void Drag(Listener * pListener, int dx, int dy); ///dx dy 偏移
+
+		DragAdapter();
 	};
 
-	class Control: public ImageAdapter
+	class Control: public ImageAdapter,public DragAdapter
 	{
 
 	protected:
@@ -70,9 +77,11 @@ namespace LIB_CONTROL
 
 		bool mActive;
 
-		bool mCanStretch; //拉伸控件
+		bool mCanStretch; //Stretch
 
 		UINT mControlTypeId;
+
+		bool mBDownInternal;
 
 		void SetID(UINT typeId);
 
@@ -151,21 +160,26 @@ namespace LIB_CONTROL
 	{
 	protected:
 
-		list<Control *>  mControl;
+		list<Control *>  mControl; //mControl 所有坐标相对于 最外面的包围矩形
+
+		Listener * pmListener;
 
 	public:
 
+		bool Attach(Listener * pListener);
+
 		bool Add(Control * pControl);
 
-		virtual void Draw(Listener * pListener);
+		virtual void Draw();
 
-		virtual UINT HitTest(Listener * pListener, POINT pt);
+		virtual UINT HitTest( POINT pt);
 
-		virtual void Hover(Listener * pListener, POINT pt);
+		virtual void Hover(POINT pt);
 
-		virtual UINT LButtonDown(Listener * pListener);
+		virtual UINT LButtonDown();
 
-		virtual UINT LButtonUp(Listener * pListener);
+		virtual UINT LButtonUp();
+
 	};
 
 	class Listener
@@ -192,7 +206,7 @@ namespace LIB_CONTROL
 
 		void ChangeSize(RECT newRect);
 
-		void OnDrag(POINT newPt);
+		void OnDrag(int dx,int dy);
 
 		list<Control *> & Obj();
 	};
@@ -204,8 +218,6 @@ namespace LIB_CONTROL
 		COLORREF mBoardColor;
 
 		bool mDrawBoard;
-
-		bool BDownInternal;
 
 	public:
 

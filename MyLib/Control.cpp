@@ -6,7 +6,25 @@ namespace LIB_CONTROL
 
 	bool DragAdapter::IsDraging()
 	{
-		return mBDraging;
+		return mCanDrag;
+	}
+
+	void DragAdapter::SetDrag(bool DragState)
+	{
+		mCanDrag = DragState;
+	}
+
+	void DragAdapter::Drag(Listener * pListener, int dx,int dy)
+	{
+		if (!mCanDrag) return;
+
+		auto width  = RECTWIDTH(mRect);
+		auto height = RECTHEIGHT(mRect);
+		mRect = Conver::RectOffSet(mRect, dx,dy,dx+width,dy+height);
+	}
+
+	DragAdapter::DragAdapter():mCanDrag(false)
+	{
 	}
 
 	Control::~Control()
@@ -99,6 +117,14 @@ namespace LIB_CONTROL
 	{
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->Sizing(newRect);
+		});
+	}
+
+	void Listener::OnDrag(int dx,int dy)
+	{
+		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
+			if (pControl->IsMouseInteral())
+				pControl->Drag(this, dx, dy);
 		});
 	}
 
@@ -244,9 +270,8 @@ namespace LIB_CONTROL
 	
 	Control::Control(string text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
-		mAlignType(ALIGN_CENTER_V|ALIGN_CENTER_H),mCanStretch(false)
+		mAlignType(ALIGN_CENTER_V|ALIGN_CENTER_H),mCanStretch(false),mBDownInternal(false)
 	{
-
 	}
 
 	Control::Control(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,rc)
@@ -255,11 +280,12 @@ namespace LIB_CONTROL
 		SetBackColor(backColor);
 		SetHoverBackColor(hoverBackColor);
 		SetHoverForceColor(hoverForceColor);
+		mBDownInternal = false;
 	}
 
 	void Button::SetButtonDownInternal(bool isDownInternal)
 	{
-		BDownInternal = isDownInternal;
+		mBDownInternal = isDownInternal;
 	}
 
 	void Button::SetBoardColor(COLORREF cBoardColor)
@@ -274,7 +300,16 @@ namespace LIB_CONTROL
 
 	void Button::Draw(Listener * pListener)
 	{
-
+		if (!mMouseInternal)
+		{
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
+			IS_ERROR_EXIT(!ret, "Draw Button failed!");
+		}
+		else
+		{
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), ALIGN_DEFAULT, true);
+			IS_ERROR_EXIT(!ret, "Draw  honvered Button failed!");
+		}
 	}
 
 	void Button::Hover(Listener * pListener,POINT pt)
@@ -284,13 +319,13 @@ namespace LIB_CONTROL
 
 	UINT Button::LButtonDown(Listener * pListener)
 	{
-		SetButtonDownInternal(false);
-		if (IsMouseInteral()) SetButtonDownInternal(true);
+		if (mMouseInternal) SetButtonDownInternal(true);
 		return SHOULD_DO_NOTHING;
 	}
 
 	UINT Button::LButtonUp(Listener * pListener)
 	{
+		if (mMouseInternal) SetButtonDownInternal(false);
 		return SHOULD_DO_NOTHING;
 	}
 
@@ -299,19 +334,18 @@ namespace LIB_CONTROL
 		return HTCLIENT;
 	}
 
-	Button::Button():mBoardColor(mBackColor),mDrawBoard(false),BDownInternal(false)// ±ß¿òÊ¹ÓÃ±³¾°ÑÕÉ«
+	Button::Button():mBoardColor(mBackColor),mDrawBoard(false)// ±ß¿òÊ¹ÓÃ±³¾°ÑÕÉ«
 	{
 		SetID(CONTROL_TYPE_BUTTON);
 		SetHoverForceColor(mForceColor);
 	}
 
-	Button::Button(string text, RECT rc):Control(text,rc),mBoardColor(mBackColor), mDrawBoard(false), BDownInternal(false)
+	Button::Button(string text, RECT rc):Control(text,rc),mBoardColor(mBackColor), mDrawBoard(false)
 	{
-
 	}
 
 	Button::Button(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,
-		rc,forceColor,backColor,hoverForceColor,hoverBackColor), mBoardColor(mBackColor), mDrawBoard(false), BDownInternal(false)
+		rc,forceColor,backColor,hoverForceColor,hoverBackColor), mBoardColor(mBackColor), mDrawBoard(false)
 	{
 	}
 
@@ -390,13 +424,15 @@ namespace LIB_CONTROL
 	TitleBar::TitleBar(string text,RECT rc):Control(text,rc)
 	{
 		SetID(CONTROL_TYPE_TITLEBAR);
-		//test
-		mIconSprite.LoadEx(L"effect/hit/*.png");
-		mIconSprite.SetSpeed(30);
 	}
 
 	TitleBar::TitleBar(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text, rc, forceColor, backColor,
-		hoverForceColor, hoverBackColor) {}
+		hoverForceColor, hoverBackColor) {
+		//test
+		SetID(CONTROL_TYPE_TITLEBAR);
+		mIconSprite.LoadEx(L"effect/hit/*.png");
+		mIconSprite.SetSpeed(30);
+	}
 
 	TitleBar::~TitleBar()
 	{
@@ -447,7 +483,7 @@ namespace LIB_CONTROL
 
 	UINT CloseButton::LButtonUp(Listener * pListener)
 	{
-		if (BDownInternal) return SHOULD_CLOSE_WINDOW;
+		if (mBDownInternal) return SHOULD_CLOSE_WINDOW;
 		return SHOULD_DO_NOTHING;
 	}
 
@@ -492,7 +528,7 @@ namespace LIB_CONTROL
 
 	UINT MiniButton::LButtonUp(Listener * pListener)
 	{
-		if (BDownInternal) return SHOULD_MINI_WINDOW;
+		if (mBDownInternal) return SHOULD_MINI_WINDOW;
 		return SHOULD_DO_NOTHING;
 	}
 
@@ -567,7 +603,7 @@ namespace LIB_CONTROL
 
 	UINT MaxButton::LButtonUp(Listener * pListener)
 	{
-		if (BDownInternal) 
+		if (mBDownInternal) 
 		{
 			if (isMax) 
 			{
@@ -589,6 +625,12 @@ namespace LIB_CONTROL
 		AdjustRect(Conver::MyRect(RECTWIDTH(newRect) - 2*btnHeight, 0, RECTWIDTH(newRect) - btnHeight, btnHeight));
 	}
 
+	bool ComposeControl::Attach(Listener * pListener)
+	{
+		pmListener = pListener;
+		return false;
+	}
+
 	bool ComposeControl::Add(Control * pControl)
 	{
 		auto it = std::find_if(mControl.begin(), mControl.end(), [&pControl](Control * ItControl) {
@@ -599,40 +641,40 @@ namespace LIB_CONTROL
 		return true;
 	}
 
-	void ComposeControl::Draw(Listener * pListener)
+	void ComposeControl::Draw()
 	{
-		for_each(mControl.begin(), mControl.end(), [&pListener](Control * ItControl){
-			ItControl->Draw(pListener);
+		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl){
+			ItControl->Draw(pmListener);
 		});
 	}
 
-	UINT ComposeControl::HitTest(Listener * pListener, POINT pt)
+	UINT ComposeControl::HitTest(POINT pt)
 	{
-		for_each(mControl.begin(), mControl.end(), [&pListener,pt](Control * ItControl) {
-			ItControl->HitTest(pListener,pt);
+		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
+			ItControl->HitTest(pmListener,pt);
 		});
 		return 0;
 	}
 
-	void ComposeControl::Hover(Listener * pListener, POINT pt)
+	void ComposeControl::Hover(POINT pt)
 	{
-		for_each(mControl.begin(), mControl.end(), [&pListener, pt](Control * ItControl) {
-			ItControl->Hover(pListener, pt);
+		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
+			ItControl->Hover(pmListener, pt);
 		});
 	}
 
-	UINT ComposeControl::LButtonDown(Listener * pListener)
+	UINT ComposeControl::LButtonDown()
 	{
-		for_each(mControl.begin(), mControl.end(), [&pListener](Control * ItControl) {
-			ItControl->LButtonDown(pListener);
+		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
+			ItControl->LButtonDown(pmListener);
 		});		
 		return 0;
 	}
 
-	UINT ComposeControl::LButtonUp(Listener * pListener)
+	UINT ComposeControl::LButtonUp()
 	{
-		for_each(mControl.begin(), mControl.end(), [&pListener](Control * ItControl) {
-			ItControl->LButtonUp(pListener);
+		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
+			ItControl->LButtonUp(pmListener);
 		});
 		return 0;
 	}

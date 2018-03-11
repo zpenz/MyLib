@@ -326,6 +326,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_KEYDOWN:
 			break;
 		case WM_MOUSEMOVE:
+			window->OnMouseMove(wParam,lParam);
 			break;
 		case WM_NCLBUTTONDBLCLK:
 			return 0;
@@ -408,6 +409,11 @@ void BaseWindow::Destory()
 	 //Mini Button
 	 MiniButton * pMin = new MiniButton("", Conver::MyRect(1024 - 35 * 3, 0, mWidth - 70,35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(216, 120, 17));
 	 mListener.attach(pMin);
+	 //Test Button
+	 Button * ptest = new Button("¹þ¹þ", Conver::MyRect(100, 100, 150, 125), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
+	 ptest->SetDrag(true);
+	 mListener.attach(ptest);
+
  }
 
  void BaseWindow::OnDraw()
@@ -508,17 +514,22 @@ void BaseWindow::Destory()
 		 DrawManager.ReSize(RECTWIDTH(RestoreRect), RECTHEIGHT(RestoreRect));
 	 }
 
-	 mMouse.mMouseState = MOUSE_STATE_IDLE;
+	 if(!mMouse.mMouseState & MOUSE_STATE_MOUSEMOVE)  mMouse.mMouseState = MOUSE_STATE_IDLE;
  }
 
  void BaseWindow::OnMouseMove(WPARAM wParam, LPARAM lParam)
  {
 	 auto pt = MAKEPOINTS(lParam);
 	 mMouse.mMouseState |= MOUSE_STATE_MOUSEMOVE;
-	 if (mMouse.mMouseState & MOUSE_STATE_LEFTBUTTONDOWN) mListener.OnDrag(Conver::Point(pt.x,pt.y));
+
+	 if (mMouse.mMouseState & MOUSE_STATE_LEFTBUTTONDOWN) 
+		 mListener.OnDrag(pt.x-mMouse.x,mMouse.y-pt.y);
+	 if (mMouse.mMouseState & MOUSE_STATE_LEFTBUTTONUP) mMouse.mMouseState = MOUSE_STATE_IDLE;
 
 	 mMouse.x = pt.x;
 	 mMouse.y = pt.y;
+
+	 mMouse.mMouseState = MOUSE_STATE_IDLE;
  }
 
 
