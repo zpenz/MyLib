@@ -78,7 +78,7 @@ namespace Conver
 		return tempRC;
 	}
 
-	RECT RectOffSet(RECT srcRect, LONG lLeft, LONG lTop, LONG lRight, LONG lBottom)
+	RECT  RectOffSet(RECT srcRect, LONG lLeft, LONG lTop, LONG lRight, LONG lBottom)
 	{
 		srcRect = { srcRect.left + lLeft, srcRect.top + lTop,
 			srcRect.right + lRight, srcRect.bottom + lBottom };

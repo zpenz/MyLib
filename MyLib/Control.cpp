@@ -9,18 +9,14 @@ namespace LIB_CONTROL
 		return mCanDrag;
 	}
 
+	void DragAdapter::Stop()
+	{
+		mbDraging = false;
+	}
+
 	void DragAdapter::SetDrag(bool DragState)
 	{
 		mCanDrag = DragState;
-	}
-
-	void DragAdapter::Drag(Listener * pListener, int dx,int dy)
-	{
-		if (!mCanDrag) return;
-
-		auto width  = RECTWIDTH(mRect);
-		auto height = RECTHEIGHT(mRect);
-		mRect = Conver::RectOffSet(mRect, dx,dy,dx+width,dy+height);
 	}
 
 	DragAdapter::DragAdapter():mCanDrag(false)
@@ -82,9 +78,9 @@ namespace LIB_CONTROL
 		Control * pTempControl = nullptr;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 				if(Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
-				  if(pControl->LButtonDown(this)!=SHOULD_DO_NOTHING) pTempControl = pControl;
+				  if(pControl->LButtonDown(this,pt)!=SHOULD_DO_NOTHING) pTempControl = pControl;
 		});
-		if(pTempControl != nullptr) return pTempControl->LButtonDown(this);
+		if(pTempControl != nullptr) return pTempControl->LButtonDown(this,pt);
 		return SHOULD_DO_NOTHING;
 	}
 
@@ -92,8 +88,9 @@ namespace LIB_CONTROL
 	{
 		UINT ret = SHOULD_DO_NOTHING;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
+			pControl->Stop();//Drag End
 			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
-				ret = pControl->LButtonUp(this);
+				ret = pControl->LButtonUp(this,pt);
 				if (ret != SHOULD_DO_NOTHING) return ret; 
 				return ret;
 		});
@@ -113,10 +110,10 @@ namespace LIB_CONTROL
 		return pTempControl->HitTest(this, pt);
 	}
 
-	void Listener::MouseMove()
+	void Listener::MouseMove(POINT pt)
 	{
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * ItControl) {
-			if(ItControl->IsMouseInteral()) ItControl->MouseMove(this);
+			if (ItControl->IsMouseInteral()) ItControl->MouseMove(this,pt);
 		});
 		return;
 	}
@@ -138,34 +135,34 @@ namespace LIB_CONTROL
 		mControlTypeId = typeId;
 	}
 
-	UINT Control::LButtonDown(Listener * pListener)
+	UINT Control::LButtonDown(Listener * pListener,POINT pt)
 	{
-		if (mMouseInternal)
-		{
-			mBDownInternal = true;
-			::GetCursorPos(&mouseDragStartPoint);
-			mbDraging = true;
-		}
+		mBDownInternal = true;
+		mbDraging = true;
+		mouseDragStartPoint = pt;
 		return 0;
 	}
 
-	UINT Control::LButtonUp(Listener * pListener)
+	UINT Control::LButtonUp(Listener * pListener,POINT pt)
 	{
-		if (mMouseInternal)
-		{
-			mbDraging = false;
-		}
+		mbDraging = false;
 		return 0;
 	}
 
-	void Control::MouseMove(Listener * pListener)
+	void Control::MouseMove(Listener * pListener,POINT pt)
 	{
-		if (mbDraging)
-		{
-			POINT currentPos;
-			::GetCursorPos(&currentPos);
-			Drag(pListener,currentPos.x-mouseDragStartPoint.x,currentPos.y-mouseDragStartPoint.y);
-		}
+		if (!mMouseInternal) return;
+		if (!mbDraging) return;
+		Drag(pListener,pt.x-mouseDragStartPoint.x,pt.y-mouseDragStartPoint.y);
+		mouseDragStartPoint = pt;
+
+	}
+
+	void Control::Drag(Listener * pListener, int dx, int dy)
+	{
+		if (!mCanDrag) return;
+		auto rWidth = width(); auto rHeight = height();
+		mRect = Conver::RectOffSet(mRect,dx,dy,dx,dy);
 	}
 
 	void Control::Sizing(RECT newRect)
@@ -421,16 +418,6 @@ namespace LIB_CONTROL
 	{
 	}
 
-	UINT TitleBar::LButtonDown(Listener * pListener)
-	{
-		return SHOULD_DO_NOTHING;
-	}
-
-	UINT TitleBar::LButtonUp(Listener * pListener)
-	{
-		return SHOULD_DO_NOTHING;
-	}
-
 	UINT TitleBar::HitTest(Listener * pListener, POINT pt)
 	{
 		return HTCAPTION;
@@ -495,14 +482,7 @@ namespace LIB_CONTROL
 
 	}
 
-	UINT CloseButton::LButtonDown(Listener * pListener)
-	{
-		SetButtonDownInternal(false);
-		if (IsMouseInteral()) SetButtonDownInternal(true);
-		return SHOULD_DO_NOTHING;
-	}
-
-	UINT CloseButton::LButtonUp(Listener * pListener)
+	UINT CloseButton::LButtonUp(Listener * pListener,POINT pt)
 	{
 		if (mBDownInternal) return SHOULD_CLOSE_WINDOW;
 		return SHOULD_DO_NOTHING;
@@ -547,7 +527,7 @@ namespace LIB_CONTROL
 	}
 
 
-	UINT MiniButton::LButtonUp(Listener * pListener)
+	UINT MiniButton::LButtonUp(Listener * pListener,POINT pt)
 	{
 		if (mBDownInternal) return SHOULD_MINI_WINDOW;
 		return SHOULD_DO_NOTHING;
@@ -622,7 +602,7 @@ namespace LIB_CONTROL
 		else DrawRestoreImg();
 	}
 
-	UINT MaxButton::LButtonUp(Listener * pListener)
+	UINT MaxButton::LButtonUp(Listener * pListener,POINT pt)
 	{
 		if (mBDownInternal) 
 		{
@@ -682,30 +662,6 @@ namespace LIB_CONTROL
 		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
 			ItControl->Hover(pmListener, pt);
 		});
-	}
-
-	UINT ComposeControl::LButtonDown()
-	{
-		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
-			ItControl->LButtonDown(pmListener);
-		});		
-		return 0;
-	}
-
-	UINT ComposeControl::LButtonUp()
-	{
-		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
-			ItControl->LButtonUp(pmListener);
-		});
-		return 0;
-	}
-
-	void ComposeControl::MouseMove()
-	{
-		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
-			ItControl->MouseMove(pmListener);
-		});
-		return ;
 	}
 
 	void ImageButton::Draw(Listener * pListener)

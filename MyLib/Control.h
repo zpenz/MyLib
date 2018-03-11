@@ -44,14 +44,14 @@ namespace LIB_CONTROL
 
 		bool mbDraging; //Draging
 
-		RECT mRect;   //Rect
-
 		int mLeft, mTop;
 
-		virtual void Drag(Listener * pListener, int dx, int dy); ///dx dy 偏移
+		virtual void Drag(Listener * pListener, int dx, int dy) = 0; ///dx dy 偏移
 
 	public:
 		bool IsDraging();
+
+		void Stop();
 
 		void SetDrag(bool DragState);
 
@@ -97,11 +97,13 @@ namespace LIB_CONTROL
 
 		virtual UINT HitTest(Listener * pListener, POINT pt) = 0;
 
-		virtual UINT LButtonDown(Listener * pListener);
+		virtual UINT LButtonDown(Listener * pListener,POINT pt);
 
-		virtual UINT LButtonUp(Listener * pListener);
+		virtual UINT LButtonUp(Listener * pListener,POINT pt);
 
-		virtual void MouseMove(Listener * pListener); //mouse move
+		virtual void MouseMove(Listener * pListener,POINT pt); //mouse move ///pt是关于Client的
+
+		void Drag(Listener * pListener, int dx, int dy) override;
 
 		virtual void Sizing(RECT newRect);
 
@@ -182,12 +184,6 @@ namespace LIB_CONTROL
 
 		virtual void Hover(POINT pt);
 
-		virtual UINT LButtonDown();
-
-		virtual UINT LButtonUp();
-
-		virtual void MouseMove();
-
 	};
 
 	class Listener
@@ -212,7 +208,7 @@ namespace LIB_CONTROL
 
 		UINT HitTest(POINT pt);
 
-		void MouseMove();
+		void MouseMove(POINT pt);
 
 		void ChangeSize(RECT newRect);
 
@@ -256,9 +252,7 @@ namespace LIB_CONTROL
 
 		void Hover(Listener * pListener, POINT pt) override final;
 
-		UINT LButtonDown(Listener * pListener) override final;
-
-		UINT LButtonUp(Listener * pListener) override final;
+		UINT LButtonUp(Listener * pListener,POINT pt) override final;
 
 		UINT HitTest(Listener * pListener, POINT pt) override final;
 
@@ -276,7 +270,7 @@ namespace LIB_CONTROL
 
 		void Draw(Listener * pListener) override final;
 
-		UINT LButtonUp(Listener * pListener) override final;
+		UINT LButtonUp(Listener * pListener,POINT pt) override final;
 
 		void Sizing(RECT newRect) override;
 
@@ -301,7 +295,7 @@ namespace LIB_CONTROL
 
 		void Draw(Listener * pListener) override final;
 
-		UINT LButtonUp(Listener * pListener) override final;
+		UINT LButtonUp(Listener * pListener,POINT pt) override final;
 
 		void Sizing(RECT newRect) override;
 
@@ -319,10 +313,6 @@ namespace LIB_CONTROL
 		void Draw(Listener * pListener) override;
 
 		void Hover(Listener * pListener, POINT pt) override;
-
-		UINT LButtonDown(Listener * pListener) override;
-
-		UINT LButtonUp(Listener * pListener) override;
 
 		UINT HitTest(Listener * pListener,POINT pt) override;
 

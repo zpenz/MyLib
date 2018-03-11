@@ -410,7 +410,7 @@ void BaseWindow::Destory()
 	 MiniButton * pMin = new MiniButton("", Conver::MyRect(1024 - 35 * 3, 0, mWidth - 70,35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(216, 120, 17));
 	 mListener.attach(pMin);
 	 //Test Button
-	 Button * ptest = new Button("¹þ¹þ", Conver::MyRect(100, 100, 150, 125), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
+	 Button * ptest = new Button("ÅÖçù", Conver::MyRect(100, 100, 150, 125), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
 	 ptest->SetDrag(true);
 	 mListener.attach(ptest);
 
@@ -514,7 +514,9 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnMouseMove(WPARAM wParam, LPARAM lParam)
  {
-	 mListener.MouseMove();
+	 auto mousePt =  MAKEPOINTS(lParam);
+	 mMouse.x = mousePt.x; mMouse.y = mousePt.y;
+	 mListener.MouseMove(Conver::Point(mousePt.x,mousePt.y));
  }
 
 
