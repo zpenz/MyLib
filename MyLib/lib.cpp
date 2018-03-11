@@ -493,10 +493,6 @@ void BaseWindow::Destory()
 	 static RECT RestoreRect; //保存当前区域
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
 
-	 mMouse.x = pt.x;
-	 mMouse.y = pt.y;
-	 mMouse.mMouseState = MOUSE_STATE_LEFTBUTTONUP;
-
 	 auto ret = mListener.LButtonUp(pt);
 	 if (ret == SHOULD_CLOSE_WINDOW) SendMessage(mBaseHwnd,WM_CLOSE,0,0);
 	 if (ret == SHOULD_MINI_WINDOW)  ShowWindow(mBaseHwnd, SW_MINIMIZE);
@@ -514,22 +510,11 @@ void BaseWindow::Destory()
 		 DrawManager.ReSize(RECTWIDTH(RestoreRect), RECTHEIGHT(RestoreRect));
 	 }
 
-	 if(!mMouse.mMouseState & MOUSE_STATE_MOUSEMOVE)  mMouse.mMouseState = MOUSE_STATE_IDLE;
  }
 
  void BaseWindow::OnMouseMove(WPARAM wParam, LPARAM lParam)
  {
-	 auto pt = MAKEPOINTS(lParam);
-	 mMouse.mMouseState |= MOUSE_STATE_MOUSEMOVE;
-
-	 if (mMouse.mMouseState & MOUSE_STATE_LEFTBUTTONDOWN) 
-		 mListener.OnDrag(pt.x-mMouse.x,mMouse.y-pt.y);
-	 if (mMouse.mMouseState & MOUSE_STATE_LEFTBUTTONUP) mMouse.mMouseState = MOUSE_STATE_IDLE;
-
-	 mMouse.x = pt.x;
-	 mMouse.y = pt.y;
-
-	 mMouse.mMouseState = MOUSE_STATE_IDLE;
+	 mListener.MouseMove();
  }
 
 

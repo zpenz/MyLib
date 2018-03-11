@@ -145,6 +145,8 @@ namespace Conver
 
 	RECT ClipRectBoard(RECT srcRect,LONG dx,LONG dy);
 
+	RECT SubRect(RECT srcRect,RECT desRect); // sub Rect
+
 	RECT ClipRectBoardEx(RECT srcRect, LONG lLeft, LONG lTop,LONG lRight,LONG lBottom);
 
 	RECT RectOffSet(RECT srcRect, LONG lLeft, LONG lTop, LONG lRight, LONG lBottom); // default + 

@@ -113,18 +113,18 @@ namespace LIB_CONTROL
 		return pTempControl->HitTest(this, pt);
 	}
 
+	void Listener::MouseMove()
+	{
+		for_each(mpControl.begin(), mpControl.end(), [&](Control * ItControl) {
+			if(ItControl->IsMouseInteral()) ItControl->MouseMove(this);
+		});
+		return;
+	}
+
 	void Listener::ChangeSize(RECT newRect)
 	{
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->Sizing(newRect);
-		});
-	}
-
-	void Listener::OnDrag(int dx,int dy)
-	{
-		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
-			if (pControl->IsMouseInteral())
-				pControl->Drag(this, dx, dy);
 		});
 	}
 
@@ -136,6 +136,36 @@ namespace LIB_CONTROL
 	void Control::SetID(UINT typeId)
 	{
 		mControlTypeId = typeId;
+	}
+
+	UINT Control::LButtonDown(Listener * pListener)
+	{
+		if (mMouseInternal)
+		{
+			mBDownInternal = true;
+			::GetCursorPos(&mouseDragStartPoint);
+			mbDraging = true;
+		}
+		return 0;
+	}
+
+	UINT Control::LButtonUp(Listener * pListener)
+	{
+		if (mMouseInternal)
+		{
+			mbDraging = false;
+		}
+		return 0;
+	}
+
+	void Control::MouseMove(Listener * pListener)
+	{
+		if (mbDraging)
+		{
+			POINT currentPos;
+			::GetCursorPos(&currentPos);
+			Drag(pListener,currentPos.x-mouseDragStartPoint.x,currentPos.y-mouseDragStartPoint.y);
+		}
 	}
 
 	void Control::Sizing(RECT newRect)
@@ -185,7 +215,7 @@ namespace LIB_CONTROL
 
 	COLORREF Control::BackColor() const
 	{
-		return mBackColor;
+		return mBackColor; 
 	}
 
 	void Control::SetBackColor(COLORREF color)
@@ -265,13 +295,14 @@ namespace LIB_CONTROL
 
 	Control::Control():Control("")
 	{
-
+		mbDraging = false;
 	}
 	
 	Control::Control(string text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
 		mAlignType(ALIGN_CENTER_V|ALIGN_CENTER_H),mCanStretch(false),mBDownInternal(false)
 	{
+		mbDraging = false;
 	}
 
 	Control::Control(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,rc)
@@ -281,6 +312,7 @@ namespace LIB_CONTROL
 		SetHoverBackColor(hoverBackColor);
 		SetHoverForceColor(hoverForceColor);
 		mBDownInternal = false;
+		mbDraging = false;
 	}
 
 	void Button::SetButtonDownInternal(bool isDownInternal)
@@ -317,17 +349,6 @@ namespace LIB_CONTROL
 
 	}
 
-	UINT Button::LButtonDown(Listener * pListener)
-	{
-		if (mMouseInternal) SetButtonDownInternal(true);
-		return SHOULD_DO_NOTHING;
-	}
-
-	UINT Button::LButtonUp(Listener * pListener)
-	{
-		if (mMouseInternal) SetButtonDownInternal(false);
-		return SHOULD_DO_NOTHING;
-	}
 
 	UINT Button::HitTest(Listener * pListener,POINT pt)
 	{
@@ -677,6 +698,14 @@ namespace LIB_CONTROL
 			ItControl->LButtonUp(pmListener);
 		});
 		return 0;
+	}
+
+	void ComposeControl::MouseMove()
+	{
+		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
+			ItControl->MouseMove(pmListener);
+		});
+		return ;
 	}
 
 	void ImageButton::Draw(Listener * pListener)

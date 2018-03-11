@@ -42,16 +42,18 @@ namespace LIB_CONTROL
 
 		bool mCanDrag; //Drag
 
+		bool mbDraging; //Draging
+
 		RECT mRect;   //Rect
 
 		int mLeft, mTop;
+
+		virtual void Drag(Listener * pListener, int dx, int dy); ///dx dy 偏移
 
 	public:
 		bool IsDraging();
 
 		void SetDrag(bool DragState);
-
-		virtual void Drag(Listener * pListener, int dx, int dy); ///dx dy 偏移
 
 		DragAdapter();
 	};
@@ -85,18 +87,22 @@ namespace LIB_CONTROL
 
 		void SetID(UINT typeId);
 
+		POINT mouseDragStartPoint;
+
 	public:
 
 		virtual void Draw(Listener * pListener) = 0;
 
 		virtual void Hover(Listener * pListener, POINT pt) = 0;
 
-		virtual UINT LButtonDown(Listener * pListener) = 0;
+		virtual UINT HitTest(Listener * pListener, POINT pt) = 0;
 
-		virtual UINT LButtonUp(Listener * pListener) = 0;
+		virtual UINT LButtonDown(Listener * pListener);
 
-		virtual UINT HitTest(Listener * pListener,POINT pt) = 0;
-		
+		virtual UINT LButtonUp(Listener * pListener);
+
+		virtual void MouseMove(Listener * pListener); //mouse move
+
 		virtual void Sizing(RECT newRect);
 
 		bool Stretch(); //是否是一个随着窗口大小变化而改变的控件
@@ -180,6 +186,8 @@ namespace LIB_CONTROL
 
 		virtual UINT LButtonUp();
 
+		virtual void MouseMove();
+
 	};
 
 	class Listener
@@ -204,9 +212,9 @@ namespace LIB_CONTROL
 
 		UINT HitTest(POINT pt);
 
-		void ChangeSize(RECT newRect);
+		void MouseMove();
 
-		void OnDrag(int dx,int dy);
+		void ChangeSize(RECT newRect);
 
 		list<Control *> & Obj();
 	};
@@ -230,10 +238,6 @@ namespace LIB_CONTROL
 		virtual void Draw(Listener * pListener) override;
 
 		virtual void Hover(Listener * pListener, POINT pt) override;
-
-		virtual UINT LButtonDown(Listener * pListener) override;
-
-		virtual UINT LButtonUp(Listener * pListener) override;
 
 		virtual UINT HitTest(Listener * pListener,POINT pt) override;
 

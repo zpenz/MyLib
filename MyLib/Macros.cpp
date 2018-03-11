@@ -64,6 +64,13 @@ namespace Conver
 		return tempRC;
 	}
 
+	RECT SubRect(RECT srcRect, RECT desRect)
+	{
+		RECT tempRect = {srcRect.left-desRect.left,srcRect.top-desRect.top,srcRect.right-desRect.right,
+		srcRect.bottom-desRect.bottom};
+		return tempRect;
+	}
+
 	RECT ClipRectBoardEx(RECT srcRect, LONG lLeft, LONG lTop, LONG lRight, LONG lBottom)
 	{
 		RECT tempRC = { srcRect.left - lLeft ,srcRect.top - lTop ,
