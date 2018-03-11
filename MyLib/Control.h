@@ -85,6 +85,8 @@ namespace LIB_CONTROL
 
 		bool mBDownInternal;
 
+		bool mOwnCaret;
+
 		void SetID(UINT typeId);
 
 		POINT mouseDragStartPoint;
@@ -104,6 +106,10 @@ namespace LIB_CONTROL
 		virtual void MouseMove(Listener * pListener,POINT pt); //mouse move ///pt是关于Client的
 
 		void Drag(Listener * pListener, int dx, int dy) override;
+
+		virtual void Focus(Listener * pListener,HWND hWnd);
+
+		virtual void KillFocus(Listener * pListener);
 
 		virtual void Sizing(RECT newRect);
 
@@ -151,6 +157,8 @@ namespace LIB_CONTROL
 
 		void SetInternal(bool MouseInternal);
 
+		void Caret();
+
 		LONG width() const;
 
 		LONG height() const;
@@ -164,35 +172,18 @@ namespace LIB_CONTROL
 		virtual ~Control();
 	};
 
-	class ComposeControl:public Control
-	{
-	protected:
-
-		list<Control *>  mControl; //mControl 所有坐标相对于 最外面的包围矩形
-
-		Listener * pmListener;
-
-	public:
-
-		bool Attach(Listener * pListener);
-
-		bool Add(Control * pControl);
-
-		virtual void Draw();
-
-		virtual UINT HitTest( POINT pt);
-
-		virtual void Hover(POINT pt);
-
-	};
-
+	
 	class Listener
 	{
 	protected:
 
 		list<Control *> mpControl;
 
+		HWND mListenedWindow;
+
 	public:
+
+		bool attachWindow(HWND hWnd);
 
 		bool attach(Control * pControl);
 
@@ -304,27 +295,6 @@ namespace LIB_CONTROL
 		MaxButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 	};
 
-	///<TitleBar>标题栏</TitleBar>
-	class TitleBar : public Control
-	{
-		Sprite::Sprite mIconSprite;
-
-	public:
-		void Draw(Listener * pListener) override;
-
-		void Hover(Listener * pListener, POINT pt) override;
-
-		UINT HitTest(Listener * pListener,POINT pt) override;
-
-		void Sizing(RECT newRect) override final;
-
-		TitleBar(string text, RECT rc);
-
-		TitleBar(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
-
-		~TitleBar();
-	};
-
 	///<ImageButton>图形按钮</ImageButton>
 	class ImageButton : public Button
 	{
@@ -337,6 +307,75 @@ namespace LIB_CONTROL
 		ImageButton(wstring picLoc,RECT rImgRect);
 
 		ImageButton(IPIC * pBitmap, RECT rImgRect);
+	};
+
+	///<TitleBar>标题栏</TitleBar>
+	class TitleBar : public Control
+	{
+		Sprite::Sprite mIconSprite;
+
+	public:
+		void Draw(Listener * pListener) override;
+
+		void Hover(Listener * pListener, POINT pt) override;
+
+		UINT HitTest(Listener * pListener, POINT pt) override;
+
+		void Sizing(RECT newRect) override final;
+
+		TitleBar(string text, RECT rc);
+
+		TitleBar(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+
+		~TitleBar();
+	};
+
+	///<EditBox>编辑框</EditBox>
+	class EditBox : public Control
+	{
+		float mFrontSize;
+
+		string mFrontName;
+
+	public:
+
+		void ChangeFrontSize(float newSize);
+
+		void ChangeFrontName(string newFrontName);
+
+		void Draw(Listener * pListener) override;
+
+		void Hover(Listener * pListener, POINT pt) override;
+
+		UINT HitTest(Listener * pListener, POINT pt) override;
+
+		EditBox(RECT rc, string defaultText = "");
+
+		EditBox(string defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+
+	};
+
+	///<ComposeControl>组合控件</ComposeControl>
+	class ComposeControl :public Control
+	{
+	protected:
+
+		list<ComposeControl *>  mControl; //mControl 所有坐标相对于 最外面的包围矩形
+
+		Listener * pmListener;
+
+	public:
+
+		bool Attach(Listener * pListener);
+
+		bool Add(Control * pControl);
+
+		virtual void Draw(Listener * pListener);
+
+		virtual UINT HitTest(POINT pt);
+
+		virtual void Hover(POINT pt);
+
 	};
 }
 

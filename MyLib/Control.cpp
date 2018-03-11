@@ -27,6 +27,13 @@ namespace LIB_CONTROL
 	{
 	}
 
+	bool Listener::attachWindow(HWND hWnd)
+	{
+		IS_RETURN_ERROR(!hWnd,false,"attachWindow Ê§°Ü! ¾ä±úÎª¿Õ");
+		mListenedWindow = hWnd;
+		return true;
+	}
+
 	bool Listener::attach(Control * pControl)
 	{
 		if(find_if(mpControl.begin(), mpControl.end(), [&pControl](Control * pCl)->bool {
@@ -77,8 +84,12 @@ namespace LIB_CONTROL
 	{
 		Control * pTempControl = nullptr;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
-				if(Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
-				  if(pControl->LButtonDown(this,pt)!=SHOULD_DO_NOTHING) pTempControl = pControl;
+			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
+			{
+				pControl->KillFocus(this);  //KillFocus
+				if (pControl->LButtonDown(this, pt) != SHOULD_DO_NOTHING) pTempControl = pControl;
+				pControl->Focus(this, mListenedWindow); //SetFocus
+			}
 		});
 		if(pTempControl != nullptr) return pTempControl->LButtonDown(this,pt);
 		return SHOULD_DO_NOTHING;
@@ -163,6 +174,21 @@ namespace LIB_CONTROL
 		if (!mCanDrag) return;
 		auto rWidth = width(); auto rHeight = height();
 		mRect = Conver::RectOffSet(mRect,dx,dy,dx,dy);
+	}
+
+	void Control::Focus(Listener * pListener, HWND hWnd)
+	{
+		if (!mOwnCaret) return;
+		auto caret = CreateCaret(hWnd, NULL,3,height());
+		auto cp = Conver::CenterPoint(mRect);
+		SetCaretPos(cp.x,cp.y);
+		ShowCaret(hWnd);
+	}
+
+	void Control::KillFocus(Listener * pListener)
+	{
+		if (!mOwnCaret) return;
+		DestroyCaret();
 	}
 
 	void Control::Sizing(RECT newRect)
@@ -280,6 +306,11 @@ namespace LIB_CONTROL
 		mMouseInternal = MouseInternal;
 	}
 
+	void Control::Caret()
+	{
+		mOwnCaret = true;
+	}
+
 	LONG Control::width() const
 	{
 		return mRect.right - mRect.left;
@@ -297,7 +328,7 @@ namespace LIB_CONTROL
 	
 	Control::Control(string text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
-		mAlignType(ALIGN_CENTER_V|ALIGN_CENTER_H),mCanStretch(false),mBDownInternal(false)
+		mAlignType(ALIGN_CENTER_V|ALIGN_CENTER_H),mCanStretch(false),mBDownInternal(false),mOwnCaret(false)
 	{
 		mbDraging = false;
 	}
@@ -626,44 +657,6 @@ namespace LIB_CONTROL
 		AdjustRect(Conver::MyRect(RECTWIDTH(newRect) - 2*btnHeight, 0, RECTWIDTH(newRect) - btnHeight, btnHeight));
 	}
 
-	bool ComposeControl::Attach(Listener * pListener)
-	{
-		pmListener = pListener;
-		return false;
-	}
-
-	bool ComposeControl::Add(Control * pControl)
-	{
-		auto it = std::find_if(mControl.begin(), mControl.end(), [&pControl](Control * ItControl) {
-			if (ItControl == pControl) return false;
-			return true;
-		});
-		if (it != mControl.end()) return false;
-		return true;
-	}
-
-	void ComposeControl::Draw()
-	{
-		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl){
-			ItControl->Draw(pmListener);
-		});
-	}
-
-	UINT ComposeControl::HitTest(POINT pt)
-	{
-		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
-			ItControl->HitTest(pmListener,pt);
-		});
-		return 0;
-	}
-
-	void ComposeControl::Hover(POINT pt)
-	{
-		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
-			ItControl->Hover(pmListener, pt);
-		});
-	}
-
 	void ImageButton::Draw(Listener * pListener)
 	{
 		IS_RETURN_ERROR(!pImage,,"ImageButton Í¼ÏñÎª¿Õ");
@@ -692,4 +685,92 @@ namespace LIB_CONTROL
 		pImage = pBitmap;
 		mRect = rImgRect;
 	}
+
+
+
+	////////////////////////////////////////////////////////////////////////// EditBox
+	EditBox::EditBox(RECT rc,string defaultText)
+	{
+		mForceColor = mHoverForceColor = RGB(255,255,255);
+		mBackColor = mBackColor = RGB(116,116,119);
+	}
+
+	EditBox::EditBox(string defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor) :Control(defaultText,
+		rc, forceColor, backColor, hoverForceColor, hoverBackColor) {
+		mOwnCaret = true; //must have caret
+	}
+
+	void EditBox::ChangeFrontSize(float newSize)
+	{
+		mFrontSize = newSize;
+	}
+
+	void EditBox::ChangeFrontName(string newFrontName)
+	{
+		mFrontName = newFrontName;
+	}
+
+	void EditBox::Draw(Listener * pListener)
+	{
+		if (!mMouseInternal)
+		{
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);
+			IS_ERROR_EXIT(!ret, "Draw EditBox failed!");
+		}
+		else
+		{
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), ALIGN_DEFAULT, true);
+			IS_ERROR_EXIT(!ret, "Draw  honvered EditBox failed!");
+		}
+	}
+
+	void EditBox::Hover(Listener * pListener, POINT pt)
+	{
+	}
+
+	UINT EditBox::HitTest(Listener * pListener, POINT pt)
+	{
+		return HTCLIENT;
+	}
+
+
+	////////////////////////////////////////////////////////////////////////// ComposeControl
+	bool ComposeControl::Attach(Listener * pListener)
+	{
+		pmListener = pListener;
+		return false;
+	}
+
+	bool ComposeControl::Add(Control * pControl)
+	{
+		auto it = std::find_if(mControl.begin(), mControl.end(), [&pControl](Control * ItControl) {
+			if (ItControl == pControl) return false;
+			return true;
+		});
+		if (it != mControl.end()) return false;
+		return true;
+	}
+
+	void ComposeControl::Draw(Listener * pListener)
+	{
+		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
+			ItControl->Draw(pmListener);
+		});
+	}
+
+	UINT ComposeControl::HitTest(POINT pt)
+	{
+		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
+			ItControl->HitTest(pmListener, pt);
+		});
+		return 0;
+	}
+
+	void ComposeControl::Hover(POINT pt)
+	{
+		for_each(mControl.begin(), mControl.end(), [&](Control * ItControl) {
+			ItControl->Hover(pmListener, pt);
+		});
+	}
+
 }

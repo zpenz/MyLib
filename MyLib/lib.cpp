@@ -397,6 +397,7 @@ void BaseWindow::Destory()
 	 //SetWindowRgn(mBaseHwnd, Rgn,true);
 	 //DeleteObject(Rgn);
 
+	 mListener.attachWindow(mBaseHwnd);
 	 //TitleBar
 	 TitleBar * pBar = new TitleBar("pSong's Window", Conver::MyRect(0, 0, mWidth - 3 * 35, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(116, 116, 119));
 	 mListener.attach(pBar);
@@ -413,6 +414,10 @@ void BaseWindow::Destory()
 	 Button * ptest = new Button("ֵײחש", Conver::MyRect(100, 100, 150, 125), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
 	 ptest->SetDrag(true);
 	 mListener.attach(ptest);
+	 //Test EditBox
+	 EditBox * pEditBox = new EditBox("", Conver::MyRect(200, 200, 300, 225), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
+	 pEditBox->SetDrag(true);
+	 mListener.attach(pEditBox);
 
  }
 
