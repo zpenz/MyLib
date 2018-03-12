@@ -56,27 +56,30 @@ void MyCaret::DrawCaret()
 
 void MyCaret::Render()
 {
+	currentCaretHeight = height() - ALIGN_UPDPWNDISTANCE * 2;
+	currentCaretPoint = Conver::Point(0, -1 * ALIGN_UPDPWNDISTANCE) + mCaretPos;
 	if(!mHide && mThisFrameShouldDraw)
-	DrawManager.DrawLine(Conver::Point(0, -1* ALIGN_DISTANCE) + mCaretPos,
-		                 Conver::Point(mCaretPos.x,mCaretPos.y - height())+ Conver::Point(0, ALIGN_DISTANCE),
-		mCaretColor,static_cast<float>(mWidth));
+	{
+		DrawManager.DrawLine(currentCaretPoint, Conver::Point(0,-currentCaretHeight)+ currentCaretPoint,
+			mCaretColor, static_cast<float>(mControlWidth));
+	}
 }
 
 UINT MyCaret::width()
 {
-	return mWidth;
+	return mControlWidth;
 }
 
 UINT MyCaret::height()
 {
-	return mHeight;
+	return mControlHeight;
 }
 
 bool MyCaret::InitCaret()
 {
-	mWidth = 2;
-	mHeight = 100;
-	IS_RETURN_ERROR(!CreateCaret(mAttachWindow, NULL, mWidth, mHeight),false,"创建Caret失败!");
+	mControlWidth = 2;
+	mControlHeight = 100;
+	IS_RETURN_ERROR(!CreateCaret(mAttachWindow, NULL, mControlWidth, mControlHeight),false,"创建Caret失败!");
 	mDead = false;
 	mHide = true;
 	mSubThreadAlreayRun = false;
@@ -129,9 +132,9 @@ void MyCaret::ChangeCaretPos(POINT newCaretPos)
 void MyCaret::ChangeCaretSize(UINT width, UINT height)
 {
 	if (width == 0 && height == 0) return;
-	if (width == 0) { mHeight = height; return; }
-	if (height == 0) { mWidth = width;  return; }
-	mWidth = width; mHeight = height;
+	if (width == 0) { mControlHeight = height; return; }
+	if (height == 0) { mControlWidth = width;  return; }
+	mControlWidth = width; mControlHeight = height;
 
 	DestroyCaret();
 	CreateCaret(mAttachWindow,NULL,width,height);

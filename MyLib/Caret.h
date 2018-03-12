@@ -1,7 +1,8 @@
 #pragma once
 #include "2Draw.h"
 
-#define ALIGN_DISTANCE 4
+#define ALIGN_UPDPWNDISTANCE 4
+#define ALIGN_LEFTDISTANCE 4
 
 class MyCaret
 {
@@ -11,7 +12,7 @@ protected:
 
 	bool mThisFrameShouldDraw;
 
-	UINT mWidth, mHeight;
+	UINT mControlWidth, mControlHeight;
 
 	float mBlinkTime;
 
@@ -30,6 +31,10 @@ protected:
 	void DrawCaret();
 
 public:
+
+	POINT currentCaretPoint;
+
+	UINT currentCaretHeight;
 
 	void Render();
 
