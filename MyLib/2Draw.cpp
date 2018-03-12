@@ -274,6 +274,20 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	return true;
 }
 
+bool My2DDraw::DrawText(std::string text, POINT fontPos, MyColor TextColor, float fontSize)
+{
+	if (text.empty()) return true;
+	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
+
+	DWRITE_TEXT_RANGE textRange = { 0, text.length()};
+	tempTextLayout->SetFontSize(fontSize, textRange);
+
+	mRenderTarget->BeginDraw();
+	mRenderTarget->DrawTextLayout(PointToD2DPointF(fontPos), tempTextLayout, CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
+	auto ret = mRenderTarget->EndDraw();
+	return true;
+}
+
 ///<OffSet>ÄÚ±ß¾à</OffSet>
 bool My2DDraw::DrawRectWithPicture(RECT Rect, MyColor RectColor, std::wstring strFileName, UINT uOffSetX , UINT uOffSetY, bool isFillRectangle)
 {

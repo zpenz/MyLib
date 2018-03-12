@@ -45,7 +45,9 @@ public:
 
 	bool DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle = false);
 
-	bool DrawRectWithText(RECT Rect,std::string text, MyColor RectColor, MyColor TextColor,UINT AlignType= ALIGN_DEFAULT,bool isFillRectangle = false);
+	bool DrawText(std::string text,POINT fontPos,MyColor TextColor,float fontSize);
+
+	bool DrawRectWithText(RECT Rect, std::string text, MyColor RectColor, MyColor TextColor, UINT AlignType = ALIGN_DEFAULT, bool isFillRectangle = false);
 
 	bool DrawRectWithPicture(RECT Rect, MyColor RectColor, std::wstring strFileName, UINT uOffSetX = 0,UINT uOffSetY = 0,bool isFillRectangle = false);
 
