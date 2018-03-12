@@ -80,6 +80,7 @@ bool My2DDraw::SetCurrentRenderTarget(ID2D1RenderTarget * thisRenderTarget)
 ID2D1SolidColorBrush * My2DDraw::CreateBrush(MyColor penColor)
 {
 	ID2D1SolidColorBrush * pSolidBrush;
+	IS_RETURN_ERROR(!mRenderTarget,nullptr,"mRenderTarget null!");
 	auto hr = mRenderTarget->CreateSolidColorBrush(penColor, &pSolidBrush);
 	if (SUCCEEDED(hr)) return pSolidBrush;
 	return NULL;

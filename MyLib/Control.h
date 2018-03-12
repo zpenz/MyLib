@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "2Draw.h"
 #include "Sprite.h"
+#include "Caret.h"
 
 namespace LIB_CONTROL
 {
@@ -97,11 +98,11 @@ namespace LIB_CONTROL
 
 	public:
 
-		virtual void Draw(Listener * pListener) = 0;
-
 		virtual void Hover(Listener * pListener, POINT pt) = 0;
 
 		virtual UINT HitTest(Listener * pListener, POINT pt) = 0;
+
+		virtual void Draw(Listener * pListener);
 
 		virtual UINT LButtonDown(Listener * pListener,POINT pt);
 

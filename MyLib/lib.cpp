@@ -383,16 +383,15 @@ void BaseWindow::Destory()
 
  void BaseWindow::AfterCreate()
  {
-	 IS_RETURN_ERROR(!CreateCaret(mBaseHwnd,NULL,2,10),,"创建插入符失败!"); //创建插入符
-	 SetCaretBlinkTime(500);
-	 
-
 	 //初始化D2D1.0
 	 auto ret = DrawManager.InitManager();  
 	 IS_RETURN_ERROR(!ret, , "初始化D2D错误!");
 	 ret = DrawManager.SetRenderTarget(mBaseHwnd);
 	 IS_RETURN_ERROR(!ret, , "设置RenderTarget失败!");
 	 DrawManager.UseTempRenderTarget();
+
+	 CaretManager.attrach(mBaseHwnd);
+	 CaretManager.InitCaret();
 
 	 //窗口区域转换 
 	 //auto Rgn = CreateRectRgn(0,0,mWidth,mHeight);

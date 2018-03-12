@@ -28,6 +28,12 @@ protected:
 	void DrawCaret();
 
 public:
+
+	void Render();
+
+	UINT width();
+
+	UINT height();
 	
 	bool attrach(HWND hWnd); //must call first
 
@@ -39,7 +45,7 @@ public:
 
 	void ChangeFrame();
 
-	bool InitCaret();
+	bool InitCaret(); // after drawmanager init.
 
 	void DestroyCaret();
 
@@ -62,4 +68,4 @@ public:
 	COLORREF getColor();
 };
 
-#define CaretManager MyCaret.getInstance()
+#define CaretManager MyCaret::getInstance() 

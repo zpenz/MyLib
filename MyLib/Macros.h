@@ -115,6 +115,14 @@ namespace Conver
 
 	POINT LeftTopPoint(RECT rc);
 
+	POINT TopCenterPoint(RECT rc);
+
+	POINT BottomCenterPoint(RECT rc);
+
+	POINT LeftCenterPoint(RECT rc);
+
+	POINT RightCenterPoint(RECT rc);
+
 	POINT RightBottomPoint(RECT rc);
 
 	POINT LeftBottomPoint(RECT rc);

@@ -153,6 +153,30 @@ namespace Conver
 		return pt;
 	}
 
+	POINT TopCenterPoint(RECT rc)
+	{
+		POINT pt = { rc.left + (rc.right - rc.left) / 2,rc.top };
+		return pt;
+	}
+
+	POINT BottomCenterPoint(RECT rc)
+	{
+		POINT pt = { rc.left + (rc.right - rc.left) / 2,rc.bottom };
+		return pt;
+	}
+
+	POINT LeftCenterPoint(RECT rc)
+	{
+		POINT pt = { rc.left ,rc.top + (rc.bottom - rc.top) / 2  };
+		return pt;
+	}
+
+	POINT RightCenterPoint(RECT rc)
+	{
+		POINT pt = { rc.right ,rc.top + (rc.bottom - rc.top) / 2 };
+		return pt;
+	}
+
 	POINT RightBottomPoint(RECT rc)
 	{
 		POINT pt = {rc.right,rc.bottom};

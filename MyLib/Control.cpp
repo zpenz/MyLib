@@ -64,6 +64,8 @@ namespace LIB_CONTROL
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->Draw(this);
 		});
+		//render caret
+		CaretManager.Render();
 	}
 
 	void Listener::Hover(POINT pt)
@@ -146,6 +148,11 @@ namespace LIB_CONTROL
 		mControlTypeId = typeId;
 	}
 
+	void Control::Draw(Listener * pListener)
+	{
+		if (mOwnCaret) CaretManager.Render();
+	}
+
 	UINT Control::LButtonDown(Listener * pListener,POINT pt)
 	{
 		mBDownInternal = true;
@@ -157,6 +164,12 @@ namespace LIB_CONTROL
 	UINT Control::LButtonUp(Listener * pListener,POINT pt)
 	{
 		mbDraging = false;
+		if (mOwnCaret)
+		{
+			CaretManager.ChangeCaretSize(0,height());
+			CaretManager.ChangeCaretPos(Conver::BottomCenterPoint(mRect));
+			CaretManager.ShowCaret();
+		}
 		return 0;
 	}
 
@@ -707,6 +720,7 @@ namespace LIB_CONTROL
 
 	void EditBox::Draw(Listener * pListener)
 	{
+		__super::Draw(pListener);
 		if (!mMouseInternal)
 		{
 			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), ALIGN_DEFAULT, true);

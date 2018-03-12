@@ -30,19 +30,15 @@ void MyCaret::ChangeFrame()
 	mThisFrameShouldDraw = !mThisFrameShouldDraw;
 }
 
-void MyCaret::DrawCaret()
+void MyCaret::DrawCaret() 
 {
+	// multi thread... 
 	auto subThread = [](LPVOID lpParam)->DWORD
 	{
 		auto pCaret = (MyCaret*)lpParam;
 		while (pCaret->IsCaretExist())
 		{
-			if (pCaret->IsThisFrameShouldDraw() && pCaret->IsHide() != true)
-			{
-				DrawManager.DrawLine(pCaret->PointOfDraw(), Conver::Point(), pCaret->getColor());
-			}
-
-			Sleep(static_cast<DWORD>(pCaret->Time()*0.001));
+			Sleep(static_cast<DWORD>(static_cast<int>(1.0 / pCaret->Time() * 1000)));
 			pCaret->ChangeFrame();
 		}
 		return 0;
@@ -58,14 +54,31 @@ void MyCaret::DrawCaret()
 	mSubThreadAlreayRun = true;
 }
 
+void MyCaret::Render()
+{
+	if(!mHide && mThisFrameShouldDraw)
+	DrawManager.DrawLine(mCaretPos,Conver::Point(mCaretPos.x,mCaretPos.y - height()),mCaretColor,static_cast<float>(mWidth));
+}
+
+UINT MyCaret::width()
+{
+	return mWidth;
+}
+
+UINT MyCaret::height()
+{
+	return mHeight;
+}
+
 bool MyCaret::InitCaret()
 {
 	mWidth = 2;
 	mHeight = 100;
-	IS_RETURN_ERROR(CreateCaret(mAttachWindow, NULL, mWidth, mHeight),false,"创建Caret失败!");
+	IS_RETURN_ERROR(!CreateCaret(mAttachWindow, NULL, mWidth, mHeight),false,"创建Caret失败!");
 	mDead = false;
 	mHide = true;
 	mSubThreadAlreayRun = false;
+	mBlinkTime = 0.5;
 	mCaretColor = RGB(199,199,199);
 
 	DrawCaret();
@@ -76,7 +89,6 @@ void MyCaret::DestroyCaret()
 {
 	mDead = true;
 	::DestroyCaret();
-	
 }
 
 void MyCaret::HideCaret()
@@ -86,6 +98,7 @@ void MyCaret::HideCaret()
 
 void MyCaret::ShowCaret()
 {
+	DrawCaret();
 	mHide = false;
 }
 
