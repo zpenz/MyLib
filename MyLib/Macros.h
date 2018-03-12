@@ -179,6 +179,7 @@ namespace Conver
 		operator RECT &();
 
 		operator D2D1_RECT_F&();
+
 	};
 
 	class Point 
@@ -189,6 +190,10 @@ namespace Conver
 		Point operator= (POINT & pt);
 
 		operator POINT();
+
+		Point operator-(POINT pt);
+
+		Point operator+(POINT pt);
 
 		Point(int _x,int _y);
 

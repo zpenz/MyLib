@@ -1,6 +1,8 @@
 #pragma once
 #include "2Draw.h"
 
+#define ALIGN_DISTANCE 4
+
 class MyCaret
 {
 protected:

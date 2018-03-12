@@ -57,7 +57,9 @@ void MyCaret::DrawCaret()
 void MyCaret::Render()
 {
 	if(!mHide && mThisFrameShouldDraw)
-	DrawManager.DrawLine(mCaretPos,Conver::Point(mCaretPos.x,mCaretPos.y - height()),mCaretColor,static_cast<float>(mWidth));
+	DrawManager.DrawLine(Conver::Point(0, -1* ALIGN_DISTANCE) + mCaretPos,
+		                 Conver::Point(mCaretPos.x,mCaretPos.y - height())+ Conver::Point(0, ALIGN_DISTANCE),
+		mCaretColor,static_cast<float>(mWidth));
 }
 
 UINT MyCaret::width()
@@ -78,7 +80,7 @@ bool MyCaret::InitCaret()
 	mDead = false;
 	mHide = true;
 	mSubThreadAlreayRun = false;
-	mBlinkTime = 0.5;
+	mBlinkTime = 4;
 	mCaretColor = RGB(199,199,199);
 
 	DrawCaret();
