@@ -19,11 +19,17 @@ protected:
 
 	bool mHide;
 
+	HWND mAttachWindow;
+
 	COLORREF mCaretColor;
 
 	SINGLE_INSTANCE(MyCaret)
 
+	void DrawCaret();
+
 public:
+	
+	bool attrach(HWND hWnd); //must call first
 
 	POINT PointOfDraw();
 
@@ -33,9 +39,7 @@ public:
 
 	void ChangeFrame();
 
-	void DrawCaret(HWND hWnd);
-
-	void InitCaret(HWND hWnd);
+	bool InitCaret();
 
 	void DestroyCaret();
 
@@ -51,7 +55,7 @@ public:
 
 	void ChangeCaretPos(POINT newCaretPos);
 
-	void ChangeCaretSize(UINT width, UINT height);
+	void ChangeCaretSize(UINT width, UINT height); /// re-create caret
 
 	void Color(COLORREF caretColor);
 

@@ -2,7 +2,14 @@
 #include "Caret.h"
 
 
-//////////////////////////////////////////////////////////////////////////CaretManager
+bool MyCaret::attrach(HWND hWnd)
+{
+	IS_RETURN_ERROR(!hWnd,false,"attrached window null")
+	mAttachWindow = hWnd;
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////Caret
 POINT MyCaret::PointOfDraw()
 {
 	return mCaretPos;
@@ -23,7 +30,7 @@ void MyCaret::ChangeFrame()
 	mThisFrameShouldDraw = !mThisFrameShouldDraw;
 }
 
-void MyCaret::DrawCaret(HWND hWnd)
+void MyCaret::DrawCaret()
 {
 	auto subThread = [](LPVOID lpParam)->DWORD
 	{
@@ -35,9 +42,10 @@ void MyCaret::DrawCaret(HWND hWnd)
 				DrawManager.DrawLine(pCaret->PointOfDraw(), Conver::Point(), pCaret->getColor());
 			}
 
-			Sleep(pCaret->Time()*0.001);
+			Sleep(static_cast<DWORD>(pCaret->Time()*0.001));
 			pCaret->ChangeFrame();
 		}
+		return 0;
 	};
 
 	if (mSubThreadAlreayRun) return;
@@ -50,15 +58,18 @@ void MyCaret::DrawCaret(HWND hWnd)
 	mSubThreadAlreayRun = true;
 }
 
-void MyCaret::InitCaret(HWND hWnd)
+bool MyCaret::InitCaret()
 {
 	mWidth = 2;
 	mHeight = 100;
-	IS_RETURN_ERROR(CreateCaret(hWnd, NULL, mWidth, mHeight),,"创建Caret失败!");
+	IS_RETURN_ERROR(CreateCaret(mAttachWindow, NULL, mWidth, mHeight),false,"创建Caret失败!");
 	mDead = false;
 	mHide = true;
 	mSubThreadAlreayRun = false;
 	mCaretColor = RGB(199,199,199);
+
+	DrawCaret();
+	return true;
 }
 
 void MyCaret::DestroyCaret()
@@ -97,6 +108,7 @@ float MyCaret::Time()
 void MyCaret::ChangeCaretPos(POINT newCaretPos)
 {
 	mCaretPos = newCaretPos;
+	SetCaretPos(mCaretPos.x, mCaretPos.y);
 }
 
 void MyCaret::ChangeCaretSize(UINT width, UINT height)
@@ -105,6 +117,9 @@ void MyCaret::ChangeCaretSize(UINT width, UINT height)
 	if (width == 0) { mHeight = height; return; }
 	if (height == 0) { mWidth = width;  return; }
 	mWidth = width; mHeight = height;
+
+	DestroyCaret();
+	CreateCaret(mAttachWindow,NULL,width,height);
 }
 
 void MyCaret::Color(COLORREF caretColor)

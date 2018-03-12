@@ -305,10 +305,6 @@ namespace LIB_CONTROL
 		mMouseInternal = MouseInternal;
 	}
 
-	void Control::ShowCaret()
-	{
-		mOwnCaret = true;
-	}
 
 	LONG Control::width() const
 	{

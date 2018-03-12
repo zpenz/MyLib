@@ -64,7 +64,7 @@
       <Filter>头文件\Draw</Filter>
     </ClInclude>
     <ClInclude Include="Caret.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Draw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -99,7 +99,7 @@
       <Filter>头文件\Draw</Filter>
     </ClCompile>
     <ClCompile Include="Caret.cpp">
-      <Filter>源文件</Filter>
+      <Filter>头文件\Draw</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
