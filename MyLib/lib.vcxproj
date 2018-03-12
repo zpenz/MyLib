@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2Draw.h" />
+    <ClInclude Include="Caret.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="libd11.h" />
     <ClInclude Include="SemaphoreManager.h" />
@@ -95,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2Draw.cpp" />
+    <ClCompile Include="Caret.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="libd11.cpp" />
     <ClCompile Include="Macros.cpp" />

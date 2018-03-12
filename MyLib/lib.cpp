@@ -359,6 +359,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
 void BaseWindow::Destory()
 {
+	DestroyCaret(); // 销毁插入符
 	DestroyWindow(mBaseHwnd);
 }
 
@@ -368,7 +369,6 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnCreate()
  { 
-
  }
 
  void BaseWindow::InitBeforeCreate()
@@ -383,13 +383,15 @@ void BaseWindow::Destory()
 
  void BaseWindow::AfterCreate()
  {
-	 //初始化D2D1.0
-	 auto ret = DrawManager.InitManager();
-	 IS_RETURN_ERROR(!ret, , "初始化D2D错误!");
+	 IS_RETURN_ERROR(!CreateCaret(mBaseHwnd,NULL,2,10),,"创建插入符失败!"); //创建插入符
+	 SetCaretBlinkTime(500);
+	 
 
+	 //初始化D2D1.0
+	 auto ret = DrawManager.InitManager();  
+	 IS_RETURN_ERROR(!ret, , "初始化D2D错误!");
 	 ret = DrawManager.SetRenderTarget(mBaseHwnd);
 	 IS_RETURN_ERROR(!ret, , "设置RenderTarget失败!");
-
 	 DrawManager.UseTempRenderTarget();
 
 	 //窗口区域转换 
@@ -411,7 +413,7 @@ void BaseWindow::Destory()
 	 MiniButton * pMin = new MiniButton("", Conver::MyRect(1024 - 35 * 3, 0, mWidth - 70,35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(216, 120, 17));
 	 mListener.attach(pMin);
 	 //Test Button
-	 Button * ptest = new Button("胖琦", Conver::MyRect(100, 100, 150, 125), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
+	 Button * ptest = new Button("", Conver::MyRect(100, 100, 150, 125), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
 	 ptest->SetDrag(true);
 	 mListener.attach(ptest);
 	 //Test EditBox

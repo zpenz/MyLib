@@ -179,16 +179,15 @@ namespace LIB_CONTROL
 	void Control::Focus(Listener * pListener, HWND hWnd)
 	{
 		if (!mOwnCaret) return;
-		auto caret = CreateCaret(hWnd, NULL,3,height());
 		auto cp = Conver::CenterPoint(mRect);
 		SetCaretPos(cp.x,cp.y);
-		ShowCaret(hWnd);
+		//ShowCaret(hWnd);
 	}
 
 	void Control::KillFocus(Listener * pListener)
 	{
 		if (!mOwnCaret) return;
-		DestroyCaret();
+		
 	}
 
 	void Control::Sizing(RECT newRect)
@@ -306,7 +305,7 @@ namespace LIB_CONTROL
 		mMouseInternal = MouseInternal;
 	}
 
-	void Control::Caret()
+	void Control::ShowCaret()
 	{
 		mOwnCaret = true;
 	}
@@ -772,5 +771,12 @@ namespace LIB_CONTROL
 			ItControl->Hover(pmListener, pt);
 		});
 	}
+
+
+
+
+
+
+	
 
 }

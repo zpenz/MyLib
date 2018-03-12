@@ -58,6 +58,8 @@ namespace LIB_CONTROL
 		DragAdapter();
 	};
 
+
+
 	class Control: public ImageAdapter,public DragAdapter
 	{
 
@@ -85,11 +87,13 @@ namespace LIB_CONTROL
 
 		bool mBDownInternal;
 
-		bool mOwnCaret;
-
 		void SetID(UINT typeId);
 
 		POINT mouseDragStartPoint;
+
+		bool mOwnCaret;
+
+		POINT mCaretPos; 
 
 	public:
 
@@ -156,8 +160,6 @@ namespace LIB_CONTROL
 		bool IsMouseInteral() const;
 
 		void SetInternal(bool MouseInternal);
-
-		void Caret();
 
 		LONG width() const;
 
