@@ -223,7 +223,7 @@ IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text, float fSize)
 	return tempTextLayout;
 }
 
-bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, MyColor TextColor, TextLayout * pLayout,bool isFillRectangle,ALIGN_TEXT_TYPE textAlignType,ALIGN_PARAGRAPH_TYPE paragraphAlignType)
+bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, MyColor TextColor, TextLayout ** pLayout,bool isFillRectangle,ALIGN_TEXT_TYPE textAlignType,ALIGN_PARAGRAPH_TYPE paragraphAlignType)
 {
 	if(!DrawRectangle(Rect,RectColor, isFillRectangle)) return false;
 	if (text.empty()) return true;
@@ -235,7 +235,7 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	tempTextLayout->SetMaxHeight(static_cast<FLOAT>(RECTHEIGHT(Rect)));
 	tempTextLayout->SetTextAlignment(textAlignType);
 	tempTextLayout->SetParagraphAlignment(paragraphAlignType);
-	pLayout = tempTextLayout;
+	*pLayout = tempTextLayout;
 
 	mRenderTarget->BeginDraw();
 	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)),tempTextLayout,CreateBrush(TextColor),D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);

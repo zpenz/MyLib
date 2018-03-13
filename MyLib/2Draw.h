@@ -49,7 +49,7 @@ public:
 
 	bool DrawText(std::string text,POINT fontPos,MyColor TextColor,float fontSize,_Out_ TextLayout * pLayout);
 
-	bool DrawRectWithText(RECT Rect, std::string text, MyColor RectColor, MyColor TextColor, _Out_ TextLayout * pLayout,bool isFillRectangle = false,ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
+	bool DrawRectWithText(RECT Rect, std::string text, MyColor RectColor, MyColor TextColor, _Out_ TextLayout ** pLayout,bool isFillRectangle = false,ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
 
 	bool DrawRectWithPicture(RECT Rect, MyColor RectColor, std::wstring strFileName, UINT uOffSetX = 0,UINT uOffSetY = 0,bool isFillRectangle = false);
 

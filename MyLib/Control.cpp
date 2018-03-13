@@ -3,6 +3,7 @@
 
 namespace LIB_CONTROL
 {
+	using namespace Conver;
 
 	bool DragAdapter::IsDraging()
 	{
@@ -80,7 +81,7 @@ namespace LIB_CONTROL
 		Control * pTempControl = NULL;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->SetInternal(false);
-			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
+			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
 				pTempControl = pControl;
 				pControl->SetInternal(true);
@@ -93,7 +94,7 @@ namespace LIB_CONTROL
 	{
 		Control * pTempControl = nullptr;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
-			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
+			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
 				pControl->KillFocus(this);  //KillFocus
 				if (pControl->LButtonDown(this, pt) != SHOULD_DO_NOTHING) pTempControl = pControl;
@@ -109,7 +110,7 @@ namespace LIB_CONTROL
 		UINT ret = SHOULD_DO_NOTHING;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->Stop();//Drag End
-			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
+			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 				ret = pControl->LButtonUp(this,pt);
 				if (ret != SHOULD_DO_NOTHING) return ret; 
 				return ret;
@@ -121,7 +122,7 @@ namespace LIB_CONTROL
 	{
 		Control * pTempControl = NULL;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
-			if (Conver::PointInRect(pt.x, pt.y, pControl->getRect()))
+			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
 				pTempControl = pControl;
 			}
@@ -159,7 +160,7 @@ namespace LIB_CONTROL
 	{
 		if (mOwnCaret) return;
 		CaretManager.Render();
-		DrawManager.DrawTextA(mText,Conver::CenterPoint(mRect),mForceColor,RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE,mpTextpLayout);
+		DrawManager.DrawTextA(mText,CenterPoint(mRect),mForceColor,RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE,mpTextpLayout);
 	}
 
 	UINT Control::LButtonDown(Listener * pListener,POINT pt)
@@ -169,33 +170,34 @@ namespace LIB_CONTROL
 		mouseDragStartPoint = pt;
 
 		if (!mOwnCaret) return 0;
+		CaretManager.ChangeCaretPos(Conver::BottomCenterPoint(mRect));
+
+		CaretManager.ChangeCaretSize(0, height());
+		CaretManager.ShowCaret();
+
 		IS_RETURN_ERROR(!mpTextpLayout,0,"Control::LButtonDown mpTextLayout null...");
 
 		mpTextpLayout->SetMaxHeight(RECTHEIGHT(mRect));
 		mpTextpLayout->SetMaxWidth(RECTWIDTH(mRect));
 
 		float x, y;
-		BOOL isTrail , inside ;
-		x = pt.x - Conver::LeftTopPoint(mRect).x;
-		y = pt.y - Conver::LeftTopPoint(mRect).y;
-		HitTestMatric * pMatrics = nullptr;
-		auto ret = mpTextpLayout->HitTestPoint(pt.x, pt.y, &isTrail, &inside, pMatrics);
-		IS_RETURN_ERROR(FAILED(ret),0,"HitTestPoint error!");
-		//mpTextpLayout->HitTestTextPosition(pt.x&pt.y, true, &x, &y, nullptr);
-		CaretManager.ChangeCaretPos(Conver::Point(x, y) + Conver::LeftTopPoint(mRect) );
+		BOOL isTrail, inside;
+		x = pt.x-LeftTopPoint(mRect).x;
+		y = pt.y-LeftTopPoint(mRect).y;
+		HitTestMatric * pMatrics = new HitTestMatric();
+		auto ret = mpTextpLayout->HitTestPoint(x, y, &isTrail, &inside, pMatrics);
+		IS_RETURN_ERROR(FAILED(ret),0, "HitTestPoint error!");
+		x = pMatrics->left; y = pMatrics->top+height();
+		CaretManager.ChangeCaretPos(Point(x, y) + LeftTopPoint(mRect));
+
 		return 0;
 	}
 
 	UINT Control::LButtonUp(Listener * pListener,POINT pt)
 	{
 		mbDraging = false;
-		if (mOwnCaret)
-		{
-			if(mText.empty()) CaretManager.ChangeCaretPos(Conver::BottomCenterPoint(mRect));
-
-			CaretManager.ChangeCaretSize(0,height());
-			CaretManager.ShowCaret();
-		}
+		if (!mOwnCaret) return 0;
+		CaretManager.ShowCaret();
 		return 0;
 	}
 
@@ -203,6 +205,7 @@ namespace LIB_CONTROL
 	{
 		if (!mMouseInternal) return;
 		if (!mbDraging) return;
+		CaretManager.HideCaret(); ///Òþ²Ø¹â±ê
 		Drag(pListener,pt.x-mouseDragStartPoint.x,pt.y-mouseDragStartPoint.y);
 		mouseDragStartPoint = pt;
 
@@ -218,13 +221,13 @@ namespace LIB_CONTROL
 	{
 		if (!mCanDrag) return;
 		auto rWidth = width(); auto rHeight = height();
-		mRect = Conver::RectOffSet(mRect,dx,dy,dx,dy);
+		mRect = RectOffSet(mRect,dx,dy,dx,dy);
 	}
 
 	void Control::Focus(Listener * pListener, HWND hWnd)
 	{
 		if (!mOwnCaret) return;
-		auto cp = Conver::CenterPoint(mRect);
+		auto cp = CenterPoint(mRect);
 		SetCaretPos(cp.x,cp.y);
 		//ShowCaret(hWnd);
 	}
@@ -358,7 +361,7 @@ namespace LIB_CONTROL
 	
 	Control::Control(string text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
-		mCanStretch(false),mBDownInternal(false),mOwnCaret(false)
+		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr)
 	{
 		mbDraging = false;
 	}
@@ -392,12 +395,12 @@ namespace LIB_CONTROL
 	{
 		if (!mMouseInternal)
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), &mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw Button failed!");
 		}
 		else
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw  honvered Button failed!");
 		}
 	}
@@ -461,15 +464,15 @@ namespace LIB_CONTROL
 
 	void TitleBar::Draw(Listener * pListener)
 	{
-		mIconSprite.ChangeRect(Conver::MyRect(100, 100, 800, 800));
+		mIconSprite.ChangeRect(MyRect(100, 100, 800, 800));
 		if (!mMouseInternal)
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor),mpTextpLayout,true);
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor),&mpTextpLayout,true);
 			IS_ERROR_EXIT(!ret, "Draw TitleBar failed!");
 		}
 		else
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor),&mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw  honvered TitleBar failed!");
 		}
 		mIconSprite.Render();
@@ -487,7 +490,7 @@ namespace LIB_CONTROL
 	void TitleBar::Sizing(RECT newRect)
 	{
 		auto titleBarHeight = height();
-		AdjustRect(Conver::MyRect(0, 0, RECTWIDTH(newRect)-3*titleBarHeight, titleBarHeight));
+		AdjustRect(MyRect(0, 0, RECTWIDTH(newRect)-3*titleBarHeight, titleBarHeight));
 	}
 
 	TitleBar::TitleBar(string text,RECT rc):Control(text,rc)
@@ -525,15 +528,15 @@ namespace LIB_CONTROL
 		if (!mMouseInternal)
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
-			DrawManager.DrawLine(Conver::LeftTopPoint(drawRect), Conver::RightBottomPoint(drawRect), COLOREX(mForceColor));
-			DrawManager.DrawLine(Conver::LeftBottomPoint(drawRect), Conver::RightTopPoint(drawRect), COLOREX(mForceColor));
+			DrawManager.DrawLine(LeftTopPoint(drawRect),RightBottomPoint(drawRect), COLOREX(mForceColor));
+			DrawManager.DrawLine(LeftBottomPoint(drawRect),RightTopPoint(drawRect), COLOREX(mForceColor));
 			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
 		}
 		else
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
-			DrawManager.DrawLine(Conver::LeftTopPoint(drawRect), Conver::RightBottomPoint(drawRect), COLOREX(mHoverForceColor));
-			DrawManager.DrawLine(Conver::LeftBottomPoint(drawRect), Conver::RightTopPoint(drawRect), COLOREX(mHoverForceColor));
+			DrawManager.DrawLine(LeftTopPoint(drawRect), RightBottomPoint(drawRect), COLOREX(mHoverForceColor));
+			DrawManager.DrawLine(LeftBottomPoint(drawRect), RightTopPoint(drawRect), COLOREX(mHoverForceColor));
 			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
 		}
 	}
@@ -557,7 +560,7 @@ namespace LIB_CONTROL
 	void CloseButton::Sizing(RECT newRect)
 	{
 		auto btnHeight = height();
-		AdjustRect(Conver::MyRect(RECTWIDTH(newRect)-btnHeight,0, RECTWIDTH(newRect), btnHeight));
+		AdjustRect(MyRect(RECTWIDTH(newRect)-btnHeight,0, RECTWIDTH(newRect), btnHeight));
 	}
 
 	MiniButton::MiniButton()
@@ -572,17 +575,17 @@ namespace LIB_CONTROL
 
 	void MiniButton::Draw(Listener * pListener)
 	{
-		RECT drawRect = Conver::ClipRectBoard(mRect, 10, 24);
+		RECT drawRect = ClipRectBoard(mRect, 10, 24);
 		if (!mMouseInternal)
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
-			DrawManager.DrawLine(Conver::LeftTopPoint(drawRect), Conver::RightTopPoint(drawRect), COLOREX(mForceColor));
+			DrawManager.DrawLine(LeftTopPoint(drawRect),RightTopPoint(drawRect), COLOREX(mForceColor));
 			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
 		}
 		else
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
-			DrawManager.DrawLine(Conver::LeftTopPoint(drawRect), Conver::RightTopPoint(drawRect), COLOREX(mHoverForceColor));
+			DrawManager.DrawLine(LeftTopPoint(drawRect),RightTopPoint(drawRect), COLOREX(mHoverForceColor));
 			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
 		}
 	}
@@ -597,12 +600,12 @@ namespace LIB_CONTROL
 	void MiniButton::Sizing(RECT newRect)
 	{
 		auto btnHeight = height();
-		AdjustRect(Conver::MyRect(RECTWIDTH(newRect) - 3*btnHeight, 0, RECTWIDTH(newRect)-2*btnHeight, btnHeight));
+		AdjustRect(MyRect(RECTWIDTH(newRect) - 3*btnHeight, 0, RECTWIDTH(newRect)-2*btnHeight, btnHeight));
 	}
 
 	void MaxButton::DrawMaxImg()
 	{
-		RECT drawRect = Conver::ClipRectBoard(mRect, 12, 12);
+		RECT drawRect = ClipRectBoard(mRect, 12, 12);
 		if (!mMouseInternal)
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
@@ -619,8 +622,8 @@ namespace LIB_CONTROL
 
 	void MaxButton::DrawRestoreImg()
 	{
-		RECT drawRect = Conver::ClipRectBoard(mRect, 13, 13);
-		auto centerPt = Conver::CenterPoint(drawRect);
+		RECT drawRect = ClipRectBoard(mRect, 13, 13);
+		auto centerPt = CenterPoint(drawRect);
 		RECT rightTopRect = { centerPt.x , centerPt.y - 9, centerPt.x + 9,centerPt.y };
 		if (!mMouseInternal)
 		{
@@ -684,14 +687,14 @@ namespace LIB_CONTROL
 	void MaxButton::Sizing(RECT newRect)
 	{
 		auto btnHeight = height();
-		AdjustRect(Conver::MyRect(RECTWIDTH(newRect) - 2*btnHeight, 0, RECTWIDTH(newRect) - btnHeight, btnHeight));
+		AdjustRect(MyRect(RECTWIDTH(newRect) - 2*btnHeight, 0, RECTWIDTH(newRect) - btnHeight, btnHeight));
 	}
 
 	void ImageButton::Draw(Listener * pListener)
 	{
 		IS_RETURN_ERROR(!pImage,,"ImageButton Í¼ÏñÎª¿Õ");
 		if (pHonverImage == nullptr) pHonverImage = pImage;
-		if (Conver::ZeroRect(mImgRec)) mImgRec = mRect;
+		if (ZeroRect(mImgRec)) mImgRec = mRect;
 		if (!mMouseInternal)
 		{
 			DrawManager.DrawRectangle(mRect,mBackColor,true);
@@ -742,17 +745,18 @@ namespace LIB_CONTROL
 
 	void EditBox::Draw(Listener * pListener)
 	{
-		__super::Draw(pListener);
+		//Control::Draw(pListener);
 		if (!mMouseInternal)
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor),& mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw EditBox failed!");
 		}
 		else
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw  honvered EditBox failed!");
 		}
+
 	}
 
 	void EditBox::Hover(Listener * pListener, POINT pt)
