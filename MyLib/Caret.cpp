@@ -15,6 +15,26 @@ POINT MyCaret::PointOfDraw()
 	return mCaretPos;
 }
 
+UINT32 MyCaret::getIndex() const
+{
+	return mInsertPos;
+}
+
+void MyCaret::setIndex(UINT32 newIndex)
+{
+	mInsertPos = newIndex;
+}
+
+void MyCaret::IncIndex()
+{
+	mInsertPos++;
+}
+
+void MyCaret::DecIndex()
+{
+	mInsertPos--;
+}
+
 bool MyCaret::IsCaretExist()
 {
 	return !mDead;
@@ -85,6 +105,7 @@ bool MyCaret::InitCaret()
 	mSubThreadAlreayRun = false;
 	mBlinkTime = 4;
 	mCaretColor = RGB(199,199,199);
+	mInsertPos = 0;
 
 	DrawCaret();
 	return true;

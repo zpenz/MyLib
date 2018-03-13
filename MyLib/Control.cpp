@@ -184,12 +184,17 @@ namespace LIB_CONTROL
 		BOOL isTrail, inside;
 		x = pt.x-LeftTopPoint(mRect).x;
 		y = pt.y-LeftTopPoint(mRect).y;
-		HitTestMatric * pMatrics = new HitTestMatric();
+
+		HitTestMatric * pMatrics = new HitTestMatric(); //must new 
 		auto ret = mpTextpLayout->HitTestPoint(x, y, &isTrail, &inside, pMatrics);
 		IS_RETURN_ERROR(FAILED(ret),0, "HitTestPoint error!");
-		x = pMatrics->left; y = pMatrics->top+height();
+
+		CaretManager.setIndex(pMatrics->textPosition);
+		CaretManager.IncIndex();
+		x = pMatrics->left + pMatrics->width; y = pMatrics->top + height();
 		CaretManager.ChangeCaretPos(Point(x, y) + LeftTopPoint(mRect));
 
+		SAFE_DELETE(pMatrics);
 		return 0;
 	}
 
@@ -214,7 +219,13 @@ namespace LIB_CONTROL
 	void Control::InputChar(Listener * pListener, char cAscii)
 	{
 		if (!mOwnCaret) return;
-		mText += cAscii;
+		if (cAscii == '\b') {
+			mText.erase(CaretManager.getIndex()); 
+			CaretManager.DecIndex();
+		};
+		//mText += cAscii;
+		mText = mText.insert(CaretManager.getIndex(),string(&cAscii));
+		CaretManager.IncIndex();
 	}
 
 	void Control::Drag(Listener * pListener, int dx, int dy)

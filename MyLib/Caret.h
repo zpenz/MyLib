@@ -22,6 +22,8 @@ protected:
 
 	bool mHide;
 
+	UINT32 mInsertPos; 
+
 	HWND mAttachWindow;
 
 	COLORREF mCaretColor;
@@ -45,6 +47,14 @@ public:
 	bool attrach(HWND hWnd); //must call first
 
 	POINT PointOfDraw();
+
+	UINT32 getIndex() const;//²åÈë·ûµÄË÷Òý..
+
+	void setIndex(UINT32 newIndex);
+
+	void IncIndex(); //++
+
+	void DecIndex(); //--
 
 	bool IsCaretExist();
 

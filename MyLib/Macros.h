@@ -14,8 +14,8 @@
 #define SCREEN_WIDTH  GetDeviceCaps(GetDC(NULL),HORZRES)
 #define SCREEN_HEIGHT GetDeviceCaps(GetDC(NULL),VERTRES)
 #define MAX_KEYS 256
-#define SAFE_RELEASE(p) if(p){p->Release(); p = NULL;}
-#define SAFE_DELETE(p)  if(p!=nullptr){delete p; p = NULL;} 
+#define SAFE_RELEASE(p) if(p){p->Release(); p = nullptr;}
+#define SAFE_DELETE(p)  if(p!=nullptr){delete p; p = nullptr;} 
 
 namespace Macros2D
 {
