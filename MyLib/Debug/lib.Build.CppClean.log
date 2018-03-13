@@ -4,7 +4,6 @@ c:\users\administrator\source\repos\mylib\mylib\debug\lib.idb
 c:\users\administrator\source\repos\mylib\mylib\debug\stdafx.obj
 c:\users\administrator\source\repos\mylib\mylib\debug\2draw.obj
 c:\users\administrator\source\repos\mylib\mylib\debug\caret.obj
-c:\users\administrator\source\repos\mylib\mylib\debug\control.obj
 c:\users\administrator\source\repos\mylib\mylib\debug\libd11.obj
 c:\users\administrator\source\repos\mylib\mylib\debug\macros.obj
 c:\users\administrator\source\repos\mylib\mylib\debug\semaphoremanager.obj
@@ -12,6 +11,7 @@ c:\users\administrator\source\repos\mylib\mylib\debug\sprite.obj
 c:\users\administrator\source\repos\mylib\mylib\debug\lib2d.obj
 c:\users\administrator\source\repos\mylib\mylib\debug\libd3d.obj
 c:\users\administrator\source\repos\mylib\mylib\debug\lib.obj
+c:\users\administrator\source\repos\mylib\mylib\debug\control.obj
 c:\users\administrator\source\repos\mylib\debug\lib.lib
 c:\users\administrator\source\repos\mylib\debug\lib.pdb
 c:\users\administrator\source\repos\mylib\mylib\debug\lib.tlog\cl.command.1.tlog

@@ -223,7 +223,7 @@ IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text, float fSize)
 	return tempTextLayout;
 }
 
-bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, MyColor TextColor, UINT AlignType,bool isFillRectangle)
+bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, MyColor TextColor, TextLayout * pLayout,bool isFillRectangle,ALIGN_TEXT_TYPE textAlignType,ALIGN_PARAGRAPH_TYPE paragraphAlignType)
 {
 	if(!DrawRectangle(Rect,RectColor, isFillRectangle)) return false;
 	if (text.empty()) return true;
@@ -233,54 +233,24 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	///<LayOutBox>MaxWidth-MaxHeight</LayOutBox>
 	tempTextLayout->SetMaxWidth(static_cast<FLOAT>(RECTWIDTH(Rect)));
 	tempTextLayout->SetMaxHeight(static_cast<FLOAT>(RECTHEIGHT(Rect)));
+	tempTextLayout->SetTextAlignment(textAlignType);
+	tempTextLayout->SetParagraphAlignment(paragraphAlignType);
+	pLayout = tempTextLayout;
 
-	if (AlignType & ALIGN_LEFT)
-	{
-		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
-	}
-	if (AlignType & ALIGN_RIGHT)
-	{
-		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
-	}
-	if (AlignType & ALIGN_RIGHT)
-	{
-		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING); 
-	}
-	if (AlignType & ALIGN_TOP)
-	{
-		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
-	}
-	if (AlignType & ALIGN_BOTTOM)
-	{
-		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_FAR);
-	}
-	if(AlignType & ALIGN_CENTER_H)
-	{
-		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER); 
-	}
-	if(AlignType & ALIGN_CENTER_V)
-	{
-		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER); 
-	}
-	if(AlignType == ALIGN_DEFAULT)
-	{
-		tempTextLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);  //水平居中
-		tempTextLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER); //垂直居中
-	}
-	
 	mRenderTarget->BeginDraw();
 	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)),tempTextLayout,CreateBrush(TextColor),D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
 	auto ret = mRenderTarget->EndDraw();
 	return true;
 }
 
-bool My2DDraw::DrawText(std::string text, POINT fontPos, MyColor TextColor, float fontSize)
+bool My2DDraw::DrawText(std::string text, POINT fontPos, MyColor TextColor, float fontSize, TextLayout * pLayout)
 {
 	if (text.empty()) return true;
 	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
 
 	DWRITE_TEXT_RANGE textRange = { 0, text.length()};
 	tempTextLayout->SetFontSize(fontSize, textRange);
+	pLayout = tempTextLayout;
 
 	mRenderTarget->BeginDraw();
 	mRenderTarget->DrawTextLayout(PointToD2DPointF(fontPos), tempTextLayout, CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);

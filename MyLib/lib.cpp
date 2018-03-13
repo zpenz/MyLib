@@ -317,13 +317,16 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_NCHITTEST:
 			return window->OnHitTest(lParam);
 		case WM_NCACTIVATE:
-			return(window->OnNcActive(wParam,lParam));
+			return window->OnNcActive(wParam,lParam);
 			break;
 		case WM_ERASEBKGND: 
 			return 1; // ²»²Á³ý±³¾°
 		case WM_KEYUP:
 			break;
 		case WM_KEYDOWN:
+			break;
+		case WM_CHAR:
+			return window->OnChar(wParam, lParam);
 			break;
 		case WM_MOUSEMOVE:
 			window->OnMouseMove(wParam,lParam);
@@ -416,7 +419,7 @@ void BaseWindow::Destory()
 	 ptest->SetDrag(true);
 	 mListener.attach(ptest);
 	 //Test EditBox
-	 EditBox * pEditBox = new EditBox("", Conver::MyRect(200, 200, 300, 225), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
+	 EditBox * pEditBox = new EditBox("aaabb", Conver::MyRect(200, 200, 300, 225), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
 	 pEditBox->SetDrag(true);
 	 mListener.attach(pEditBox);
 
@@ -516,6 +519,13 @@ void BaseWindow::Destory()
 		 DrawManager.ReSize(RECTWIDTH(RestoreRect), RECTHEIGHT(RestoreRect));
 	 }
 
+ }
+
+ UINT BaseWindow::OnChar(WPARAM wParam, LPARAM lParam)
+ {
+	 auto pressChar = (char)wParam;
+	 mListener.InputChar(pressChar);
+	 return 0;
  }
 
  void BaseWindow::OnMouseMove(WPARAM wParam, LPARAM lParam)

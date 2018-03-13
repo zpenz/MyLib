@@ -17,6 +17,8 @@ using namespace Macros2D;
 
 #define MyColor D2D1::ColorF
 #define IPIC    ID2D1Bitmap 
+#define TextLayout IDWriteTextLayout
+#define HitTestMatric DWRITE_HIT_TEST_METRICS
 
 class My2DDraw
 {
@@ -45,9 +47,9 @@ public:
 
 	bool DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle = false);
 
-	bool DrawText(std::string text,POINT fontPos,MyColor TextColor,float fontSize);
+	bool DrawText(std::string text,POINT fontPos,MyColor TextColor,float fontSize,_Out_ TextLayout * pLayout);
 
-	bool DrawRectWithText(RECT Rect, std::string text, MyColor RectColor, MyColor TextColor, UINT AlignType = ALIGN_DEFAULT, bool isFillRectangle = false);
+	bool DrawRectWithText(RECT Rect, std::string text, MyColor RectColor, MyColor TextColor, _Out_ TextLayout * pLayout,bool isFillRectangle = false,ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
 
 	bool DrawRectWithPicture(RECT Rect, MyColor RectColor, std::wstring strFileName, UINT uOffSetX = 0,UINT uOffSetY = 0,bool isFillRectangle = false);
 

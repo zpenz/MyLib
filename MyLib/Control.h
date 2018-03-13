@@ -76,8 +76,6 @@ namespace LIB_CONTROL
 
 		bool mVisible;
 
-		UINT mAlignType;
-
 		bool mMouseInternal;
 
 		bool mActive;
@@ -96,6 +94,8 @@ namespace LIB_CONTROL
 
 		POINT mCaretPos; 
 
+		TextLayout * mpTextpLayout;
+
 	public:
 
 		virtual void Hover(Listener * pListener, POINT pt) = 0;
@@ -109,6 +109,8 @@ namespace LIB_CONTROL
 		virtual UINT LButtonUp(Listener * pListener,POINT pt);
 
 		virtual void MouseMove(Listener * pListener,POINT pt); //mouse move ///pt是关于Client的
+
+		virtual void InputChar(Listener * pListener,char cAscii);
 
 		void Drag(Listener * pListener, int dx, int dy) override;
 
@@ -154,10 +156,6 @@ namespace LIB_CONTROL
 
 		void AdjustRect(RECT decREct);
 
-		UINT getAlignType() const;
-
-		void setAlignType(UINT uType);
-
 		bool IsMouseInteral() const;
 
 		void SetInternal(bool MouseInternal);
@@ -193,6 +191,8 @@ namespace LIB_CONTROL
 		bool detach(Control * pControl);
 
 		void Draw();
+
+		void InputChar(char c);
 
 		void Hover(POINT pt);
 
