@@ -261,17 +261,23 @@ bool My2DDraw::DrawRectWithTextW(RECT Rect, std::wstring text, MyColor RectColor
 
 bool My2DDraw::DrawText(std::string text, POINT fontPos, MyColor TextColor, float fontSize, TextLayout * pLayout)
 {
-	if (text.empty()) return true;
-	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
+	auto wstrDesText = Conver::ACharToWChar(const_cast<char *>(text.c_str()));
+	return DrawTextW(wstrDesText,fontPos,TextColor,fontSize,pLayout);
+}
 
-	DWRITE_TEXT_RANGE textRange = { 0, text.length()};
+bool My2DDraw::DrawTextW(std::wstring text, POINT fontPos, MyColor TextColor, float fontSize, TextLayout * pLayout)
+{
+	if (text.empty()) return true;
+	IDWriteTextLayout * tempTextLayout = CreateTextLayoutW(text);
+
+	DWRITE_TEXT_RANGE textRange = { 0, text.length() };
 	tempTextLayout->SetFontSize(fontSize, textRange);
 	pLayout = tempTextLayout;
 
 	mRenderTarget->BeginDraw();
 	mRenderTarget->DrawTextLayout(PointToD2DPointF(fontPos), tempTextLayout, CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
 	auto ret = mRenderTarget->EndDraw();
-	return true;
+	return false;
 }
 
 ///<OffSet>ÄÚ±ß¾à</OffSet>

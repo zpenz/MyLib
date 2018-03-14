@@ -8,24 +8,26 @@ void ErrorMessage(const char * _error)
 	exit(0);
 }
 
+HCURSOR ARROW::ArrowShape::SHAPE_ARROW = LoadCursor(NULL, IDC_ARROW);
+HCURSOR ARROW::ArrowShape::SHAPE_I = LoadCursor(NULL, IDC_IBEAM);
+
 namespace Conver
 {
 
 	D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
 	{
 		D2D1_POINT_2F *pPointF = new D2D1_POINT_2F(
-			D2D1::Point2F(static_cast<float>(pt.x),
-				static_cast<float>(pt.y)));
+			D2D1::Point2F(STCAST(float,pt.x),STCAST(float,pt.y)));
 		return *pPointF;
 	}
 
 	D2D1_RECT_F & RectToD2DRectF(RECT & rc)
 	{
 		D2D1_RECT_F * pNeedRect = new D2D1_RECT_F(
-			D2D1::RectF(static_cast<float>(rc.left),
-				static_cast<float>(rc.top),
-				static_cast<float>(rc.right),
-				static_cast<float>(rc.bottom)));
+			D2D1::RectF(STCAST(float,rc.left),
+				STCAST(float, rc.top),
+				STCAST(float, rc.right),
+				STCAST(float, rc.bottom)));
 		return *pNeedRect;
 	}
 

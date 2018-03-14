@@ -3,6 +3,7 @@
 
 namespace LIB_WINDOW
 {
+
 	RECT BaseWindow::Rect() const
 	{
 		if (!mBaseHwnd) return Conver::nullRect;
@@ -329,6 +330,8 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_UNICHAR:
 		case WM_IME_CHAR:
 			return window->OnUnicodeChar(wParam,lParam);
+		case WM_SETCURSOR:
+			return true; ///阻止window自动还原cursor shape
 		case WM_MOUSEMOVE:
 			window->OnMouseMove(wParam,lParam);
 			break;
@@ -547,6 +550,8 @@ void BaseWindow::Destory()
 		 mMouseState = MOUSE_STATE_IDLE;
 	 }
  }
+
+
 
 
  }

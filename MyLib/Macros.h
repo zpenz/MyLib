@@ -76,6 +76,16 @@ namespace LIB_WINDOW
 	}
 }
 
+namespace ARROW
+{
+	class ArrowShape
+	{
+	public:
+		static HCURSOR SHAPE_ARROW;
+		static HCURSOR SHAPE_I;
+	};
+}
+
 void ErrorMessage(const char * _error);
 
 #define SINGLE_INSTANCE(classname) \

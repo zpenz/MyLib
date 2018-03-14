@@ -166,8 +166,8 @@ namespace LIB_CONTROL
 	void Control::Hover(Listener * pListener, POINT pt)
 	{
 		if (!mOwnCaret) return;
-		if (!mMouseInternal) SetCursor(LoadCursor(NULL,IDC_ARROW));
-		else SetCursor(LoadCursor(NULL, IDC_IBEAM));
+		if (mMouseInternal) SetCursor(ARROW::ArrowShape::SHAPE_I);
+		else SetCursor(ARROW::ArrowShape::SHAPE_ARROW);
 	}
 
 	UINT Control::LButtonDown(Listener * pListener,POINT pt)
@@ -177,8 +177,10 @@ namespace LIB_CONTROL
 		mouseDragStartPoint = pt;
 
 		if (!mOwnCaret) return 0;
-		CaretManager.ChangeCaretPos(Conver::BottomCenterPoint(mRect));
 
+
+
+		CaretManager.ChangeCaretPos(Conver::BottomCenterPoint(mRect));
 		CaretManager.ChangeCaretSize(0, height());
 		CaretManager.ShowCaret();
 
@@ -222,7 +224,7 @@ namespace LIB_CONTROL
 		}
 		else
 		{
-			mText = mText.insert(CaretManager.getIndex(), wstring(&cUnicode));
+			mText = mText.insert(CaretManager.getIndex()+1, wstring(&cUnicode));
 			CaretManager.IncIndex();	
 		}
 
