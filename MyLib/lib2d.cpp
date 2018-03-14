@@ -10,7 +10,7 @@ PicStruct::~PicStruct()
  
 lib2d::lib2d():pBrush(NULL),pFactory(NULL),pRenderTarget(NULL)
 {
-	SetWindowName("MyLib2D");
+	SetWindowName(L"MyLib2D");
 	//清零 默认为黑色
 	ZeroMemory(&brushcolor,sizeof(D2D1_COLOR_F));
 	this->pPictureSet = new vector<RenderPicture>();

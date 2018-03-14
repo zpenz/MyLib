@@ -36,14 +36,14 @@ namespace LIB_WINDOW
  }
 
  BaseWindow::BaseWindow(int width, int height,
-	 const string windowname, const string classname, DWORD WindowStyleEx, DWORD WindowStyle,POINT leftUpper)
+	 const wstring windowname, const wstring classname, DWORD WindowStyleEx, DWORD WindowStyle,POINT leftUpper)
 	 :mWidth(width), mHeight(height),mClassname(classname), mWindowname(windowname), mWindowStyle(WindowStyle),
 	 mWindowStyleEx(WindowStyleEx),mLeftTop(leftUpper)
  {
  }
 
  BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mBaseHwnd(NULL),
-		mClassname("LIB"),mWindowname("LIB"),mWindowStyle(WS_OVERLAPPEDWINDOW),
+		mClassname(L"LIB"),mWindowname(L"LIB"),mWindowStyle(WS_OVERLAPPEDWINDOW),
 	mWindowStyleEx(WS_EX_APPWINDOW)
 {
 
@@ -51,7 +51,7 @@ namespace LIB_WINDOW
 
 bool BaseWindow::ShowThisWindow()
 {
-	WNDCLASSEX wndcls;
+	WNDCLASSEXW wndcls;
 	ZeroMemory(&wndcls,sizeof(wndcls));
 
 	wndcls.cbClsExtra = 0;
@@ -73,7 +73,7 @@ bool BaseWindow::ShowThisWindow()
 
 	wndcls.style = CS_HREDRAW | CS_VREDRAW;
 	
-	RegisterClassEx(&wndcls);
+	RegisterClassExW(&wndcls);
 
 	InitBeforeCreate();
 	MoveCenterWindow();
@@ -84,7 +84,7 @@ bool BaseWindow::ShowThisWindow()
 	mWindowStyle =  WS_CAPTION | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
 		WS_SYSMENU | WS_THICKFRAME| WS_OVERLAPPED | WS_MINIMIZEBOX |WS_MAXIMIZEBOX ;
 
-	mBaseHwnd = CreateWindowEx(mWindowStyleEx,mClassname.c_str(),mWindowname.c_str(),
+	mBaseHwnd = CreateWindowExW(mWindowStyleEx,mClassname.c_str(),mWindowname.c_str(),
 		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
 
 	if(!mBaseHwnd)
@@ -163,10 +163,10 @@ void BaseWindow::SetHeight(int Height)
 	if (mBaseHwnd) UpdateSize();
 }
 
-void BaseWindow::SetWindowName(const string windowname)
+void BaseWindow::SetWindowName(const wstring windowname)
 {
 	mWindowname = windowname;
-	if(mBaseHwnd) ::SetWindowText(GetHwnd(), mWindowname.c_str());
+	if(mBaseHwnd) ::SetWindowTextW(GetHwnd(), mWindowname.c_str());
 }
 
 void BaseWindow::AddWindowStyle(DWORD WindowStyle)
@@ -247,7 +247,7 @@ int BaseWindow::GetHeight(void) const
 	return mHeight;
 }
 
-string BaseWindow::GetWindowName(void) const
+wstring BaseWindow::GetWindowName(void) const
 {
 	return mWindowname;
 }

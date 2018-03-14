@@ -30,9 +30,9 @@ protected:
 
 	RECT mWindowRect; ///<包括标题栏和边框>
 
-	const string mClassname; 
+	const wstring mClassname; 
 
-	string mWindowname;
+	wstring mWindowname;
 
 	DWORD mWindowStyleEx;
 
@@ -70,7 +70,7 @@ private:
 public:
 	BaseWindow();
 
-	BaseWindow(int width, int height,const string windowname, const string classname, 
+	BaseWindow(int width, int height,const wstring windowname, const wstring classname, 
 		DWORD WindowStyleEx, DWORD WindowStyle, POINT leftUpper);
 
 	virtual ~BaseWindow();
@@ -87,7 +87,7 @@ public:
 
 	void SetHeight(int Height);
 
-	void SetWindowName(const string windowname);
+	void SetWindowName(const wstring windowname);
 
 	void AddWindowStyle(DWORD WindowStyle);
 
@@ -105,7 +105,7 @@ public:
 
 	int GetHeight(void)const;
 
-	string GetWindowName(void)const;
+	wstring GetWindowName(void)const;
 
 	HDC  GetHDC(void)const;
 
