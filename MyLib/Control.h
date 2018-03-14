@@ -98,11 +98,11 @@ namespace LIB_CONTROL
 
 	public:
 
-		virtual void Hover(Listener * pListener, POINT pt) = 0;
-
 		virtual UINT HitTest(Listener * pListener, POINT pt) = 0;
 
 		virtual void Draw(Listener * pListener);
+
+		virtual void Hover(Listener * pListener, POINT pt);
 
 		virtual UINT LButtonDown(Listener * pListener,POINT pt);
 

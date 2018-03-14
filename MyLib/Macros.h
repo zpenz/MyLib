@@ -17,6 +17,8 @@
 #define SAFE_RELEASE(p) if(p){p->Release(); p = nullptr;}
 #define SAFE_DELETE(p)  if(p!=nullptr){delete p; p = nullptr;} 
 
+#define STCAST(type,des) static_cast<type>(des)
+
 namespace Macros2D
 {
 

@@ -144,6 +144,11 @@ float MyCaret::Time()
 	return mBlinkTime;
 }
 
+POINT MyCaret::pos()
+{
+	return mCaretPos;
+}
+
 void MyCaret::ChangeCaretPos(POINT newCaretPos)
 {
 	mCaretPos = newCaretPos;
@@ -159,6 +164,27 @@ void MyCaret::ChangeCaretSize(UINT width, UINT height)
 
 	DestroyCaret();
 	CreateCaret(mAttachWindow,NULL,width,height);
+}
+
+
+void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoint)
+{
+	using namespace Conver;
+
+	auto tempPoint = TestPoint;
+	if (TestPoint == nullptr) tempPoint = &mCaretPos;
+
+	float x, y;
+	BOOL isTrail, inside;
+	x = STCAST(float,tempPoint->x - LeftTopPoint(layoutBox).x);
+	y = STCAST(float,tempPoint->y - LeftTopPoint(layoutBox).y);
+	HitTestMatric * pMatrics = new HitTestMatric(); //must create 
+	auto ret = pTestMatric->HitTestPoint(x, y, &isTrail, &inside, pMatrics);
+	IS_RETURN_ERROR(FAILED(ret), , "Caret HitTestPoint error!");
+	CaretManager.setIndex(pMatrics->textPosition);
+	x = pMatrics->left + pMatrics->width; y = pMatrics->top + height();
+	CaretManager.ChangeCaretPos(Point(x, y) + LeftTopPoint(layoutBox));
+	SAFE_DELETE(pMatrics);
 }
 
 void MyCaret::Color(COLORREF caretColor)

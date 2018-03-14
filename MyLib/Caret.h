@@ -2,6 +2,7 @@
 #include "2Draw.h"
 
 #define ALIGN_UPDPWNDISTANCE 4
+
 #define ALIGN_LEFTDISTANCE 4
 
 class MyCaret
@@ -76,9 +77,14 @@ public:
 
 	float Time();
 
+	POINT pos();
+
 	void ChangeCaretPos(POINT newCaretPos);
 
 	void ChangeCaretSize(UINT width, UINT height); /// re-create caret
+
+	///<summary>把光标设置到文字的后面 pTestPoint 默认为光标位置</summary>
+	void AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * pTestPoint=nullptr);
 
 	void Color(COLORREF caretColor);
 

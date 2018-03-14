@@ -85,8 +85,8 @@ namespace LIB_CONTROL
 			{
 				pTempControl = pControl;
 				pControl->SetInternal(true);
-				pTempControl->Hover(this, pt);
 			}
+			pControl->Hover(this, pt);
 		});
 	}
 		
@@ -160,7 +160,14 @@ namespace LIB_CONTROL
 	{
 		if (mOwnCaret) return;
 		CaretManager.Render();
-		DrawManager.DrawTextA(mText,CenterPoint(mRect),mForceColor,RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE,mpTextpLayout);
+		DrawManager.DrawTextA(mText,CenterPoint(mRect),mForceColor,static_cast<float>(RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE),mpTextpLayout);
+	}
+
+	void Control::Hover(Listener * pListener, POINT pt)
+	{
+		if (!mOwnCaret) return;
+		if (!mMouseInternal) SetCursor(NULL);
+		SetCursor(LoadCursor(NULL, IDC_IBEAM));
 	}
 
 	UINT Control::LButtonDown(Listener * pListener,POINT pt)
@@ -177,24 +184,10 @@ namespace LIB_CONTROL
 
 		IS_RETURN_ERROR(!mpTextpLayout,0,"Control::LButtonDown mpTextLayout null...");
 
-		mpTextpLayout->SetMaxHeight(RECTHEIGHT(mRect));
-		mpTextpLayout->SetMaxWidth(RECTWIDTH(mRect));
+		mpTextpLayout->SetMaxHeight(STCAST(float,RECTHEIGHT(mRect)));
+		mpTextpLayout->SetMaxWidth(STCAST(float, RECTWIDTH(mRect)));
 
-		float x, y;
-		BOOL isTrail, inside;
-		x = pt.x-LeftTopPoint(mRect).x;
-		y = pt.y-LeftTopPoint(mRect).y;
-
-		HitTestMatric * pMatrics = new HitTestMatric(); //must new 
-		auto ret = mpTextpLayout->HitTestPoint(x, y, &isTrail, &inside, pMatrics);
-		IS_RETURN_ERROR(FAILED(ret),0, "HitTestPoint error!");
-
-		CaretManager.setIndex(pMatrics->textPosition);
-		CaretManager.IncIndex();
-		x = pMatrics->left + pMatrics->width; y = pMatrics->top + height();
-		CaretManager.ChangeCaretPos(Point(x, y) + LeftTopPoint(mRect));
-
-		SAFE_DELETE(pMatrics);
+		CaretManager.AdjustPos(mRect,mpTextpLayout,&pt);
 		return 0;
 	}
 
@@ -213,19 +206,28 @@ namespace LIB_CONTROL
 		CaretManager.HideCaret(); ///Òþ²Ø¹â±ê
 		Drag(pListener,pt.x-mouseDragStartPoint.x,pt.y-mouseDragStartPoint.y);
 		mouseDragStartPoint = pt;
-
 	}
 
 	void Control::InputChar(Listener * pListener, char cAscii)
 	{
 		if (!mOwnCaret) return;
-		if (cAscii == '\b') {
-			mText.erase(CaretManager.getIndex()); 
+		if (!mpTextpLayout) return;
+
+		if (cAscii == '\b') 
+		{
+			if (mText.size() <= 0) return;
+			auto index = CaretManager.getIndex();
+			mText.erase(index,1); 
 			CaretManager.DecIndex();
-		};
-		//mText += cAscii;
-		mText = mText.insert(CaretManager.getIndex(),string(&cAscii));
-		CaretManager.IncIndex();
+		}
+		else
+		{
+			mText = mText.insert(CaretManager.getIndex(), string(&cAscii));
+			CaretManager.IncIndex();	
+		}
+
+		Draw(pListener); //redraw
+		CaretManager.AdjustPos(mRect, mpTextpLayout);
 	}
 
 	void Control::Drag(Listener * pListener, int dx, int dy)

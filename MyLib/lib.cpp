@@ -325,6 +325,8 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			break;
 		case WM_KEYDOWN:
 			break;
+		case WM_UNICHAR:
+			return window->OnUnicodeChar(wParam,lParam);
 		case WM_CHAR:
 			return window->OnChar(wParam, lParam);
 			break;
@@ -519,6 +521,12 @@ void BaseWindow::Destory()
 		 DrawManager.ReSize(RECTWIDTH(RestoreRect), RECTHEIGHT(RestoreRect));
 	 }
 
+ }
+
+ UINT BaseWindow::OnUnicodeChar(WPARAM wParam, LPARAM lParam)
+ {
+	 auto wchar = (wchar_t)wParam;
+	 return 0;
  }
 
  UINT BaseWindow::OnChar(WPARAM wParam, LPARAM lParam)
