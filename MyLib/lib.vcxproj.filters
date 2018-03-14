@@ -25,6 +25,9 @@
     <Filter Include="头文件\Draw">
       <UniqueIdentifier>{7732b972-94b7-4236-8891-2e1c7d066ea4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Window">
+      <UniqueIdentifier>{48fe55e6-33b4-4522-984c-fcd85391a7f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -34,18 +37,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="libd11.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="lib2d.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="libD3D.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="lib.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Control.h">
@@ -66,21 +57,21 @@
     <ClInclude Include="Caret.h">
       <Filter>头文件\Draw</Filter>
     </ClInclude>
+    <ClInclude Include="lib.h">
+      <Filter>头文件\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="lib2d.h">
+      <Filter>头文件\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="libD3D.h">
+      <Filter>头文件\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="libd11.h">
+      <Filter>头文件\Window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="libd11.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="lib2d.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="libD3D.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="lib.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Control.cpp">
@@ -100,6 +91,18 @@
     </ClCompile>
     <ClCompile Include="Caret.cpp">
       <Filter>头文件\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="lib.cpp">
+      <Filter>头文件\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="lib2d.cpp">
+      <Filter>头文件\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="libD3D.cpp">
+      <Filter>头文件\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="libd11.cpp">
+      <Filter>头文件\Window</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
