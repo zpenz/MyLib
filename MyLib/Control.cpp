@@ -178,8 +178,6 @@ namespace LIB_CONTROL
 
 		if (!mOwnCaret) return 0;
 
-
-
 		CaretManager.ChangeCaretPos(Conver::BottomCenterPoint(mRect));
 		CaretManager.ChangeCaretSize(0, height());
 		CaretManager.ShowCaret();
@@ -198,6 +196,7 @@ namespace LIB_CONTROL
 		mbDraging = false;
 		if (!mOwnCaret) return 0;
 		CaretManager.ShowCaret();
+		CaretManager.AdjustPos(mRect,mpTextpLayout);
 		return 0;
 	}
 
@@ -224,6 +223,7 @@ namespace LIB_CONTROL
 		}
 		else
 		{
+			if (mText.size() == 0) { mText = wstring(&cUnicode); return; }
 			mText = mText.insert(CaretManager.getIndex()+1, wstring(&cUnicode));
 			CaretManager.IncIndex();	
 		}

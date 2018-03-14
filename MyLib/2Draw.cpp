@@ -251,10 +251,14 @@ bool My2DDraw::DrawRectWithTextW(RECT Rect, std::wstring text, MyColor RectColor
 	tempTextLayout->SetMaxHeight(static_cast<FLOAT>(RECTHEIGHT(Rect)));
 	tempTextLayout->SetTextAlignment(textAlignType);
 	tempTextLayout->SetParagraphAlignment(paragraphAlignType);
+
+	DWRITE_TRIMMING Trim = { DWRITE_TRIMMING_GRANULARITY_CHARACTER,0,0};
+	tempTextLayout->SetTrimming(&Trim, NULL);
+
 	*pLayout = tempTextLayout;
 
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)), tempTextLayout, CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
+	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)), tempTextLayout, CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_CLIP);
 	auto ret = mRenderTarget->EndDraw();
 	return true;
 }
