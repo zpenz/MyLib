@@ -133,9 +133,7 @@ public:
 
 	virtual void OnLButtonUp(WPARAM wParam, LPARAM lParam);
 
-	virtual UINT OnUnicodeChar(WPARAM wParam, LPARAM lParam);
-
-	virtual UINT OnChar(WPARAM wParam, LPARAM lParam);
+	virtual UINT OnUnicodeChar(WPARAM wParam, LPARAM lParam); /// WM_IME_CHAR 
 
 	virtual void OnMouseMove(WPARAM wParam, LPARAM lParam);
 

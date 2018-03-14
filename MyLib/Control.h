@@ -68,7 +68,7 @@ namespace LIB_CONTROL
 
 		RECT mRect;
 
-		string mText;
+		wstring mText;
 
 		COLORREF mForceColor, mBackColor;
 
@@ -110,7 +110,7 @@ namespace LIB_CONTROL
 
 		virtual void MouseMove(Listener * pListener,POINT pt); //mouse move ///pt是关于Client的
 
-		virtual void InputChar(Listener * pListener,char cAscii);
+		virtual void InputChar(Listener * pListener, wchar_t cUnicode);
 
 		void Drag(Listener * pListener, int dx, int dy) override;
 
@@ -128,9 +128,9 @@ namespace LIB_CONTROL
 
 		void SetActive(bool bActive);
 
-		string Text() const;
+		wstring Text() const;
 
-		void SetText(string text);
+		void SetText(wstring text);
 
 		COLORREF ForceColor() const;
 
@@ -166,9 +166,9 @@ namespace LIB_CONTROL
 
 		Control();
 
-		Control(string text, RECT rc = {0,0});
+		Control(wstring text, RECT rc = {0,0});
 
-		Control(string text, RECT rc,COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+		Control(wstring text, RECT rc,COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 
 		virtual ~Control();
 	};
@@ -192,7 +192,7 @@ namespace LIB_CONTROL
 
 		void Draw();
 
-		void InputChar(char c);
+		void InputChar(wchar_t c);
 
 		void Hover(POINT pt);
 
@@ -227,15 +227,13 @@ namespace LIB_CONTROL
 
 		virtual void Draw(Listener * pListener) override;
 
-		virtual void Hover(Listener * pListener, POINT pt) override;
-
 		virtual UINT HitTest(Listener * pListener,POINT pt) override;
 
 		Button();
 
-		Button(string text,RECT rc);
+		Button(wstring text,RECT rc);
 
-		Button(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+		Button(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 	};
 
 	class CloseButton : public Button 
@@ -243,8 +241,6 @@ namespace LIB_CONTROL
 	public:
 
 		void Draw(Listener * pListener) override final;
-
-		void Hover(Listener * pListener, POINT pt) override final;
 
 		UINT LButtonUp(Listener * pListener,POINT pt) override final;
 
@@ -254,7 +250,7 @@ namespace LIB_CONTROL
 
 		CloseButton();
 
-		CloseButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+		CloseButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 
 	};
 
@@ -270,7 +266,7 @@ namespace LIB_CONTROL
 
 		MiniButton();
 
-		MiniButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+		MiniButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 	};
 
 	class MaxButton : public Button // max and restore button...
@@ -295,7 +291,7 @@ namespace LIB_CONTROL
 
 		MaxButton();
 
-		MaxButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+		MaxButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 	};
 
 	///<ImageButton>图形按钮</ImageButton>
@@ -320,15 +316,13 @@ namespace LIB_CONTROL
 	public:
 		void Draw(Listener * pListener) override;
 
-		void Hover(Listener * pListener, POINT pt) override;
-
 		UINT HitTest(Listener * pListener, POINT pt) override;
 
 		void Sizing(RECT newRect) override final;
 
-		TitleBar(string text, RECT rc);
+		TitleBar(wstring text, RECT rc);
 
-		TitleBar(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+		TitleBar(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 
 		~TitleBar();
 	};
@@ -338,23 +332,21 @@ namespace LIB_CONTROL
 	{
 		float mFrontSize;
 
-		string mFrontName;
+		wstring mFrontName;
 
 	public:
 
 		void ChangeFrontSize(float newSize);
 
-		void ChangeFrontName(string newFrontName);
+		void ChangeFrontName(wstring newFrontName);
 
 		void Draw(Listener * pListener) override;
-
-		void Hover(Listener * pListener, POINT pt) override;
 
 		UINT HitTest(Listener * pListener, POINT pt) override;
 
 		EditBox(RECT rc, string defaultText = "");
 
-		EditBox(string defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+		EditBox(wstring defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 
 	};
 

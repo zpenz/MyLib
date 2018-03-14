@@ -49,7 +49,11 @@ public:
 
 	bool DrawText(std::string text,POINT fontPos,MyColor TextColor,float fontSize,_Out_ TextLayout * pLayout);
 
+	bool DrawTextW(std::wstring text, POINT fontPos, MyColor TextColor, float fontSize, _Out_ TextLayout * pLayout);
+
 	bool DrawRectWithText(RECT Rect, std::string text, MyColor RectColor, MyColor TextColor, _Out_ TextLayout ** pLayout,bool isFillRectangle = false,ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
+
+	bool DrawRectWithTextW(RECT Rect, std::wstring text, MyColor RectColor, MyColor TextColor, _Out_ TextLayout ** pLayout, bool isFillRectangle = false, ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
 
 	bool DrawRectWithPicture(RECT Rect, MyColor RectColor, std::wstring strFileName, UINT uOffSetX = 0,UINT uOffSetY = 0,bool isFillRectangle = false);
 
@@ -80,6 +84,10 @@ public:
 	IDWriteTextLayout * CreateTextLayout(std::string text); // default size 18.0f
 
 	IDWriteTextLayout * CreateTextLayout(std::string text,float fSize);
+
+	IDWriteTextLayout * CreateTextLayoutW(std::wstring text); 
+
+	IDWriteTextLayout * CreateTextLayoutW(std::wstring text, float fSize);
 
 	/// pClipRect 裁剪区域 从图片的左上角开始 不能超过图片区域 否则结果是未定义的
 	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth = 0, UINT dstHeight = 0,RECT * pClipRect = nullptr); 

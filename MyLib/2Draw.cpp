@@ -210,25 +210,41 @@ IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text)
 
 IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text, float fSize)
 {
+	auto wstrDesText = Conver::ACharToWChar(const_cast<char *>(text.c_str()));
+	return CreateTextLayoutW(wstrDesText);
+}
+
+IDWriteTextLayout * My2DDraw::CreateTextLayoutW(std::wstring text)
+{
+	return CreateTextLayoutW(text, 18.0f);
+}
+
+IDWriteTextLayout * My2DDraw::CreateTextLayoutW(std::wstring text, float fSize)
+{
 	if (text.empty()) return nullptr;
 	IDWriteTextFormat * tempTextFormat = NULL;
 	auto hr = mWriteFactory->CreateTextFormat(L"新宋体", NULL, DWRITE_FONT_WEIGHT_REGULAR,
 		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fSize, L"en-us", &tempTextFormat);
 
 	IDWriteTextLayout * tempTextLayout = NULL;
-	auto wstrDesText = Conver::ACharToWChar(const_cast<char *>(text.c_str()));
-	hr = mWriteFactory->CreateTextLayout(wstrDesText, wcslen(wstrDesText), tempTextFormat, 100.0f, 0.0f,
+	hr = mWriteFactory->CreateTextLayout(text.c_str(), text.length(), tempTextFormat, 100.0f, 0.0f,
 		&tempTextLayout);
-	IS_ERROR_EXIT(FAILED(hr), "创建TextLayout失败!");
+	IS_ERROR_EXIT(FAILED(hr), "CreateTextLayoutW失败!");
 	return tempTextLayout;
 }
 
 bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, MyColor TextColor, TextLayout ** pLayout,bool isFillRectangle,ALIGN_TEXT_TYPE textAlignType,ALIGN_PARAGRAPH_TYPE paragraphAlignType)
 {
-	if(!DrawRectangle(Rect,RectColor, isFillRectangle)) return false;
+	auto wstrDesText = Conver::ACharToWChar(const_cast<char *>(text.c_str()));
+	return DrawRectWithTextW(Rect,wstrDesText,RectColor,TextColor,pLayout,isFillRectangle,textAlignType,paragraphAlignType);
+}
+
+bool My2DDraw::DrawRectWithTextW(RECT Rect, std::wstring text, MyColor RectColor, MyColor TextColor, TextLayout ** pLayout, bool isFillRectangle, ALIGN_TEXT_TYPE textAlignType, ALIGN_PARAGRAPH_TYPE paragraphAlignType)
+{
+	if (!DrawRectangle(Rect, RectColor, isFillRectangle)) return false;
 	if (text.empty()) return true;
 
-	IDWriteTextLayout * tempTextLayout = CreateTextLayout(text);
+	IDWriteTextLayout * tempTextLayout = CreateTextLayoutW(text);
 
 	///<LayOutBox>MaxWidth-MaxHeight</LayOutBox>
 	tempTextLayout->SetMaxWidth(static_cast<FLOAT>(RECTWIDTH(Rect)));
@@ -238,7 +254,7 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 	*pLayout = tempTextLayout;
 
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)),tempTextLayout,CreateBrush(TextColor),D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
+	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)), tempTextLayout, CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
 	auto ret = mRenderTarget->EndDraw();
 	return true;
 }

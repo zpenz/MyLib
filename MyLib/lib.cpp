@@ -265,15 +265,15 @@ HWND BaseWindow::GetHwnd(void) const
 void BaseWindow::MessageLoop()
 {
 	MSG Message;
-	PeekMessage(&Message,NULL,0,0,PM_NOREMOVE);
+	PeekMessageW(&Message,NULL,0,0,PM_NOREMOVE);
 	static float fLastTime  = static_cast<float>(GetTickCount());
 	while(Message.message!= WM_QUIT)
 	{
-		auto bHasMessage = PeekMessage(&Message,NULL,0,0,PM_REMOVE);
+		auto bHasMessage = PeekMessageW(&Message,NULL,0,0,PM_REMOVE);
 		if(bHasMessage)
 		{
 			TranslateMessage(&Message);
-			DispatchMessage(&Message);
+			DispatchMessageW(&Message);
 		}
 		else
 		{
@@ -325,11 +325,10 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			break;
 		case WM_KEYDOWN:
 			break;
-		case WM_UNICHAR:
-			return window->OnUnicodeChar(wParam,lParam);
 		case WM_CHAR:
-			return window->OnChar(wParam, lParam);
-			break;
+		case WM_UNICHAR:
+		case WM_IME_CHAR:
+			return window->OnUnicodeChar(wParam,lParam);
 		case WM_MOUSEMOVE:
 			window->OnMouseMove(wParam,lParam);
 			break;
@@ -405,23 +404,23 @@ void BaseWindow::Destory()
 
 	 mListener.attachWindow(mBaseHwnd);
 	 //TitleBar
-	 TitleBar * pBar = new TitleBar("pSong's Window", Conver::MyRect(0, 0, mWidth - 3 * 35, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(116, 116, 119));
+	 TitleBar * pBar = new TitleBar(L"pSong's Window", Conver::MyRect(0, 0, mWidth - 3 * 35, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(116, 116, 119));
 	 mListener.attach(pBar);
 	 //Close Button
-	 CloseButton * pClo = new CloseButton("",Conver::MyRect(1024 - 35, 0, mWidth, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(228, 0, 0));
+	 CloseButton * pClo = new CloseButton(L"",Conver::MyRect(1024 - 35, 0, mWidth, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(228, 0, 0));
 	 mListener.attach(pClo);
 	 //Max Button
-	 MaxButton * pMax = new MaxButton("",Conver::MyRect(1024 - 35 * 2, 0, mWidth - 35,35),  RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0),RGB(216, 120, 17));
+	 MaxButton * pMax = new MaxButton(L"",Conver::MyRect(1024 - 35 * 2, 0, mWidth - 35,35),  RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0),RGB(216, 120, 17));
 	 mListener.attach(pMax);
 	 //Mini Button
-	 MiniButton * pMin = new MiniButton("", Conver::MyRect(1024 - 35 * 3, 0, mWidth - 70,35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(216, 120, 17));
+	 MiniButton * pMin = new MiniButton(L"", Conver::MyRect(1024 - 35 * 3, 0, mWidth - 70,35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(216, 120, 17));
 	 mListener.attach(pMin);
 	 //Test Button
-	 Button * ptest = new Button("", Conver::MyRect(100, 100, 150, 125), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
+	 Button * ptest = new Button(L"", Conver::MyRect(100, 100, 150, 125), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
 	 ptest->SetDrag(true);
 	 mListener.attach(ptest);
 	 //Test EditBox
-	 EditBox * pEditBox = new EditBox("aaabb", Conver::MyRect(200, 200, 300, 225), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
+	 EditBox * pEditBox = new EditBox(L"abcde", Conver::MyRect(200, 200, 300, 225), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
 	 pEditBox->SetDrag(true);
 	 mListener.attach(pEditBox);
 
@@ -525,13 +524,7 @@ void BaseWindow::Destory()
 
  UINT BaseWindow::OnUnicodeChar(WPARAM wParam, LPARAM lParam)
  {
-	 auto wchar = (wchar_t)wParam;
-	 return 0;
- }
-
- UINT BaseWindow::OnChar(WPARAM wParam, LPARAM lParam)
- {
-	 auto pressChar = (char)wParam;
+	 auto pressChar = (wchar_t)wParam;
 	 mListener.InputChar(pressChar);
 	 return 0;
  }

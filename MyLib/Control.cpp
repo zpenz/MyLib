@@ -69,7 +69,7 @@ namespace LIB_CONTROL
 		CaretManager.Render();
 	}
 
-	void Listener::InputChar(char c)
+	void Listener::InputChar(wchar_t c)
 	{
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->InputChar(this,c);
@@ -160,14 +160,14 @@ namespace LIB_CONTROL
 	{
 		if (mOwnCaret) return;
 		CaretManager.Render();
-		DrawManager.DrawTextA(mText,CenterPoint(mRect),mForceColor,static_cast<float>(RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE),mpTextpLayout);
+		//DrawManager.DrawTextA(mText,CenterPoint(mRect),mForceColor,static_cast<float>(RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE),mpTextpLayout);
 	}
 
 	void Control::Hover(Listener * pListener, POINT pt)
 	{
 		if (!mOwnCaret) return;
-		if (!mMouseInternal) SetCursor(NULL);
-		SetCursor(LoadCursor(NULL, IDC_IBEAM));
+		if (!mMouseInternal) SetCursor(LoadCursor(NULL,IDC_ARROW));
+		else SetCursor(LoadCursor(NULL, IDC_IBEAM));
 	}
 
 	UINT Control::LButtonDown(Listener * pListener,POINT pt)
@@ -208,12 +208,12 @@ namespace LIB_CONTROL
 		mouseDragStartPoint = pt;
 	}
 
-	void Control::InputChar(Listener * pListener, char cAscii)
+	void Control::InputChar(Listener * pListener, wchar_t cUnicode)
 	{
 		if (!mOwnCaret) return;
 		if (!mpTextpLayout) return;
 
-		if (cAscii == '\b') 
+		if (cUnicode == '\b') 
 		{
 			if (mText.size() <= 0) return;
 			auto index = CaretManager.getIndex();
@@ -222,7 +222,7 @@ namespace LIB_CONTROL
 		}
 		else
 		{
-			mText = mText.insert(CaretManager.getIndex(), string(&cAscii));
+			mText = mText.insert(CaretManager.getIndex(), wstring(&cUnicode));
 			CaretManager.IncIndex();	
 		}
 
@@ -276,12 +276,12 @@ namespace LIB_CONTROL
 		mActive = bActive;
 	}
 
-	string Control::Text() const
+	wstring Control::Text() const
 	{
 		return mText;
 	}
 
-	void Control::SetText(string text)
+	void Control::SetText(wstring text)
 	{
 		if (!text.empty()) mText = text;
 	}
@@ -367,19 +367,19 @@ namespace LIB_CONTROL
 		return mRect.bottom - mRect.top;
 	}
 
-	Control::Control():Control("")
+	Control::Control():Control(L"")
 	{
 		mbDraging = false;
 	}
 	
-	Control::Control(string text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
+	Control::Control(wstring text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
 		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr)
 	{
 		mbDraging = false;
 	}
 
-	Control::Control(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,rc)
+	Control::Control(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,rc)
 	{
 		SetForceColor(forceColor);
 		SetBackColor(backColor);
@@ -408,21 +408,15 @@ namespace LIB_CONTROL
 	{
 		if (!mMouseInternal)
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), &mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), &mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw Button failed!");
 		}
 		else
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw  honvered Button failed!");
 		}
 	}
-
-	void Button::Hover(Listener * pListener,POINT pt)
-	{
-
-	}
-
 
 	UINT Button::HitTest(Listener * pListener,POINT pt)
 	{
@@ -435,11 +429,11 @@ namespace LIB_CONTROL
 		SetHoverForceColor(mForceColor);
 	}
 
-	Button::Button(string text, RECT rc):Control(text,rc),mBoardColor(mBackColor), mDrawBoard(false)
+	Button::Button(wstring text, RECT rc):Control(text,rc),mBoardColor(mBackColor), mDrawBoard(false)
 	{
 	}
 
-	Button::Button(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,
+	Button::Button(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,
 		rc,forceColor,backColor,hoverForceColor,hoverBackColor), mBoardColor(mBackColor), mDrawBoard(false)
 	{
 	}
@@ -480,20 +474,17 @@ namespace LIB_CONTROL
 		mIconSprite.ChangeRect(MyRect(100, 100, 800, 800));
 		if (!mMouseInternal)
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor),&mpTextpLayout,true);
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor),&mpTextpLayout,true);
 			IS_ERROR_EXIT(!ret, "Draw TitleBar failed!");
 		}
 		else
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor),&mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor),&mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw  honvered TitleBar failed!");
 		}
 		mIconSprite.Render();
 	}
 
-	void TitleBar::Hover(Listener * pListener,POINT pt)
-	{
-	}
 
 	UINT TitleBar::HitTest(Listener * pListener, POINT pt)
 	{
@@ -506,12 +497,12 @@ namespace LIB_CONTROL
 		AdjustRect(MyRect(0, 0, RECTWIDTH(newRect)-3*titleBarHeight, titleBarHeight));
 	}
 
-	TitleBar::TitleBar(string text,RECT rc):Control(text,rc)
+	TitleBar::TitleBar(wstring text,RECT rc):Control(text,rc)
 	{
 		SetID(CONTROL_TYPE_TITLEBAR);
 	}
 
-	TitleBar::TitleBar(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text, rc, forceColor, backColor,
+	TitleBar::TitleBar(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text, rc, forceColor, backColor,
 		hoverForceColor, hoverBackColor) {
 		//test
 		SetID(CONTROL_TYPE_TITLEBAR);
@@ -529,7 +520,7 @@ namespace LIB_CONTROL
 		SetID(CONTROL_TYPE_CLOSE_BUTTON);
 	}
 
-	CloseButton::CloseButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
+	CloseButton::CloseButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
 		hoverForceColor, hoverBackColor) {
 		CloseButton();
 	}
@@ -554,10 +545,6 @@ namespace LIB_CONTROL
 		}
 	}
 
-	void CloseButton::Hover(Listener * pListener, POINT pt)
-	{
-
-	}
 
 	UINT CloseButton::LButtonUp(Listener * pListener,POINT pt)
 	{
@@ -581,7 +568,7 @@ namespace LIB_CONTROL
 		SetID(CONTROL_TYPE_MINI_BUTTON);
 	}
 
-	MiniButton::MiniButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
+	MiniButton::MiniButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
 		hoverForceColor, hoverBackColor) {
 		MiniButton();
 	}
@@ -664,7 +651,7 @@ namespace LIB_CONTROL
 		SetID(CONTROL_TYPE_MAXI_BUTTON);
 	}
 
-	MaxButton::MaxButton(string text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
+	MaxButton::MaxButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
 		hoverForceColor, hoverBackColor) {
 		MaxButton();
 		isMax = false;
@@ -741,7 +728,7 @@ namespace LIB_CONTROL
 		mBackColor = mBackColor = RGB(116,116,119);
 	}
 
-	EditBox::EditBox(string defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor) :Control(defaultText,
+	EditBox::EditBox(wstring defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor) :Control(defaultText,
 		rc, forceColor, backColor, hoverForceColor, hoverBackColor) {
 		mOwnCaret = true; //must have caret
 	}
@@ -751,7 +738,7 @@ namespace LIB_CONTROL
 		mFrontSize = newSize;
 	}
 
-	void EditBox::ChangeFrontName(string newFrontName)
+	void EditBox::ChangeFrontName(wstring newFrontName)
 	{
 		mFrontName = newFrontName;
 	}
@@ -761,19 +748,15 @@ namespace LIB_CONTROL
 		//Control::Draw(pListener);
 		if (!mMouseInternal)
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor),& mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor),& mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw EditBox failed!");
 		}
 		else
 		{
-			auto ret = DrawManager.DrawRectWithText(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw  honvered EditBox failed!");
 		}
 
-	}
-
-	void EditBox::Hover(Listener * pListener, POINT pt)
-	{
 	}
 
 	UINT EditBox::HitTest(Listener * pListener, POINT pt)
