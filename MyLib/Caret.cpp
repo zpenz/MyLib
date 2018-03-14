@@ -58,7 +58,7 @@ void MyCaret::DrawCaret()
 		auto pCaret = (MyCaret*)lpParam;
 		while (pCaret->IsCaretExist())
 		{
-			Sleep(static_cast<DWORD>(static_cast<int>(1.0 / pCaret->Time() * 1000)));
+			Sleep(STCAST(DWORD, 1.0 / pCaret->Time() * 1000));
 			pCaret->ChangeFrame();
 		}
 		return 0;
@@ -80,8 +80,8 @@ void MyCaret::Render()
 	currentCaretPoint = Conver::Point(0, -1 * ALIGN_UPDPWNDISTANCE) + mCaretPos;
 	if(!mHide && mThisFrameShouldDraw)
 	{
-		DrawManager.DrawLine(currentCaretPoint, Conver::Point(0,-currentCaretHeight)+ currentCaretPoint,
-			mCaretColor, static_cast<float>(mControlWidth));
+		DrawManager.DrawLine(currentCaretPoint, Conver::Point(0,-1 * currentCaretHeight)+ currentCaretPoint,
+			mCaretColor, STCAST(float,mControlWidth));   
 	}
 }
 
@@ -183,7 +183,7 @@ void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoi
 	IS_RETURN_ERROR(FAILED(ret), , "Caret HitTestPoint error!");
 	CaretManager.setIndex(pMatrics->textPosition);
 	x = pMatrics->left + pMatrics->width; y = pMatrics->top + height();
-	CaretManager.ChangeCaretPos(Point(x, y) + LeftTopPoint(layoutBox));
+	CaretManager.ChangeCaretPos(Point(STCAST(int,x),STCAST(int,y)) + LeftTopPoint(layoutBox));
 	SAFE_DELETE(pMatrics);
 }
 
