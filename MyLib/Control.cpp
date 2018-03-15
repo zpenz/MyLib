@@ -279,6 +279,16 @@ namespace LIB_CONTROL
 		if (!text.empty()) mText = text;
 	}
 
+	void Control::SetBoardColor(COLORREF color)
+	{
+		mBoardColor = color;
+	}
+
+	COLORREF Control::getBoardColor()
+	{
+		return mBoardColor;
+	}
+
 	COLORREF Control::ForceColor() const
 	{
 		return mForceColor;
@@ -360,14 +370,16 @@ namespace LIB_CONTROL
 		return mRect.bottom - mRect.top;
 	}
 
-	Control::Control():Control(L"")
-	{
-		mbDraging = false;
-	}
+
 	
 	Control::Control(wstring text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
-		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr)
+		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr),mBoardColor(RGB(255,255,255))
+	{
+		mbDraging = false;
+	}
+
+	Control::Control() :Control(L"")
 	{
 		mbDraging = false;
 	}
@@ -739,7 +751,8 @@ namespace LIB_CONTROL
 	void EditBox::Draw(Listener * pListener)
 	{
 		DrawManager.DrawRectangle(mRect,COLOREX(mBackColor),true);
-		DrawManager.DrawTextW(mText, mRect, mForceColor, STCAST(float, RECTHEIGHT(mRect) - ALIGN_UPDPWNDISTANCE), &mpTextpLayout,ALIGN_TEXT_LEFT);
+		DrawManager.DrawRectangle(mRect,mBoardColor, false); //draw board
+		DrawManager.DrawTextW(mText, mRect, mForceColor, STCAST(float, RECTHEIGHT(mRect) - ALIGN_UPDPWNDISTANCE), &mpTextpLayout,ALIGN_TEXT_LEFT,ALIGN_PARAGRAPH_CENTER);
 	}
 	
 	UINT EditBox::HitTest(Listener * pListener, POINT pt)

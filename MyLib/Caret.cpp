@@ -167,10 +167,9 @@ void MyCaret::ChangeCaretSize(UINT width, UINT height)
 }
 
 
-void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoint)
+void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoint,bool SkipThis)
 {
 	using namespace Conver;
-
 	auto tempPoint = TestPoint;
 	if (TestPoint == nullptr) tempPoint = &mCaretPos;
 
@@ -183,13 +182,13 @@ void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoi
 	IS_RETURN_ERROR(FAILED(ret), , "Caret HitTestPoint error!");
 	int hitTextPos = pMatrics->textPosition;
 	
-	if(isTrail)
+	if (isTrail || SkipThis)
 	{
-		x = pMatrics->left + pMatrics->width; 
+		x = pMatrics->left + pMatrics->width;
 	}
 	else
 	{
-		x = pMatrics->left; 
+		x = pMatrics->left;
 		hitTextPos--;
 	}
 

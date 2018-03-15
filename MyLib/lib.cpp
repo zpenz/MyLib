@@ -399,6 +399,7 @@ void BaseWindow::Destory()
 
 	 CaretManager.attrach(mBaseHwnd);
 	 CaretManager.InitCaret();
+	 CaretManager.Color(RGB(216,120,17));
 
 	 //´°¿ÚÇøÓò×ª»» 
 	 //auto Rgn = CreateRectRgn(0,0,mWidth,mHeight);

@@ -84,7 +84,7 @@ public:
 	void ChangeCaretSize(UINT width, UINT height); /// re-create caret
 
 	///<summary>把光标设置到文字的后面 pTestPoint 默认为光标位置</summary>
-	void AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * pTestPoint=nullptr);
+	void AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * pTestPoint = nullptr, bool SkipThis = false);
 
 	void Color(COLORREF caretColor);
 

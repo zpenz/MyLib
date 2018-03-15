@@ -74,6 +74,8 @@ namespace LIB_CONTROL
 
 		COLORREF mHonverBackColor, mHoverForceColor;
 
+		COLORREF mBoardColor;
+
 		bool mVisible;
 
 		bool mMouseInternal;
@@ -131,6 +133,10 @@ namespace LIB_CONTROL
 		wstring Text() const;
 
 		void SetText(wstring text);
+
+		void SetBoardColor(COLORREF color);
+
+		COLORREF getBoardColor();
 
 		COLORREF ForceColor() const;
 

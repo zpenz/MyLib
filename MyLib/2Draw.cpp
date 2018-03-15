@@ -278,7 +278,7 @@ bool My2DDraw::DrawTextW(std::wstring text, RECT layoutBox, MyColor TextColor, f
 	tempTextLayout->SetMaxHeight(STCAST(FLOAT, RECTHEIGHT(layoutBox)));
 	tempTextLayout->SetTextAlignment(textAlignType);
 	tempTextLayout->SetParagraphAlignment(paragraphAlignType);
-
+	
 	DWRITE_TEXT_RANGE textRange = { 0, text.length() };
 	tempTextLayout->SetFontSize(fontSize, textRange);
 	*pLayout = tempTextLayout;
