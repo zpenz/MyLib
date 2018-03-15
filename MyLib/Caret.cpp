@@ -194,9 +194,18 @@ void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoi
 
 	y = pMatrics->top + height();
 	CaretManager.setIndex(hitTextPos);
-
 	CaretManager.ChangeCaretPos(Point(STCAST(int,x),STCAST(int,y)) + LeftTopPoint(layoutBox));
 	SAFE_DELETE(pMatrics);
+}
+
+POINT MyCaret::SetCaretPosEx(RECT layoutBox, TextLayout * pTestMatric, UINT32 index, bool isTrailingHit)
+{
+	using namespace Conver;
+	HitTestMatric Matrics;
+	float x, y;
+	pTestMatric->HitTestTextPosition(index, isTrailingHit,&x ,&y, &Matrics);
+	CaretManager.ChangeCaretPos(Point(STCAST(int, x), STCAST(int, y)+ RECTHEIGHT(layoutBox)) + LeftTopPoint(layoutBox));
+	return Point(STCAST(int, x), STCAST(int, y)) + LeftTopPoint(layoutBox);
 }
 
 void MyCaret::Color(COLORREF caretColor)

@@ -210,17 +210,16 @@ namespace LIB_CONTROL
 			if (mText.size() <= 0) return;
 			auto index = CaretManager.getIndex();
 			mText.erase(index,1); 
+			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), false);
 			CaretManager.DecIndex();
 		}
 		else
 		{
 			if (mText.size() == 0) { mText = wstring(&cUnicode); return; }
 			mText = mText.insert(CaretManager.getIndex()+1, wstring(&cUnicode));
-			CaretManager.IncIndex();	
+			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), true);
+			CaretManager.IncIndex();
 		}
-
-		Draw(pListener); //redraw
-		CaretManager.AdjustPos(mRect, mpTextpLayout);
 	}
 
 	void Control::Drag(Listener * pListener, int dx, int dy)
