@@ -84,6 +84,7 @@
     <ClInclude Include="2Draw.h" />
     <ClInclude Include="Caret.h" />
     <ClInclude Include="Control.h" />
+    <ClInclude Include="MyLayout.h" />
     <ClInclude Include="libd11.h" />
     <ClInclude Include="SemaphoreManager.h" />
     <ClInclude Include="Sprite.h" />
@@ -98,6 +99,7 @@
     <ClCompile Include="2Draw.cpp" />
     <ClCompile Include="Caret.cpp" />
     <ClCompile Include="Control.cpp" />
+    <ClCompile Include="MyLayout.cpp" />
     <ClCompile Include="libd11.cpp" />
     <ClCompile Include="Macros.cpp" />
     <ClCompile Include="SemaphoreManager.cpp" />

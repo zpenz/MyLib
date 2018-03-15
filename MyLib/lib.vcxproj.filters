@@ -28,6 +28,9 @@
     <Filter Include="头文件\Window">
       <UniqueIdentifier>{48fe55e6-33b4-4522-984c-fcd85391a7f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\File">
+      <UniqueIdentifier>{04e415e3-a22b-46dc-b237-35f25fdec1e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -69,6 +72,9 @@
     <ClInclude Include="libd11.h">
       <Filter>头文件\Window</Filter>
     </ClInclude>
+    <ClInclude Include="MyLayout.h">
+      <Filter>头文件\File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -103,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="libd11.cpp">
       <Filter>头文件\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLayout.cpp">
+      <Filter>头文件\File</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

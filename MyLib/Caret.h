@@ -86,7 +86,7 @@ public:
 	///<summary>把光标设置到文字的后面 pTestPoint 默认为光标位置</summary>
 	void AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * pTestPoint = nullptr, bool SkipThis = false);
 
-	///<summary>获取光标正确位置!</summary><param name = "index">"索引位置"</param>
+	///<summary>设置光标正确位置!</summary><param name = "index">"索引位置"</param>
 	POINT SetCaretPosEx(RECT layoutBox, TextLayout * pTestMatric,UINT32 index,bool isTrailingHit = true);
 
 	void Color(COLORREF caretColor);
