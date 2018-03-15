@@ -215,10 +215,10 @@ namespace LIB_CONTROL
 		}
 		else
 		{
-			if (mText.size() == 0) { mText = wstring(&cUnicode); return; }
-			mText = mText.insert(CaretManager.getIndex()+1, wstring(&cUnicode));
-			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), true);
+			if (mText.size() == 0) mText = wstring(&cUnicode);
+			else mText = mText.insert(CaretManager.getIndex() + 1, wstring(&cUnicode));
 			CaretManager.IncIndex();
+			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex() + 1, true);
 		}
 	}
 
