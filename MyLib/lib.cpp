@@ -424,7 +424,6 @@ void BaseWindow::Destory()
 	 mListener.attach(ptest);
 	 //Test EditBox
 	 EditBox * pEditBox = new EditBox(L"abcde", Conver::MyRect(200, 200, 300, 225), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
-	 pEditBox->SetDrag(true);
 	 mListener.attach(pEditBox);
 
  }

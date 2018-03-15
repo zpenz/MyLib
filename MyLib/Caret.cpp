@@ -181,8 +181,21 @@ void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoi
 	HitTestMatric * pMatrics = new HitTestMatric(); //must create 
 	auto ret = pTestMatric->HitTestPoint(x, y, &isTrail, &inside, pMatrics);
 	IS_RETURN_ERROR(FAILED(ret), , "Caret HitTestPoint error!");
-	CaretManager.setIndex(pMatrics->textPosition);
-	x = pMatrics->left + pMatrics->width; y = pMatrics->top + height();
+	int hitTextPos = pMatrics->textPosition;
+	
+	if(isTrail)
+	{
+		x = pMatrics->left + pMatrics->width; 
+	}
+	else
+	{
+		x = pMatrics->left; 
+		hitTextPos--;
+	}
+
+	y = pMatrics->top + height();
+	CaretManager.setIndex(hitTextPos);
+
 	CaretManager.ChangeCaretPos(Point(STCAST(int,x),STCAST(int,y)) + LeftTopPoint(layoutBox));
 	SAFE_DELETE(pMatrics);
 }

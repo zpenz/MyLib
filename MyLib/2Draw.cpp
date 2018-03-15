@@ -247,8 +247,8 @@ bool My2DDraw::DrawRectWithTextW(RECT Rect, std::wstring text, MyColor RectColor
 	IDWriteTextLayout * tempTextLayout = CreateTextLayoutW(text);
 
 	///<LayOutBox>MaxWidth-MaxHeight</LayOutBox>
-	tempTextLayout->SetMaxWidth(static_cast<FLOAT>(RECTWIDTH(Rect)));
-	tempTextLayout->SetMaxHeight(static_cast<FLOAT>(RECTHEIGHT(Rect)));
+	tempTextLayout->SetMaxWidth(STCAST(FLOAT,RECTWIDTH(Rect)));
+	tempTextLayout->SetMaxHeight(STCAST(FLOAT,RECTHEIGHT(Rect)));
 	tempTextLayout->SetTextAlignment(textAlignType);
 	tempTextLayout->SetParagraphAlignment(paragraphAlignType);
 
@@ -263,25 +263,31 @@ bool My2DDraw::DrawRectWithTextW(RECT Rect, std::wstring text, MyColor RectColor
 	return true;
 }
 
-bool My2DDraw::DrawText(std::string text, POINT fontPos, MyColor TextColor, float fontSize, TextLayout * pLayout)
+bool My2DDraw::DrawText(std::string text, RECT layoutBox, MyColor TextColor, float fontSize, TextLayout ** pLayout, ALIGN_TEXT_TYPE textAlignType, ALIGN_PARAGRAPH_TYPE paragraphAlignType)
 {
-	auto wstrDesText = Conver::ACharToWChar(const_cast<char *>(text.c_str()));
-	return DrawTextW(wstrDesText,fontPos,TextColor,fontSize,pLayout);
+	auto wstrDesText = Conver::ACharToWChar(COCAST(char *,text.c_str()));
+	return DrawTextW(wstrDesText, layoutBox,TextColor,fontSize,pLayout,textAlignType,paragraphAlignType);
 }
 
-bool My2DDraw::DrawTextW(std::wstring text, POINT fontPos, MyColor TextColor, float fontSize, TextLayout * pLayout)
+bool My2DDraw::DrawTextW(std::wstring text, RECT layoutBox, MyColor TextColor, float fontSize, TextLayout ** pLayout, ALIGN_TEXT_TYPE textAlignType, ALIGN_PARAGRAPH_TYPE paragraphAlignType)
 {
 	if (text.empty()) return true;
 	IDWriteTextLayout * tempTextLayout = CreateTextLayoutW(text);
 
+	tempTextLayout->SetMaxWidth(STCAST(FLOAT,RECTWIDTH(layoutBox)));
+	tempTextLayout->SetMaxHeight(STCAST(FLOAT, RECTHEIGHT(layoutBox)));
+	tempTextLayout->SetTextAlignment(textAlignType);
+	tempTextLayout->SetParagraphAlignment(paragraphAlignType);
+
 	DWRITE_TEXT_RANGE textRange = { 0, text.length() };
 	tempTextLayout->SetFontSize(fontSize, textRange);
-	pLayout = tempTextLayout;
+	*pLayout = tempTextLayout;
 
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawTextLayout(PointToD2DPointF(fontPos), tempTextLayout, CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
+	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(layoutBox)), tempTextLayout, CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_CLIP);
 	auto ret = mRenderTarget->EndDraw();
-	return false;
+	IS_RETURN_ERROR(FAILED(ret),false,"DrawTextW failed!");
+	return true;
 }
 
 ///<OffSet>ÄÚ±ß¾à</OffSet>

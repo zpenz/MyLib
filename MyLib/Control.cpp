@@ -159,8 +159,6 @@ namespace LIB_CONTROL
 	void Control::Draw(Listener * pListener)
 	{
 		if (mOwnCaret) return;
-		CaretManager.Render();
-		//DrawManager.DrawTextA(mText,CenterPoint(mRect),mForceColor,static_cast<float>(RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE),mpTextpLayout);
 	}
 
 	void Control::Hover(Listener * pListener, POINT pt)
@@ -177,18 +175,11 @@ namespace LIB_CONTROL
 		mouseDragStartPoint = pt;
 
 		if (!mOwnCaret) return 0;
-
-		CaretManager.ChangeCaretPos(Conver::BottomCenterPoint(mRect));
 		CaretManager.ChangeCaretSize(0, height());
 		CaretManager.ShowCaret();
-
 		IS_RETURN_ERROR(!mpTextpLayout,0,"Control::LButtonDown mpTextLayout null...");
-
-		mpTextpLayout->SetMaxHeight(STCAST(float,RECTHEIGHT(mRect)));
-		mpTextpLayout->SetMaxWidth(STCAST(float, RECTWIDTH(mRect)));
-
 		CaretManager.AdjustPos(mRect,mpTextpLayout,&pt);
-		return 0;
+		return 0; 
 	}
 
 	UINT Control::LButtonUp(Listener * pListener,POINT pt)
@@ -747,25 +738,14 @@ namespace LIB_CONTROL
 
 	void EditBox::Draw(Listener * pListener)
 	{
-		//Control::Draw(pListener);
-		if (!mMouseInternal)
-		{
-			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor),& mpTextpLayout, true);
-			IS_ERROR_EXIT(!ret, "Draw EditBox failed!");
-		}
-		else
-		{
-			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
-			IS_ERROR_EXIT(!ret, "Draw  honvered EditBox failed!");
-		}
-
+		DrawManager.DrawRectangle(mRect,COLOREX(mBackColor),true);
+		DrawManager.DrawTextW(mText, mRect, mForceColor, STCAST(float, RECTHEIGHT(mRect) - ALIGN_UPDPWNDISTANCE), &mpTextpLayout,ALIGN_TEXT_LEFT);
 	}
-
+	
 	UINT EditBox::HitTest(Listener * pListener, POINT pt)
 	{
 		return HTCLIENT;
 	}
-
 
 	////////////////////////////////////////////////////////////////////////// ComposeControl
 	bool ComposeControl::Attach(Listener * pListener)

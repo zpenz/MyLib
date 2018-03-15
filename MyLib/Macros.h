@@ -17,7 +17,10 @@
 #define SAFE_RELEASE(p) if(p){p->Release(); p = nullptr;}
 #define SAFE_DELETE(p)  if(p!=nullptr){delete p; p = nullptr;} 
 
+//type-cast
 #define STCAST(type,des) static_cast<type>(des)
+#define COCAST(type,des) const_cast<type>(des)
+#define RPCAST(type,des) reinterpret_cast<type>(des)
 
 namespace Macros2D
 {
@@ -34,7 +37,6 @@ namespace Macros2D
 
 #define ALIGN_TEXT_TYPE		     DWRITE_TEXT_ALIGNMENT
 #define ALIGN_PARAGRAPH_TYPE     DWRITE_PARAGRAPH_ALIGNMENT
-
 
 #define COLOREX(colorRef) D2D1::ColorF(GetRValue(colorRef)/255.0f,GetGValue(colorRef)/255.0f,GetBValue(colorRef)/255.0f,1.0f)
 

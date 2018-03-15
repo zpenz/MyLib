@@ -47,9 +47,9 @@ public:
 
 	bool DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle = false);
 
-	bool DrawText(std::string text,POINT fontPos,MyColor TextColor,float fontSize,_Out_ TextLayout * pLayout);
+	bool DrawText(std::string text, RECT layoutBox,MyColor TextColor,float fontSize,_Out_ TextLayout ** pLayout, ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
 
-	bool DrawTextW(std::wstring text, POINT fontPos, MyColor TextColor, float fontSize, _Out_ TextLayout * pLayout);
+	bool DrawTextW(std::wstring text, RECT layoutBox, MyColor TextColor, float fontSize, _Out_ TextLayout ** pLayout, ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
 
 	bool DrawRectWithText(RECT Rect, std::string text, MyColor RectColor, MyColor TextColor, _Out_ TextLayout ** pLayout,bool isFillRectangle = false,ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
 
