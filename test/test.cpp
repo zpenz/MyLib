@@ -9,10 +9,11 @@ using namespace std;
 
 int main()
 {
+
+	Layout::MyLayout::getInstance().LoadLayoutFile("window.layout",nullptr);
 	BaseWindow bs;
 	bs.Show();
 	auto DeskTop = GetDesktopWindow();
-
 
 	//Sleep(500);
 	//bs.SetWindowName("pSong's Window");

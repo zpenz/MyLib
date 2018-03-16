@@ -17,6 +17,8 @@
 #define SAFE_RELEASE(p) if(p){p->Release(); p = nullptr;}
 #define SAFE_DELETE(p)  if(p!=nullptr){delete p; p = nullptr;} 
 
+#define MAX_BUF_LENGTH 4096
+
 //type-cast
 #define STCAST(type,des) static_cast<type>(des)
 #define COCAST(type,des) const_cast<type>(des)
@@ -155,9 +157,11 @@ namespace Conver
 	RECT ScreenToClientRc(HWND hWnd, RECT & rc);
 
 	///宽字节和ASCI互相转换
-	char * WCharToAChar(wchar_t * Wchar);
+	char * WCharToAChar(wchar_t * Wchar,UINT codePage = CP_UTF8);
 
-	wchar_t * ACharToWChar(char * Achar);
+	wchar_t * ACharToWChar(char * Achar,UINT codePage = CP_UTF8);
+
+	int utoi(wchar_t * Wchar);
 
 	///<d2dConver>some d2d conver</d2dConver>
 	D2D1_POINT_2F & PointToD2DPointF(POINT & pt);

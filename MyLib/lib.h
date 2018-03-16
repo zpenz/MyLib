@@ -1,5 +1,5 @@
 # pragma once
-# include "Control.h"
+#include "MyLayout.h"
 
 namespace LIB_WINDOW
 {

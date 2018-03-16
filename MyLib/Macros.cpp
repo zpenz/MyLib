@@ -197,22 +197,29 @@ namespace Conver
 		return pt;
 	}
 
-	char * WCharToAChar(wchar_t * Wchar)
+	char * WCharToAChar(wchar_t * Wchar, UINT codePage)
 	{
-		auto size = WideCharToMultiByte(CP_UTF8,0,Wchar,-1,NULL,0,NULL,NULL);
+		auto size = WideCharToMultiByte(codePage,0,Wchar,-1,NULL,0,NULL,NULL);
 		auto TheCoveredString = new char[size]();
-		auto ret  = WideCharToMultiByte(CP_UTF8, 0, Wchar, -1, TheCoveredString, size, NULL, NULL);
+		auto ret  = WideCharToMultiByte(codePage, 0, Wchar, -1, TheCoveredString, size, NULL, NULL);
 		if (!ret) { SAFE_DELETE(TheCoveredString); return nullptr; }
+		TheCoveredString[size] = '\0';
 		return TheCoveredString;
 	}
 
-	wchar_t * ACharToWChar(char * Achar)
+	wchar_t * ACharToWChar(char * Achar, UINT codePage)
 	{
-		auto size = MultiByteToWideChar(CP_ACP,0,Achar,-1,NULL,0);
+		auto size = MultiByteToWideChar(codePage,0,Achar,-1,NULL,0);
 		auto TheCoveredString = new wchar_t[size]();
-		auto ret = MultiByteToWideChar(CP_ACP, 0, Achar, -1, TheCoveredString, size);
+		auto ret = MultiByteToWideChar(codePage, 0, Achar, -1, TheCoveredString, size);
 		if (!ret) { SAFE_DELETE(TheCoveredString); return nullptr; }
+		TheCoveredString[size] = '\0';
 		return TheCoveredString;
+	}
+
+	int utoi(wchar_t * Wchar)
+	{
+		return atoi(WCharToAChar(Wchar));;
 	}
 
 	MyRect::MyRect(INT left, INT top, INT right, INT bottom):mLeft(left),mRight(right),
