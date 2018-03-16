@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MyLayout.h"
 #include <memory>
+#include <iostream>
 
 namespace Layout
 {
@@ -97,8 +98,21 @@ namespace Layout
 	{
 		wchar_t * pContext = nullptr;
 		IS_RETURN_ERROR(!LoadFile(filename, &pContext,CP_UTF8),false,"LoadLayoutFile Failed!");
-		auto par = ParseLine(pContext);
-		return false;
+		wchar_t lineBuf[MAX_BUF_LENGTH]; int linesize = 0;
+		memset(lineBuf, 0, MAX_BUF_LENGTH);
+
+		for(int ipos = 0;ipos<wcslen(pContext);ipos++)
+		{
+			if(pContext[ipos] == L'\n') 
+			{
+				auto par = ParseLine(pContext);
+				memset(lineBuf, 0, MAX_BUF_LENGTH);
+				linesize = 0;
+			}
+			lineBuf[linesize++] = pContext[ipos];
+		}
+		
+		return true;
 	}
 
 	MyLayout::~MyLayout()
