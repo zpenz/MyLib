@@ -105,10 +105,20 @@ namespace Layout
 		{
 			if(pContext[ipos] == L'\n') 
 			{
-				auto par = ParseLine(pContext);
+				auto par = ParseLine(lineBuf);
 				memset(lineBuf, 0, MAX_BUF_LENGTH);
 				linesize = 0;
+				ipos++;
 			}
+			
+			//last row
+			if(ipos == wcslen(pContext)-1)
+			{
+				auto par = ParseLine(lineBuf);
+				memset(lineBuf, 0, MAX_BUF_LENGTH);
+				break;
+			}
+
 			lineBuf[linesize++] = pContext[ipos];
 		}
 		
