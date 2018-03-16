@@ -32,28 +32,46 @@ namespace Layout
 
 	void LayoutParameter::pushParameter(wchar_t * element, int index)
 	{
+		if( element == L"RECT" || element == L"RGB")
 		if (index == 1) mControlType = element;
 		if (index == 2) mControlID = utoi(element);
-		if (index == 1) mControlType = element;
-		if (index == 1) mControlType = element;
-		if (index == 1) mControlType = element;
-		if (index == 1) mControlType = element;
-		if (index == 1) mControlType = element;
-		if (index == 1) mControlType = element;
-		if (index == 1) mControlType = element;
-		if (index == 1) mControlType = element;
-		if (index == 1) mControlType = element;
-		if (index == 1) mControlType = element;
+		if (index == 3) mText = element;
+		//RECT
+		if (index == 5) mLayoutRect.left = utoi(element);
+		if (index == 6) mLayoutRect.top = utoi(element);
+		if (index == 7) mLayoutRect.right = utoi(element);
+		if (index == 8) mLayoutRect.bottom = utoi(element);
+		//RGB
+		if (index == 10) SetR(mForceColor,utoi(element));
+		if (index == 11) SetG(mForceColor,utoi(element));
+		if (index == 12) SetB(mForceColor,utoi(element));
+		//RGB
+		if (index == 14) SetR(mBackColor, utoi(element));
+		if (index == 15) SetG(mBackColor, utoi(element));
+		if (index == 16) SetB(mBackColor, utoi(element));
+		//RGB
+		if (index == 18) SetR(mHoverForceColor, utoi(element));
+		if (index == 19) SetG(mHoverForceColor, utoi(element));
+		if (index == 20) SetB(mHoverForceColor, utoi(element));
+		//RGB
+		if (index == 22) SetR(mHoverBackColor, utoi(element));
+		if (index == 23) SetG(mHoverBackColor, utoi(element));
+		if (index == 24) SetB(mHoverBackColor, utoi(element));
+		//drag
+		if (index == 25) mCanDrag = STCAST(bool,utoi(element));
 	}
 
 	LayoutParameter MyLayout::ParseLine(wchar_t * lineBuf)
 	{
 		LayoutParameter tempParameter;
 		int length = wstring(lineBuf).length(); 
+		int index = 1;
 		for(int chPos = 0;chPos<length;chPos++)
 		{
 			int pos;
 			auto token = getNextToken(&lineBuf[chPos],pos);
+			tempParameter.pushParameter(token,index);
+			index++;
 			chPos += pos;
 		}
 		return tempParameter;
@@ -79,7 +97,7 @@ namespace Layout
 	{
 		wchar_t * pContext = nullptr;
 		IS_RETURN_ERROR(!LoadFile(filename, &pContext,CP_UTF8),false,"LoadLayoutFile Failed!");
-		ParseLine(pContext);
+		auto par = ParseLine(pContext);
 		return false;
 	}
 

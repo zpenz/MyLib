@@ -41,7 +41,9 @@ namespace Macros2D
 #define ALIGN_PARAGRAPH_TYPE     DWRITE_PARAGRAPH_ALIGNMENT
 
 #define COLOREX(colorRef) D2D1::ColorF(GetRValue(colorRef)/255.0f,GetGValue(colorRef)/255.0f,GetBValue(colorRef)/255.0f,1.0f)
-
+#define SetR(colorRef,r) (COLORREF)((BYTE)r|colorRef)
+#define SetG(colorRef,g) (COLORREF)((WORD)g<<8|colorRef)
+#define SetB(colorRef,b) (COLORREF)((DWORD)b<<16|colorRef)
 }
 
 namespace MyMessage
