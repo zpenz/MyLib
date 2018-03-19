@@ -82,6 +82,7 @@ namespace Layout
 			int pos;
 			auto token = getNextToken(&lineBuf[chPos],pos);
 			tempParameter.pushParameter(token,index);
+			SAFE_DELETE(token);// 释放getNextToken分配的内存 
 			index++;
 			chPos += pos;
 		}
@@ -99,12 +100,13 @@ namespace Layout
 			if (startPos[chPos] == '(' || startPos[chPos] == '(') { size++; break;}
 			buf[size++] = startPos[chPos];
 		}
+
 		wchar_t * ret = new wchar_t[size+1]();
-		wmemcpy(ret, buf, size-1);
+		wmemcpy(ret, buf, size);
+		ret[size] = '\0';
 
 		while (startPos[size] == L' ') size++;
 		pos = size - 1;
-
 
 		return ret;
 	}

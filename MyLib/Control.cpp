@@ -72,7 +72,7 @@ namespace LIB_CONTROL
 	void Listener::InputChar(wchar_t c)
 	{
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
-			pControl->InputChar(this,c);
+			if(pControl->HaveCaret()) pControl->InputChar(this, c);
 		});
 	}
 
@@ -92,17 +92,19 @@ namespace LIB_CONTROL
 		
 	UINT Listener::LButtonDown(POINT pt)
 	{
-		Control * pTempControl = nullptr;
+		UINT ret = SHOULD_DO_NOTHING;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
+			pControl->KillFocus(this);  //KillFocus
 			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
-				pControl->KillFocus(this);  //KillFocus
-				if (pControl->LButtonDown(this, pt) != SHOULD_DO_NOTHING) pTempControl = pControl;
 				pControl->Focus(this, mListenedWindow); //SetFocus
+				if (pControl->LButtonDown(this, pt) != SHOULD_DO_NOTHING)
+				{
+					return ret;
+				}
 			}
 		});
-		if(pTempControl != nullptr) return pTempControl->LButtonDown(this,pt);
-		return SHOULD_DO_NOTHING;
+		return ret;
 	}
 
 	UINT Listener::LButtonUp(POINT pt)
@@ -174,7 +176,8 @@ namespace LIB_CONTROL
 		mbDraging = true;
 		mouseDragStartPoint = pt;
 
-		if (!mOwnCaret) return 0;
+		if (!mOwnCaret)   return 0;
+		if (!mFocusCaret) return 0;
 		CaretManager.ChangeCaretSize(0, height());
 		CaretManager.ShowCaret();
 		IS_RETURN_ERROR(!mpTextpLayout,0,"Control::LButtonDown mpTextLayout null...");
@@ -204,6 +207,7 @@ namespace LIB_CONTROL
 	{
 		if (!mOwnCaret) return;
 		if (!mpTextpLayout) return;
+		if (!mFocusCaret) return;
 
 		if (cUnicode == '\b') 
 		{
@@ -232,21 +236,27 @@ namespace LIB_CONTROL
 
 	void Control::Focus(Listener * pListener, HWND hWnd)
 	{
-		if (!mOwnCaret) return;
-		auto cp = CenterPoint(mRect);
-		SetCaretPos(cp.x,cp.y);
-		//ShowCaret(hWnd);
+		mFocusCaret = true;
 	}
 
 	void Control::KillFocus(Listener * pListener)
 	{
-		if (!mOwnCaret) return;
-		
+		mFocusCaret = false;
 	}
 
 	void Control::Sizing(RECT newRect)
 	{
 
+	}
+
+	bool Control::HaveCaret()
+	{
+		return mOwnCaret;
+	}
+
+	void Control::SetCaretState(bool state)
+	{
+		mOwnCaret = state;
 	}
 
 	bool Control::Stretch()

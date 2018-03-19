@@ -96,6 +96,8 @@ namespace LIB_CONTROL
 
 		bool mOwnCaret;
 
+		bool mFocusCaret;
+
 		POINT mCaretPos; 
 
 		TextLayout * mpTextpLayout;
@@ -116,13 +118,17 @@ namespace LIB_CONTROL
 
 		virtual void InputChar(Listener * pListener, wchar_t cUnicode);
 
-		void Drag(Listener * pListener, int dx, int dy) override;
-
 		virtual void Focus(Listener * pListener,HWND hWnd);
 
 		virtual void KillFocus(Listener * pListener);
 
 		virtual void Sizing(RECT newRect);
+
+		void Drag(Listener * pListener, int dx, int dy) override;
+
+		bool HaveCaret();
+
+		void SetCaretState(bool state);
 
 		bool Stretch(); //是否是一个随着窗口大小变化而改变的控件
 

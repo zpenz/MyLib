@@ -438,7 +438,7 @@ void BaseWindow::Destory()
 	 RECT windowRect;
 	 GetWindowRect(mBaseHwnd, &windowRect);
 	 Conver::ScreenToClientRc(mBaseHwnd, windowRect);
-	 DrawManager.DrawRectangle(windowRect, MyColor::Blue, false);
+	 DrawManager.DrawRectangle(windowRect, COLOREX(RGB(57,130,255)), false);
 
 	 DrawManager.Present(&windowRect);
 
