@@ -36,7 +36,6 @@ namespace Layout
 
 		ColorStruct mHoverBackColor;
 
-
 		Control * fit(); 
 
 		void pushParameter(wchar_t * element,int index);

@@ -69,7 +69,7 @@ namespace Layout
 		if (index == 23) mHoverBackColor.g = utoi(element);
 		if (index == 24) mHoverBackColor.b = utoi(element);
 		//drag
-		if (index == 25) mCanDrag = STCAST(bool,utoi(element));
+		if (index == 25) mCanDrag = NoWarningBool(utoi(element));
 	}
 
 	LayoutParameter MyLayout::ParseLine(wchar_t * lineBuf)
@@ -99,10 +99,14 @@ namespace Layout
 			if (startPos[chPos] == '(' || startPos[chPos] == '(') { size++; break;}
 			buf[size++] = startPos[chPos];
 		}
+		wchar_t * ret = new wchar_t[size+1]();
+		wmemcpy(ret, buf, size-1);
+
 		while (startPos[size] == L' ') size++;
 		pos = size - 1;
 
-		return buf;
+
+		return ret;
 	}
 
 	bool MyLayout::LoadLayoutFile(string filename, Listener * pListener)
