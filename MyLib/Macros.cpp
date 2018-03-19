@@ -210,7 +210,7 @@ namespace Conver
 
 	wchar_t * ACharToWChar(char * Achar, UINT codePage)
 	{
-		auto size = MultiByteToWideChar(codePage,0,Achar,-1,NULL,0);
+		auto size = MultiByteToWideChar(codePage, 0, Achar, -1, NULL, 0);
 		auto TheCoveredString = new wchar_t[size]();
 		auto ret = MultiByteToWideChar(codePage, 0, Achar, -1, TheCoveredString, size);
 		if (!ret) { SAFE_DELETE(TheCoveredString); return nullptr; }

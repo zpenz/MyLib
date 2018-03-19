@@ -98,11 +98,9 @@ namespace LIB_CONTROL
 			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
 				pControl->Focus(this, mListenedWindow); //SetFocus
-				if (pControl->LButtonDown(this, pt) != SHOULD_DO_NOTHING)
-				{
-					return ret;
-				}
+				if (pControl->LButtonDown(this, pt) != SHOULD_DO_NOTHING) return ret;
 			}
+			return ret;
 		});
 		return ret;
 	}
@@ -160,7 +158,15 @@ namespace LIB_CONTROL
 
 	void Control::Draw(Listener * pListener)
 	{
-		if (mOwnCaret) return;
+		//Ä¬ÈÏ»­±³¾°
+		if (!mMouseInternal)
+		{
+			DrawManager.DrawRectangle(mRect,mBackColor,true);
+		}
+		else
+		{
+			DrawManager.DrawRectangle(mRect,mHonverBackColor,true);
+		}
 	}
 
 	void Control::Hover(Listener * pListener, POINT pt)
@@ -380,8 +386,6 @@ namespace LIB_CONTROL
 		return mRect.bottom - mRect.top;
 	}
 
-
-	
 	Control::Control(wstring text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
 		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr),mBoardColor(RGB(255,255,255))
@@ -821,10 +825,21 @@ namespace LIB_CONTROL
 	}
 
 
+////////////////////////////////////////////////////////////////////////// LableBox
+	LabelBox::LabelBox():Control(L"")
+	{
+	}
 
+	void LabelBox::Draw(Listener * pListener)
+	{
+		Control::Draw(pListener);
+		DrawManager.DrawTextW(mText, mRect, mForceColor, RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE,&mpTextpLayout);
+	}
 
+	UINT LabelBox::HitTest(Listener * pListener, POINT pt)
+	{
+		return HTCLIENT;
+	}
 
-
-	
 
 }

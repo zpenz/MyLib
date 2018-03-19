@@ -371,7 +371,18 @@ namespace LIB_CONTROL
 		EditBox(RECT rc, string defaultText = "");
 
 		EditBox(wstring defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+	};
 
+	///<LabelBox>标签</LabelBox>
+	class LabelBox :public Control
+		, public REFLECT<LabelBox>
+	{
+	public:
+		LabelBox();
+
+		void Draw(Listener * pListener) override;
+
+		UINT HitTest(Listener * pListener, POINT pt) override;
 	};
 
 	///<ComposeControl>组合控件</ComposeControl>

@@ -26,6 +26,8 @@ namespace Layout
 			pObj = MyFactory.create<CloseButton>("CloseButton");
 		else if (mControlType == L"EditBox")
 			pObj = MyFactory.create<EditBox>("EditBox");
+		else if (mControlType == L"LabelBox")
+			pObj = MyFactory.create<LabelBox>("LabelBox");
 
 		IS_RETURN_ERROR(!pObj,false,"fit error! reason: 控件类型有误");
 		pObj->AdjustRect(mLayoutRect);
@@ -52,7 +54,6 @@ namespace Layout
 		if (index == 7) mLayoutRect.right = utoi(element);
 		if (index == 8) mLayoutRect.bottom = utoi(element);
 		//RGB 
-
 		if (index == 10) mForceColor.r = utoi(element);
 		if (index == 11) mForceColor.g = utoi(element);
 		if (index == 12) mForceColor.b = utoi(element);
@@ -177,7 +178,7 @@ namespace Layout
 		
 		rewind(pFile);
 		fread(buf, sizeof(char), readFlag, pFile);
-		*pOut = Conver::ACharToWChar(buf);
+		*pOut = Conver::ACharToWChar(buf,CP_ACP);
 
 		return true;
 	}

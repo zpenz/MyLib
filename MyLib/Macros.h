@@ -99,7 +99,7 @@ namespace ARROW
 
 typedef struct 
 {
-	int r, g, b;
+	BYTE r, g, b;
 
 	COLORREF getRGB() { return RGB(r,g,b); }
 }ColorStruct;

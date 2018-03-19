@@ -423,9 +423,7 @@ void BaseWindow::Destory()
 	 Button * ptest = new Button(L"", Conver::MyRect(100, 100, 150, 125), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
 	 ptest->SetDrag(true);
 	 mListener.attach(ptest);
-	 //Test EditBox
-	 //EditBox * pEditBox = new EditBox(L"abcde", Conver::MyRect(200, 200, 300, 225), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
-	 //mListener.attach(pEditBox);
+	 //other
 	 Layout::ControlLayout.LoadLayoutFile("window.layout",&mListener);
  }
 
