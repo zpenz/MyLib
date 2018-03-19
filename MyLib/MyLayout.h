@@ -14,58 +14,33 @@ namespace Layout
 
 	class LayoutParameter
 	{
-		void initMap();
 	public:
 
 		LayoutParameter() {}
 
-		wstring mControlType;
-		UINT mControlID;
-		wstring mText;
-		RECT  mLayoutRect;
-		COLORREF mForceColor;
-		COLORREF mBackColor;
-		COLORREF mHoverForceColor;
-		COLORREF mHoverBackColor;
 		bool     mCanDrag;
 
-		LayoutParameter(wstring ControlType,
-		UINT ControlID,
-		wstring Text,
-		RECT  LayoutRect,
-		COLORREF ForceColor,
-		COLORREF BackColor,
-		COLORREF HoverForceColor,
-		COLORREF HoverBackColor,
-		bool     canDrag);
+		wstring mControlType;
+
+		UINT mControlID;
+
+		wstring mText;
+
+		RECT  mLayoutRect;
+
+		ColorStruct mForceColor;
+
+		ColorStruct mBackColor;
+
+		ColorStruct mHoverForceColor;
+
+		ColorStruct mHoverBackColor;
+
+
+		Control * fit(); 
 
 		void pushParameter(wchar_t * element,int index);
-
-		static map<int, wstring> ParameterMap;
 	};
-
-	
-	typedef Control*(*fun)();
-
-
-	template<typename T>
-	class Construcor 
-	{
-	public:
-		static map<wstring, fun> mControlMaping;
-
-		T * createObject(LayoutParameter lp);
-
-		Construcor() {}
-	};
-
-	template<typename T>
-	inline T * Construcor<T>::createObject(LayoutParameter lp)
-	{
-		auto classname = typeid(T).name();
-		return new T(lp.mText,lp.mLayoutRect,lp.mForceColor,lp.mBackColor,lp.mHoverForceColor,lp.mHoverBackColor);
-	}
-
 
 	class MyLayout
 	{
@@ -81,6 +56,7 @@ namespace Layout
 
 		~MyLayout();
 	};
+#define ControlLayout MyLayout::getInstance()
 
 }
 

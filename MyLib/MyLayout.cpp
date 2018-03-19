@@ -7,33 +7,42 @@ namespace Layout
 {
 	using namespace Conver;
 
-	map<wstring, fun>ControlMaping;
-
-	std::map<int, std::wstring> LayoutParameter::ParameterMap;
-
-	void LayoutParameter::initMap()
+	Control * LayoutParameter::fit()
 	{
-		ParameterMap.emplace(make_pair<int, std::wstring>(1,L"text"));
-		ParameterMap.emplace(make_pair<int, std::wstring>(2, L"num"));
-		ParameterMap.emplace(make_pair<int, std::wstring>(3, L"text"));
-		ParameterMap.emplace(make_pair<int, std::wstring>(4, L"rect"));
-		ParameterMap.emplace(make_pair<int, std::wstring>(5, L"color"));
-		ParameterMap.emplace(make_pair<int, std::wstring>(6, L"color"));
-		ParameterMap.emplace(make_pair<int, std::wstring>(7, L"color"));
-		ParameterMap.emplace(make_pair<int, std::wstring>(8, L"color"));
-		ParameterMap.emplace(make_pair<int, std::wstring>(9, L"bool"));
-	}
+		Control * pObj = nullptr;
 
-	LayoutParameter::LayoutParameter(wstring ControlType, UINT ControlID, wstring Text, RECT LayoutRect, COLORREF ForceColor, COLORREF BackColor, COLORREF HoverForceColor, COLORREF HoverBackColor, bool canDrag)
-		:mControlType(ControlType), mControlID(ControlID), mText(Text), mLayoutRect(LayoutRect), mForceColor(ForceColor), mBackColor(BackColor),
-		mHoverForceColor(HoverForceColor),mHoverBackColor(HoverBackColor)
-	{
+		auto strContext = mControlType.c_str();
+		auto size = mControlType.length();
+
+		if(mControlType == wstring(L"Button"))
+			pObj = MyFactory.create<Button>("Button");
+		else if(mControlType == L"TitleBar")
+			pObj = MyFactory.create<TitleBar>("TitleBar");
+		else if (mControlType == L"MaxButton")
+			pObj = MyFactory.create<MaxButton>("MaxButton");
+		else if (mControlType == L"MiniButton")
+			pObj = MyFactory.create<MiniButton>("MiniButton");
+		else if (mControlType == L"CloseButton")
+			pObj = MyFactory.create<CloseButton>("CloseButton");
+		else if (mControlType == L"EditBox")
+			pObj = MyFactory.create<EditBox>("EditBox");
+
+		IS_RETURN_ERROR(!pObj,false,"fit error! reason: 控件类型有误");
+		pObj->AdjustRect(mLayoutRect);
+		pObj->SetForceColor(mForceColor.getRGB());
+		pObj->SetBackColor(mBackColor.getRGB());
+		pObj->SetHoverForceColor(mHoverForceColor.getRGB());
+		pObj->SetHoverBackColor(mHoverBackColor.getRGB());
+		pObj->SetText(mText);
+		pObj->SetDrag(mCanDrag);
+		
+		return pObj;
 	}
 
 
 	void LayoutParameter::pushParameter(wchar_t * element, int index)
 	{
-		if( element == L"RECT" || element == L"RGB")
+		
 		if (index == 1) mControlType = element;
 		if (index == 2) mControlID = utoi(element);
 		if (index == 3) mText = element;
@@ -42,22 +51,23 @@ namespace Layout
 		if (index == 6) mLayoutRect.top = utoi(element);
 		if (index == 7) mLayoutRect.right = utoi(element);
 		if (index == 8) mLayoutRect.bottom = utoi(element);
+		//RGB 
+
+		if (index == 10) mForceColor.r = utoi(element);
+		if (index == 11) mForceColor.g = utoi(element);
+		if (index == 12) mForceColor.b = utoi(element);
 		//RGB
-		if (index == 10) SetR(mForceColor,utoi(element));
-		if (index == 11) SetG(mForceColor,utoi(element));
-		if (index == 12) SetB(mForceColor,utoi(element));
+		if (index == 14) mBackColor.r = utoi(element);
+		if (index == 15) mBackColor.g = utoi(element);
+		if (index == 16) mBackColor.b = utoi(element);
 		//RGB
-		if (index == 14) SetR(mBackColor, utoi(element));
-		if (index == 15) SetG(mBackColor, utoi(element));
-		if (index == 16) SetB(mBackColor, utoi(element));
+		if (index == 18) mHoverForceColor.r = utoi(element);
+		if (index == 19) mHoverForceColor.g = utoi(element);
+		if (index == 20) mHoverForceColor.b = utoi(element);
 		//RGB
-		if (index == 18) SetR(mHoverForceColor, utoi(element));
-		if (index == 19) SetG(mHoverForceColor, utoi(element));
-		if (index == 20) SetB(mHoverForceColor, utoi(element));
-		//RGB
-		if (index == 22) SetR(mHoverBackColor, utoi(element));
-		if (index == 23) SetG(mHoverBackColor, utoi(element));
-		if (index == 24) SetB(mHoverBackColor, utoi(element));
+		if (index == 22) mHoverBackColor.r = utoi(element);
+		if (index == 23) mHoverBackColor.g = utoi(element);
+		if (index == 24) mHoverBackColor.b = utoi(element);
 		//drag
 		if (index == 25) mCanDrag = STCAST(bool,utoi(element));
 	}
@@ -75,6 +85,7 @@ namespace Layout
 			index++;
 			chPos += pos;
 		}
+
 		return tempParameter;
 	}
 
@@ -89,7 +100,7 @@ namespace Layout
 			buf[size++] = startPos[chPos];
 		}
 		while (startPos[size] == L' ') size++;
-		pos = size-1;
+		pos = size - 1;
 
 		return buf;
 	}
@@ -101,11 +112,15 @@ namespace Layout
 		wchar_t lineBuf[MAX_BUF_LENGTH]; int linesize = 0;
 		memset(lineBuf, 0, MAX_BUF_LENGTH);
 
-		for(int ipos = 0;ipos<wcslen(pContext);ipos++)
+		for(int ipos = 0;ipos< STCAST(int,wcslen(pContext));ipos++)
 		{
 			if(pContext[ipos] == L'\n') 
 			{
 				auto par = ParseLine(lineBuf);
+				Control * pControl = par.fit();
+				IS_RETURN_ERROR(!pListener,false,"LoadLayoutFile Listener 为空");
+				pListener->attach(pControl); //添加
+
 				memset(lineBuf, 0, MAX_BUF_LENGTH);
 				linesize = 0;
 				ipos++;
@@ -115,6 +130,9 @@ namespace Layout
 			if(ipos == wcslen(pContext)-1)
 			{
 				auto par = ParseLine(lineBuf);
+				Control * pControl = par.fit();
+				IS_RETURN_ERROR(!pListener, false, "LoadLayoutFile Listener 为空");
+				pListener->attach(pControl); //添加
 				memset(lineBuf, 0, MAX_BUF_LENGTH);
 				break;
 			}

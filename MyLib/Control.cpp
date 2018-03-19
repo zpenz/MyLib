@@ -428,10 +428,9 @@ namespace LIB_CONTROL
 		return HTCLIENT;
 	}
 
-	Button::Button():mBoardColor(mBackColor),mDrawBoard(false)// ±ß¿òÊ¹ÓÃ±³¾°ÑÕÉ«
+	Button::Button() :Button(L"",MyRect(0,0,100,100))
 	{
-		SetID(CONTROL_TYPE_BUTTON);
-		SetHoverForceColor(mForceColor);
+
 	}
 
 	Button::Button(wstring text, RECT rc):Control(text,rc),mBoardColor(mBackColor), mDrawBoard(false)
@@ -500,6 +499,11 @@ namespace LIB_CONTROL
 	{
 		auto titleBarHeight = height();
 		AdjustRect(MyRect(0, 0, RECTWIDTH(newRect)-3*titleBarHeight, titleBarHeight));
+	}
+
+	TitleBar::TitleBar():TitleBar(L"", nullRect)
+	{
+
 	}
 
 	TitleBar::TitleBar(wstring text,RECT rc):Control(text,rc)
@@ -733,6 +737,11 @@ namespace LIB_CONTROL
 		mBackColor = mBackColor = RGB(116,116,119);
 	}
 
+	EditBox::EditBox():Control()
+	{
+		mOwnCaret = true;
+	}
+
 	EditBox::EditBox(wstring defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor) :Control(defaultText,
 		rc, forceColor, backColor, hoverForceColor, hoverBackColor) {
 		mOwnCaret = true; //must have caret
@@ -759,6 +768,8 @@ namespace LIB_CONTROL
 	{
 		return HTCLIENT;
 	}
+
+
 
 	////////////////////////////////////////////////////////////////////////// ComposeControl
 	bool ComposeControl::Attach(Listener * pListener)

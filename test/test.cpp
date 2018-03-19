@@ -9,18 +9,9 @@ using namespace std;
 
 int main()
 {
-
-	Layout::MyLayout::getInstance().LoadLayoutFile("window.layout",nullptr);
 	BaseWindow bs;
 	bs.Show();
 	auto DeskTop = GetDesktopWindow();
-
-	//Sleep(500);
-	//bs.SetWindowName("pSong's Window");
-
-	//RECT rcPicture = { 500,400,600,450 };
-	//DrawManager.DrawRectWithText(rcPicture,"haha",MyColor::Blue,MyColor::Black,1);
-	//auto testH = FindWindowA("Notepad","新建文本文档.txt - 记事本");
 	
 	while (1)
 	{

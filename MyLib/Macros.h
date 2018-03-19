@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <stdarg.h>
 #include <string>
+#include <map>
 #include <d2d1.h>
 # ifdef INCLUDE_MY_DX9
 # include "libD3D.h"
@@ -23,6 +24,7 @@
 #define STCAST(type,des) static_cast<type>(des)
 #define COCAST(type,des) const_cast<type>(des)
 #define RPCAST(type,des) reinterpret_cast<type>(des)
+#define DYCAST(type,des) dynamic_cast<type>(des)
 
 namespace Macros2D
 {
@@ -41,9 +43,11 @@ namespace Macros2D
 #define ALIGN_PARAGRAPH_TYPE     DWRITE_PARAGRAPH_ALIGNMENT
 
 #define COLOREX(colorRef) D2D1::ColorF(GetRValue(colorRef)/255.0f,GetGValue(colorRef)/255.0f,GetBValue(colorRef)/255.0f,1.0f)
-#define SetR(colorRef,r) (COLORREF)((BYTE)r|colorRef)
-#define SetG(colorRef,g) (COLORREF)((WORD)g<<8|colorRef)
-#define SetB(colorRef,b) (COLORREF)((DWORD)b<<16|colorRef)
+//#define RGB(r,g,b) ((COLORREF)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
+
+#define SetR(colorRef,r) RGB(r,GetGValue(colorRef),GetBValue(colorRef))
+#define SetG(colorRef,g) RGB(GetRValue(colorRef),g,GetBValue(colorRef))
+#define SetB(colorRef,b) RGB(GetRValue(colorRef),GetGValue(colorRef),b)
 }
 
 namespace MyMessage
@@ -91,6 +95,13 @@ namespace ARROW
 		static HCURSOR SHAPE_I;
 	};
 }
+
+typedef struct 
+{
+	int r, g, b;
+
+	COLORREF getRGB() { return RGB(r,g,b); }
+}ColorStruct;
 
 void ErrorMessage(const char * _error);
 
@@ -231,6 +242,87 @@ namespace Conver
 	};
 
 	wstring GetDirName(wstring path);
+}
+
+//¼òµ¥·´Éä 
+namespace REFLECTION
+{
+	
+	using namespace std;
+
+	class ReflectObject
+	{
+	public:
+		virtual ~ReflectObject()
+		{
+
+		}
+	};
+
+	typedef ReflectObject*(* creatFunc)();
+
+	class ConstructorFactory
+	{
+		SINGLE_INSTANCE(ConstructorFactory)
+		//class-name -------- creator
+		map<string, creatFunc> mFuncMap;
+
+	public:
+
+		ReflectObject * create(string className);
+
+		bool RegisteFunc(string className, creatFunc func);
+
+		template<typename T>
+		T * create(string className)
+		{
+			auto * obj = create(className);
+			IS_RETURN_ERROR(!obj, nullptr, "null object...");
+			T * reallyObj = dynamic_cast<T*>(obj);
+			IS_RETURN_ERROR(!obj, nullptr, "null realobj...");
+			return reallyObj;
+		}
+	};
+
+#define MyFactory ConstructorFactory::getInstance()
+
+
+
+	template<typename T>
+	class REFLECT:public ReflectObject
+	{
+	public:
+		static ReflectObject * createObject()
+		{
+			return DYCAST(ReflectObject *,new T());
+		}
+
+		struct reg
+		{
+			reg()
+			{
+				MyFactory.RegisteFunc(typeid(T).name(), createObject);
+			}
+
+			inline void nothing() {}
+		};
+
+		static reg mReg;
+
+		REFLECT()
+		{
+			mReg.nothing();
+		}
+
+		virtual ~REFLECT()
+		{
+
+		}
+	};
+
+	template<typename T>
+	typename REFLECT<T>::reg REFLECT<T>::mReg;
+
 }
 
 typedef LRESULT(_stdcall *pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

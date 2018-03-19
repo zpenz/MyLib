@@ -11,6 +11,8 @@ namespace LIB_CONTROL
 
 	using namespace MyMessage;
 
+	using namespace REFLECTION;
+
 	class Listener;
 
 	class ImageAdapter
@@ -217,6 +219,7 @@ namespace LIB_CONTROL
 
 	///<Button>∞¥≈•</Button>
 	class Button : public Control
+		, public REFLECT<Button>
 	{
 	protected:
 		COLORREF mBoardColor;
@@ -243,6 +246,7 @@ namespace LIB_CONTROL
 	};
 
 	class CloseButton : public Button 
+		,public REFLECT<CloseButton>
 	{
 	public:
 
@@ -261,6 +265,7 @@ namespace LIB_CONTROL
 	};
 
 	class MiniButton : public Button
+		, public REFLECT<MiniButton>
 	{
 	public:
 
@@ -276,6 +281,7 @@ namespace LIB_CONTROL
 	};
 
 	class MaxButton : public Button // max and restore button...
+		, public REFLECT<MaxButton>
 	{
 	protected:
 
@@ -316,6 +322,7 @@ namespace LIB_CONTROL
 
 	///<TitleBar>±ÍÃ‚¿∏</TitleBar>
 	class TitleBar : public Control
+		,public REFLECT<TitleBar>
 	{
 		Sprite::Sprite mIconSprite;
 
@@ -326,6 +333,8 @@ namespace LIB_CONTROL
 
 		void Sizing(RECT newRect) override final;
 
+		TitleBar();
+
 		TitleBar(wstring text, RECT rc);
 
 		TitleBar(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
@@ -335,6 +344,7 @@ namespace LIB_CONTROL
 
 	///<EditBox>±‡º≠øÚ</EditBox>
 	class EditBox : public Control
+		, public REFLECT<EditBox>
 	{
 		float mFrontSize;
 
@@ -349,6 +359,8 @@ namespace LIB_CONTROL
 		void Draw(Listener * pListener) override;
 
 		UINT HitTest(Listener * pListener, POINT pt) override;
+
+		EditBox();
 
 		EditBox(RECT rc, string defaultText = "");
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Macros.h"
 #include <d2d1.h>
+#include <utility> //pair
 
 void ErrorMessage(const char * _error)
 {
@@ -203,7 +204,7 @@ namespace Conver
 		auto TheCoveredString = new char[size]();
 		auto ret  = WideCharToMultiByte(codePage, 0, Wchar, -1, TheCoveredString, size, NULL, NULL);
 		if (!ret) { SAFE_DELETE(TheCoveredString); return nullptr; }
-		TheCoveredString[size] = '\0';
+		//TheCoveredString[size] = '\0';
 		return TheCoveredString;
 	}
 
@@ -287,6 +288,28 @@ namespace Conver
 	Point::Point() : Point(0,0)
 	{
 
+	}
+}
+
+namespace REFLECTION
+{
+
+	ReflectObject * ConstructorFactory::create(string className)
+	{
+		auto it = mFuncMap.find(className);
+		IS_RETURN_ERROR(it == mFuncMap.end(), nullptr, "该类没有注册");
+		return it->second();
+	}
+
+	bool ConstructorFactory::RegisteFunc(string className, creatFunc func)
+	{
+		auto pos = className.rfind(":");
+		string realName = className.substr(pos+1,className.size() - pos);
+		auto chr = realName.c_str();
+
+		IS_RETURN_ERROR(mFuncMap.find(className) != mFuncMap.end(), false, "已经存在的key");
+		mFuncMap.emplace(pair<string, creatFunc>(realName, func));
+		return true;
 	}
 }
 

@@ -426,11 +426,7 @@ void BaseWindow::Destory()
 	 //Test EditBox
 	 //EditBox * pEditBox = new EditBox(L"abcde", Conver::MyRect(200, 200, 300, 225), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
 	 //mListener.attach(pEditBox);
-	 using namespace Layout;
-	 Construcor<EditBox> eb;
-	 LayoutParameter  lp =  LayoutParameter(L"Edit", 123, L"heih", (RECT)Conver::MyRect(200, 200, 300, 225), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17), false);
-	 Control * pEditBox = eb.createObject(lp);
-	 mListener.attach(pEditBox);
+	 Layout::ControlLayout.LoadLayoutFile("window.layout",&mListener);
  }
 
  void BaseWindow::OnDraw()
