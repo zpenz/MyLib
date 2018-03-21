@@ -156,6 +156,11 @@ namespace LIB_CONTROL
 		mControlTypeId = typeId;
 	}
 
+	UINT Control::HitTest(Listener * pListener, POINT pt)
+	{
+		return HTCLIENT;
+	}
+
 	void Control::Draw(Listener * pListener)
 	{
 		//Ä¬ÈÏ»­±³¾°
@@ -419,7 +424,7 @@ namespace LIB_CONTROL
 	}
 
 	void Button::NeedDrawBoard(bool bDrawBoard)
-	{
+	{ 
 		mBoardColor = bDrawBoard;
 	}
 
@@ -442,7 +447,7 @@ namespace LIB_CONTROL
 		return HTCLIENT;
 	}
 
-	Button::Button() :Button(L"",MyRect(0,0,100,100))
+	Button::Button() :Button(L"",nullRect)
 	{
 
 	}
@@ -538,7 +543,7 @@ namespace LIB_CONTROL
 
 	}
 
-	CloseButton::CloseButton()
+	CloseButton::CloseButton():Button()
 	{
 		SetID(CONTROL_TYPE_CLOSE_BUTTON);
 	}
@@ -586,7 +591,7 @@ namespace LIB_CONTROL
 		AdjustRect(MyRect(RECTWIDTH(newRect)-btnHeight,0, RECTWIDTH(newRect), btnHeight));
 	}
 
-	MiniButton::MiniButton()
+	MiniButton::MiniButton():Button()
 	{
 		SetID(CONTROL_TYPE_MINI_BUTTON);
 	}
@@ -669,9 +674,10 @@ namespace LIB_CONTROL
 		this->isMax = isMax;
 	}
 
-	MaxButton::MaxButton():isMax(false)
+	MaxButton::MaxButton()
 	{
 		SetID(CONTROL_TYPE_MAXI_BUTTON);
+		isMax = false;
 	}
 
 	MaxButton::MaxButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
@@ -833,7 +839,7 @@ namespace LIB_CONTROL
 	void LabelBox::Draw(Listener * pListener)
 	{
 		Control::Draw(pListener);
-		DrawManager.DrawTextW(mText, mRect, mForceColor, RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE,&mpTextpLayout);
+		DrawManager.DrawTextW(mText, mRect, mForceColor, STCAST(float,RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE),&mpTextpLayout);
 	}
 
 	UINT LabelBox::HitTest(Listener * pListener, POINT pt)

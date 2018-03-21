@@ -29,7 +29,9 @@ namespace Layout
 		else if (mControlType == L"LabelBox")
 			pObj = MyFactory.create<LabelBox>("LabelBox");
 
-		IS_RETURN_ERROR(!pObj,false,"fit error! reason: 控件类型有误");
+		IS_RETURN_ERROR(!pObj,nullptr,"fit error! reason: 控件类型有误");
+		if (mText == L"NULL") mText = L""; //NULL 
+
 		pObj->AdjustRect(mLayoutRect);
 		pObj->SetForceColor(mForceColor.getRGB());
 		pObj->SetBackColor(mBackColor.getRGB());

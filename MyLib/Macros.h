@@ -271,7 +271,7 @@ namespace REFLECTION
 	public:
 
 		ReflectObject * create(string className);
-
+		 
 		bool RegisteFunc(string className, creatFunc func);
 
 		template<typename T>
@@ -287,11 +287,9 @@ namespace REFLECTION
 
 #define MyFactory ConstructorFactory::getInstance()
 
-
-
 	template<typename T>
 	class REFLECT:public ReflectObject
-	{
+	{ 
 	public:
 		static ReflectObject * createObject()
 		{
@@ -323,7 +321,6 @@ namespace REFLECTION
 
 	template<typename T>
 	typename REFLECT<T>::reg REFLECT<T>::mReg;
-
 }
 
 typedef LRESULT(_stdcall *pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

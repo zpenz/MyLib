@@ -297,7 +297,7 @@ namespace REFLECTION
 	ReflectObject * ConstructorFactory::create(string className)
 	{
 		auto it = mFuncMap.find(className);
-		IS_RETURN_ERROR(it == mFuncMap.end(), nullptr, "该类没有注册");
+		IS_RETURN_ERROR(it == mFuncMap.end(), nullptr, "该类没有被注册");
 		return it->second();
 	}
 

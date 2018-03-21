@@ -104,7 +104,7 @@ namespace LIB_CONTROL
 
 	public:
 
-		virtual UINT HitTest(Listener * pListener, POINT pt) = 0;
+		virtual UINT HitTest(Listener * pListener, POINT pt);
 
 		virtual void Draw(Listener * pListener);
 
@@ -225,7 +225,7 @@ namespace LIB_CONTROL
 
 	///<Button>°´Å¥</Button>
 	class Button : public Control
-		, public REFLECT<Button>
+		,public REFLECT<Button>
 	{
 	protected:
 		COLORREF mBoardColor;

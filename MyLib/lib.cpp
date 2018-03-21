@@ -419,10 +419,6 @@ void BaseWindow::Destory()
 	 //Mini Button
 	 MiniButton * pMin = new MiniButton(L"", Conver::MyRect(1024 - 35 * 3, 0, mWidth - 70,35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(216, 120, 17));
 	 mListener.attach(pMin);
-	 //Test Button
-	 Button * ptest = new Button(L"", Conver::MyRect(100, 100, 150, 125), RGB(255, 255, 255), RGB(65, 65, 68), RGB(17, 120, 216), RGB(216, 120, 17));
-	 ptest->SetDrag(true);
-	 mListener.attach(ptest);
 	 //other
 	 Layout::ControlLayout.LoadLayoutFile("window.layout",&mListener);
  }
