@@ -127,9 +127,9 @@ namespace Layout
 			{
 				auto par = ParseLine(lineBuf);
 				Control * pControl = par.fit();
-				IS_RETURN_ERROR(!pListener,false,"LoadLayoutFile Listener 为空");
+				IS_RETURN_ERROR(!pListener,false,"LoadLayoutFile Listener null");
+				IS_RETURN_ERROR(!pControl, false, "LoadLayoutFile pControl null")
 				pListener->attach(pControl); //添加
-
 				memset(lineBuf, 0, MAX_BUF_LENGTH);
 				linesize = 0;
 				ipos++;
@@ -140,7 +140,8 @@ namespace Layout
 			{
 				auto par = ParseLine(lineBuf);
 				Control * pControl = par.fit();
-				IS_RETURN_ERROR(!pListener, false, "LoadLayoutFile Listener 为空");
+				IS_RETURN_ERROR(!pListener, false, "LoadLayoutFile Listener null");
+				IS_RETURN_ERROR(!pControl,false,"LoadLayoutFile pControl null")
 				pListener->attach(pControl); //添加
 				memset(lineBuf, 0, MAX_BUF_LENGTH);
 				break;
