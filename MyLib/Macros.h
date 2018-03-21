@@ -122,6 +122,14 @@ void ErrorMessage(const char * _error);
 		OutputDebugStringA("\n");\
 		return returnValue;}
 
+#define IS_CONTINUE_ERROR(condition,error_message)\
+		if(condition)\
+		{\
+		OutputDebugStringA("[ERROR]xxxxxxxxxxxxxxxxxx----");\
+		OutputDebugStringA(error_message);\
+		OutputDebugStringA("\n");\
+		continue;}
+
 #define LOG_WARNING(format,...)\
 		OutputDebugStringA(Conver::Format("[WARN]:%s\n",format).c_str());
 
