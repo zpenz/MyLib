@@ -291,25 +291,4 @@ namespace Conver
 	}
 }
 
-namespace REFLECTION
-{
-
-	ReflectObject * ConstructorFactory::create(string className)
-	{
-		auto it = mFuncMap.find(className);
-		IS_RETURN_ERROR(it == mFuncMap.end(), nullptr, "该类没有被注册");
-		return it->second();
-	}
-
-	bool ConstructorFactory::RegisteFunc(string className, creatFunc func)
-	{
-		auto pos = className.rfind(":");
-		string realName = className.substr(pos+1,className.size() - pos);
-		auto chr = realName.c_str();
-
-		IS_RETURN_ERROR(mFuncMap.find(className) != mFuncMap.end(), false, "已经存在的key");
-		mFuncMap.emplace(pair<string, creatFunc>(realName, func));
-		return true;
-	}
-}
 

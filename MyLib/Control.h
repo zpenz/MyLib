@@ -4,6 +4,7 @@
 #include "2Draw.h"
 #include "Sprite.h"
 #include "Caret.h"
+#include "reflect.h"
 
 namespace LIB_CONTROL
 {
@@ -223,9 +224,8 @@ namespace LIB_CONTROL
 		list<Control *> & Obj();
 	};
 
-	///<Button>按钮</Button>
-	class Button : public Control
-		,public REFLECT<Button>
+	///<ButtonInterface>按钮接口</ButtonInterface>
+	class ButtonInterface : public Control
 	{
 	protected:
 		COLORREF mBoardColor;
@@ -244,14 +244,21 @@ namespace LIB_CONTROL
 
 		virtual UINT HitTest(Listener * pListener,POINT pt) override;
 
-		Button();
+		ButtonInterface();
 
-		Button(wstring text,RECT rc);
+		ButtonInterface(wstring text,RECT rc);
 
-		Button(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+		ButtonInterface(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 	};
 
-	class CloseButton : public Button 
+	///默认按钮
+	class Button :public ButtonInterface, public REFLECT<Button>
+	{
+	public:
+		Button();
+	};
+
+	class CloseButton : public ButtonInterface 
 		,public REFLECT<CloseButton>
 	{
 	public:
@@ -270,7 +277,7 @@ namespace LIB_CONTROL
 
 	};
 
-	class MiniButton : public Button
+	class MiniButton : public ButtonInterface
 		, public REFLECT<MiniButton>
 	{
 	public:
@@ -286,7 +293,7 @@ namespace LIB_CONTROL
 		MiniButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 	};
 
-	class MaxButton : public Button // max and restore button...
+	class MaxButton : public ButtonInterface // max and restore button...
 		, public REFLECT<MaxButton>
 	{
 	protected:
@@ -313,7 +320,7 @@ namespace LIB_CONTROL
 	};
 
 	///<ImageButton>图形按钮</ImageButton>
-	class ImageButton : public Button
+	class ImageButton : public ButtonInterface
 	{
 		IPIC * pHonverImage;
 
@@ -330,7 +337,7 @@ namespace LIB_CONTROL
 	class TitleBar : public Control
 		,public REFLECT<TitleBar>
 	{
-		Sprite::Sprite mIconSprite;
+		Sprite::Sprite mIconSprite[2];
 
 	public:
 		void Draw(Listener * pListener) override;

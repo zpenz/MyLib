@@ -31,6 +31,9 @@
     <Filter Include="头文件\File">
       <UniqueIdentifier>{04e415e3-a22b-46dc-b237-35f25fdec1e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Simple Reflection">
+      <UniqueIdentifier>{a8506c9b-0a32-435f-9e91-776f0b5caad6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -75,6 +78,9 @@
     <ClInclude Include="MyLayout.h">
       <Filter>头文件\File</Filter>
     </ClInclude>
+    <ClInclude Include="reflect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -112,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="MyLayout.cpp">
       <Filter>头文件\File</Filter>
+    </ClCompile>
+    <ClCompile Include="reflect.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,5 @@
 #include "Control.h"
 
-
 namespace LIB_CONTROL
 {
 	using namespace Conver;
@@ -413,22 +412,22 @@ namespace LIB_CONTROL
 		mbDraging = false;
 	}
 
-	void Button::SetButtonDownInternal(bool isDownInternal)
+	void ButtonInterface::SetButtonDownInternal(bool isDownInternal)
 	{
 		mBDownInternal = isDownInternal;
 	}
 
-	void Button::SetBoardColor(COLORREF cBoardColor)
+	void ButtonInterface::SetBoardColor(COLORREF cBoardColor)
 	{
 		mBoardColor = cBoardColor;
 	}
 
-	void Button::NeedDrawBoard(bool bDrawBoard)
+	void ButtonInterface::NeedDrawBoard(bool bDrawBoard)
 	{ 
 		mBoardColor = bDrawBoard;
 	}
 
-	void Button::Draw(Listener * pListener)
+	void ButtonInterface::Draw(Listener * pListener)
 	{
 		if (!mMouseInternal)
 		{
@@ -442,21 +441,21 @@ namespace LIB_CONTROL
 		}
 	}
 
-	UINT Button::HitTest(Listener * pListener,POINT pt)
+	UINT ButtonInterface::HitTest(Listener * pListener,POINT pt)
 	{
 		return HTCLIENT;
 	}
 
-	Button::Button() :Button(L"",nullRect)
+	ButtonInterface::ButtonInterface() :ButtonInterface(L"",nullRect)
 	{
 
 	}
 
-	Button::Button(wstring text, RECT rc):Control(text,rc),mBoardColor(mBackColor), mDrawBoard(false)
+	ButtonInterface::ButtonInterface(wstring text, RECT rc):Control(text,rc),mBoardColor(mBackColor), mDrawBoard(false)
 	{
 	}
 
-	Button::Button(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,
+	ButtonInterface::ButtonInterface(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,
 		rc,forceColor,backColor,hoverForceColor,hoverBackColor), mBoardColor(mBackColor), mDrawBoard(false)
 	{
 	}
@@ -494,7 +493,6 @@ namespace LIB_CONTROL
 
 	void TitleBar::Draw(Listener * pListener)
 	{
-		mIconSprite.ChangeRect(MyRect(100, 100, 800, 800));
 		if (!mMouseInternal)
 		{
 			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor),&mpTextpLayout,true);
@@ -505,7 +503,8 @@ namespace LIB_CONTROL
 			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor),&mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw  honvered TitleBar failed!");
 		}
-		mIconSprite.Render();
+		mIconSprite[0].Render();
+		mIconSprite[1].Render();
 	}
 
 
@@ -520,9 +519,17 @@ namespace LIB_CONTROL
 		AdjustRect(MyRect(0, 0, RECTWIDTH(newRect)-3*titleBarHeight, titleBarHeight));
 	}
 
-	TitleBar::TitleBar():TitleBar(L"", nullRect)
+	TitleBar::TitleBar():Control(L"", nullRect)
 	{
+		SetID(CONTROL_TYPE_TITLEBAR);
+		//test sprite
+		mIconSprite[0].LoadEx(L"effect/hit/*.png");
+		mIconSprite[0].ChangeRect(MyRect(0,300,256,556));
+		mIconSprite[0].SetSpeed(20);
 
+		mIconSprite[1].LoadEx(L"effect/hit2/*.png");
+		mIconSprite[1].ChangeRect(MyRect(556, 300, 812, 556));
+		mIconSprite[1].SetSpeed(20);
 	}
 
 	TitleBar::TitleBar(wstring text,RECT rc):Control(text,rc)
@@ -532,10 +539,6 @@ namespace LIB_CONTROL
 
 	TitleBar::TitleBar(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text, rc, forceColor, backColor,
 		hoverForceColor, hoverBackColor) {
-		//test
-		SetID(CONTROL_TYPE_TITLEBAR);
-		mIconSprite.LoadEx(L"effect/hit/*.png");
-		mIconSprite.SetSpeed(30);
 	}
 
 	TitleBar::~TitleBar()
@@ -543,12 +546,17 @@ namespace LIB_CONTROL
 
 	}
 
-	CloseButton::CloseButton():Button()
+	Button::Button():ButtonInterface()
+	{
+		SetID(CONTROL_TYPE_DEFAULT_BUTTON);
+	}
+
+	CloseButton::CloseButton():ButtonInterface()
 	{
 		SetID(CONTROL_TYPE_CLOSE_BUTTON);
 	}
 
-	CloseButton::CloseButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
+	CloseButton::CloseButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):ButtonInterface(text, rc, forceColor, backColor,
 		hoverForceColor, hoverBackColor) {
 		CloseButton();
 	}
@@ -591,12 +599,12 @@ namespace LIB_CONTROL
 		AdjustRect(MyRect(RECTWIDTH(newRect)-btnHeight,0, RECTWIDTH(newRect), btnHeight));
 	}
 
-	MiniButton::MiniButton():Button()
+	MiniButton::MiniButton():ButtonInterface()
 	{
 		SetID(CONTROL_TYPE_MINI_BUTTON);
 	}
 
-	MiniButton::MiniButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
+	MiniButton::MiniButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):ButtonInterface(text, rc, forceColor, backColor,
 		hoverForceColor, hoverBackColor) {
 		MiniButton();
 	}
@@ -680,7 +688,7 @@ namespace LIB_CONTROL
 		isMax = false;
 	}
 
-	MaxButton::MaxButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Button(text, rc, forceColor, backColor,
+	MaxButton::MaxButton(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):ButtonInterface(text, rc, forceColor, backColor,
 		hoverForceColor, hoverBackColor) {
 		MaxButton();
 		isMax = false;
@@ -846,6 +854,7 @@ namespace LIB_CONTROL
 	{
 		return HTCLIENT;
 	}
+
 
 
 }

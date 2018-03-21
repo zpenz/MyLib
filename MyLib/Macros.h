@@ -69,6 +69,7 @@ namespace LIB_CONTROL
 #define CONTROL_TYPE_MINI_BUTTON    4
 #define CONTROL_TYPE_CLOSE_BUTTON   5
 #define CONTROL_TYPE_RESTORE_BUTTON 6
+#define CONTROL_TYPE_DEFAULT_BUTTON 7
 }
 
 namespace LIB_WINDOW
@@ -117,7 +118,7 @@ void ErrorMessage(const char * _error);
 #define IS_RETURN_ERROR(condition,returnValue,error_message)\
 		if(condition)\
 		{\
-		OutputDebugStringA("[ERROR]xxxxxxxxxxxxxxxxxx----");\
+		OutputDebugStringA("[ERROR]xxxxxxxxxxxxxxxxxx-------------   ");\
 		OutputDebugStringA(error_message);\
 		OutputDebugStringA("\n");\
 		return returnValue;}
@@ -125,7 +126,7 @@ void ErrorMessage(const char * _error);
 #define IS_CONTINUE_ERROR(condition,error_message)\
 		if(condition)\
 		{\
-		OutputDebugStringA("[ERROR]xxxxxxxxxxxxxxxxxx----");\
+		OutputDebugStringA("[ERROR]xxxxxxxxxxxxxxxxxx-------------    ");\
 		OutputDebugStringA(error_message);\
 		OutputDebugStringA("\n");\
 		continue;}
@@ -253,82 +254,6 @@ namespace Conver
 	wstring GetDirName(wstring path);
 }
 
-//ºÚµ•∑¥…‰ 
-namespace REFLECTION
-{
-	
-	using namespace std;
 
-	class ReflectObject
-	{
-	public:
-		virtual ~ReflectObject()
-		{
-
-		}
-	};
-
-	typedef ReflectObject*(* creatFunc)();
-
-	class ConstructorFactory
-	{
-		SINGLE_INSTANCE(ConstructorFactory)
-		//class-name -------- creator
-		map<string, creatFunc> mFuncMap;
-
-	public:
-
-		ReflectObject * create(string className);
-		 
-		bool RegisteFunc(string className, creatFunc func);
-
-		template<typename T>
-		T * create(string className)
-		{
-			auto * obj = create(className);
-			IS_RETURN_ERROR(!obj, nullptr, "null object...");
-			T * reallyObj = dynamic_cast<T*>(obj);
-			IS_RETURN_ERROR(!obj, nullptr, "null realobj...");
-			return reallyObj;
-		}
-	};
-
-#define MyFactory ConstructorFactory::getInstance()
-
-	template<typename T>
-	class REFLECT:public ReflectObject
-	{ 
-	public:
-		static ReflectObject * createObject()
-		{
-			return DYCAST(ReflectObject *,new T());
-		}
-
-		struct reg
-		{
-			reg()
-			{
-				MyFactory.RegisteFunc(typeid(T).name(), createObject);
-			}
-
-			inline void nothing() {}
-		};
-
-		static reg mReg;
-
-		REFLECT()
-		{
-			mReg.nothing();
-		}
-
-		virtual ~REFLECT()
-		{
-
-		}
-	};
-
-	template<typename T>
-	typename REFLECT<T>::reg REFLECT<T>::mReg;
-}
 
 typedef LRESULT(_stdcall *pCallBackFunc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

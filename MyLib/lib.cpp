@@ -401,25 +401,13 @@ void BaseWindow::Destory()
 	 CaretManager.InitCaret();
 	 CaretManager.Color(RGB(216,120,17));
 
-	 //窗口区域转换 
+	 //窗口完全矩形..
 	 //auto Rgn = CreateRectRgn(0,0,mWidth,mHeight);
 	 //SetWindowRgn(mBaseHwnd, Rgn,true);
 	 //DeleteObject(Rgn);
 
 	 mListener.attachWindow(mBaseHwnd);
-	 //TitleBar
-	 TitleBar * pBar = new TitleBar(L"pSong's Window", Conver::MyRect(0, 0, mWidth - 3 * 35, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(116, 116, 119));
-	 mListener.attach(pBar);
-	 //Close Button
-	 CloseButton * pClo = new CloseButton(L"",Conver::MyRect(1024 - 35, 0, mWidth, 35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(228, 0, 0));
-	 mListener.attach(pClo);
-	 //Max Button
-	 MaxButton * pMax = new MaxButton(L"",Conver::MyRect(1024 - 35 * 2, 0, mWidth - 35,35),  RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0),RGB(216, 120, 17));
-	 mListener.attach(pMax);
-	 //Mini Button
-	 MiniButton * pMin = new MiniButton(L"", Conver::MyRect(1024 - 35 * 3, 0, mWidth - 70,35), RGB(255, 255, 255), RGB(65, 65, 68), RGB(0, 0, 0), RGB(216, 120, 17));
-	 mListener.attach(pMin);
-	 //other
+	 //加载所有控件
 	 Layout::ControlLayout.LoadLayoutFile("window.layout",&mListener);
  }
 
