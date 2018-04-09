@@ -108,8 +108,7 @@ namespace Conver
 		if (pos2 < pos1) pos1 = pos2;
 		if (pos1 == string::npos && pos2 == string::npos) pos1 = 0;
 
-		wstring tempString = path.substr(0,pos1+1);
-		return tempString;
+		return path.substr(0, pos1 + 1);
 	}
 
 	RECT  ClientToScreenRc(HWND hWnd,RECT & rc)
@@ -118,8 +117,8 @@ namespace Conver
 		ClientToScreen(hWnd, &lt);
 		ClientToScreen(hWnd, &rt);
 		RECT tempRect = { lt.x,lt.y,rt.x,rt.y };
-		rc = tempRect;
-		return tempRect;
+		rc = { lt.x,lt.y,rt.x,rt.y };
+		return { lt.x,lt.y,rt.x,rt.y };
 	}
 
 	RECT  ScreenToClientRc(HWND hWnd, RECT & rc)

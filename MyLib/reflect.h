@@ -48,7 +48,8 @@ namespace REFLECTION
 	public:
 		static ReflectObject * createObject()
 		{
-			return DYCAST(ReflectObject *, new T());
+			//return DYCAST(ReflectObject *, new T());
+			return new T();
 		}
 
 		struct reg
