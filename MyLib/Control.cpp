@@ -151,11 +151,6 @@ namespace LIB_CONTROL
 		return mpControl;
 	}
 
-	void Control::SetID(UINT typeId)
-	{
-		mControlTypeId = typeId;
-	}
-
 	UINT Control::HitTest(Listener * pListener, POINT pt)
 	{
 		return HTCLIENT;
@@ -275,10 +270,6 @@ namespace LIB_CONTROL
 		return mCanStretch;
 	}
 
-	UINT Control::TypeId() const
-	{
-		return mControlTypeId;
-	}
 
 	bool Control::Active() const
 	{

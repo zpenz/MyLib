@@ -32,6 +32,7 @@ namespace Layout
 		IS_RETURN_ERROR(!pObj,nullptr,"fit error! reason: 控件类型有误");
 		if (mText == L"NULL") mText = L""; //NULL 
 
+		pObj->SetID(mControlID);
 		pObj->AdjustRect(mLayoutRect);
 		pObj->SetForceColor(mForceColor.getRGB());
 		pObj->SetBackColor(mBackColor.getRGB());

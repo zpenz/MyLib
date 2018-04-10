@@ -63,9 +63,20 @@ namespace LIB_CONTROL
 		DragAdapter();
 	};
 
+	template<class IDType>
+	class IDAdapter
+	{
+		IDType mID;
+	public:
+		IDType getID() { return mID; }
+
+		void SetID(IDType id) { mID = id; }
+
+	};
 
 
-	class Control: public ImageAdapter,public DragAdapter
+
+	class Control: public ImageAdapter,public DragAdapter,public IDAdapter<UINT>
 	{
 
 	protected:
@@ -88,11 +99,7 @@ namespace LIB_CONTROL
 
 		bool mCanStretch; //Stretch
 
-		UINT mControlTypeId;
-
 		bool mBDownInternal;
-
-		void SetID(UINT typeId);
 
 		POINT mouseDragStartPoint;
 
@@ -135,8 +142,6 @@ namespace LIB_CONTROL
 		void SetCaretState(bool state);
 
 		bool Stretch(); //是否是一个随着窗口大小变化而改变的控件
-
-		UINT TypeId() const;
 
 		bool Active() const;
 
