@@ -94,6 +94,7 @@ namespace LIB_CONTROL
 		UINT ret = SHOULD_DO_NOTHING;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->KillFocus(this);  //KillFocus
+			if (pControl->mClickFunc) pControl->mClickFunc(); //调用点击事件
 			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
 				pControl->Focus(this, mListenedWindow); //SetFocus

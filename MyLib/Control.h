@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include <algorithm>
+#include <functional>
 #include "2Draw.h"
 #include "Sprite.h"
 #include "Caret.h"
@@ -104,6 +105,8 @@ namespace LIB_CONTROL
 		TextLayout * mpTextpLayout;
 
 	public:
+
+		function<void(void)> mClickFunc;
 
 		virtual UINT HitTest(Listener * pListener, POINT pt);
 
