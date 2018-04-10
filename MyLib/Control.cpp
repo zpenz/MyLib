@@ -27,6 +27,17 @@ namespace LIB_CONTROL
 	{
 	}
 
+	Control * Listener::findElementByID(UINT id)
+	{
+		 auto tempControl = find_if(mpControl.begin(), mpControl.end(), [&id](Control * pControl)->bool
+		 {
+			 if (id == pControl->getID()) return true;
+			 return false;
+		 });
+		 if (tempControl == mpControl.end()) return nullptr;
+		 return *tempControl;
+	}
+
 	bool Listener::attachWindow(HWND hWnd)
 	{
 		IS_RETURN_ERROR(!hWnd,false,"attachWindow 失败! 句柄为空");
@@ -94,9 +105,9 @@ namespace LIB_CONTROL
 		UINT ret = SHOULD_DO_NOTHING;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->KillFocus(this);  //KillFocus
-			if (pControl->mClickFunc) pControl->mClickFunc(); //调用点击事件
 			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
+				if (pControl->mClickFunc) pControl->mClickFunc(); //调用点击事件
 				pControl->Focus(this, mListenedWindow); //SetFocus
 				if (pControl->LButtonDown(this, pt) != SHOULD_DO_NOTHING) return ret;
 			}
@@ -296,12 +307,12 @@ namespace LIB_CONTROL
 		mBoardColor = color;
 	}
 
-	COLORREF Control::getBoardColor()
+	COLORREF & Control::getBoardColor()
 	{
 		return mBoardColor;
 	}
 
-	COLORREF Control::ForceColor() const
+	COLORREF & Control::ForceColor() 
 	{
 		return mForceColor;
 	}
@@ -311,7 +322,7 @@ namespace LIB_CONTROL
 		mForceColor = color;
 	}
 
-	COLORREF Control::BackColor() const
+	COLORREF & Control::BackColor() 
 	{
 		return mBackColor; 
 	}
@@ -321,7 +332,7 @@ namespace LIB_CONTROL
 		mBackColor = color;
 	}
 
-	COLORREF Control::HoverBackColor() const
+	COLORREF & Control::HoverBackColor() 
 	{
 		return mHonverBackColor;
 	}
@@ -331,7 +342,7 @@ namespace LIB_CONTROL
 		mHonverBackColor = color;
 	}
 
-	COLORREF Control::HoverForceColor() const
+	COLORREF & Control::HoverForceColor() 
 	{
 		return mHoverForceColor;
 	}
@@ -351,7 +362,7 @@ namespace LIB_CONTROL
 		mVisible = state;
 	}
 
-	RECT Control::getRect() const
+	RECT & Control::getRect() 
 	{
 		return mRect;
 	}
@@ -721,6 +732,7 @@ namespace LIB_CONTROL
 
 	void ImageButton::Draw(Listener * pListener)
 	{
+		if (!pImage) if(!mText.empty()) LoadFromFile(mText); //如果文字非空，那么就加载文字路径下的图
 		IS_RETURN_ERROR(!pImage,,"ImageButton 图像为空");
 		if (pHonverImage == nullptr) pHonverImage = pImage;
 		if (ZeroRect(mImgRec)) mImgRec = mRect;
@@ -736,6 +748,10 @@ namespace LIB_CONTROL
 		}
 	}
 
+	ImageButton::ImageButton()
+	{
+	}
+
 	ImageButton::ImageButton(wstring picLoc, RECT rImgRect)
 	{
 		pImage = DrawManager.CreateBitmap(const_cast<wchar_t *>(picLoc.c_str()));
@@ -746,6 +762,11 @@ namespace LIB_CONTROL
 	{
 		pImage = pBitmap;
 		mRect = rImgRect;
+	}
+
+	ImageButton::~ImageButton()
+	{
+		SAFE_RELEASE(pHonverImage);
 	}
 
 

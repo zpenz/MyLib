@@ -20,6 +20,11 @@ int main()
 		COLORREF color = GetPixel(GetDC(NULL), pPoint->x,pPoint->y);
 		cout <<(UINT)GetRValue(color)<<(UINT)GetGValue(color)<< (UINT)GetBValue(color)<<endl;
 		Sleep(1000);
+
+		auto ct = bs.mListener.findElementByID(120); //SAVE
+		if(ct && !ct->mClickFunc) ct->mClickFunc = []() {
+			printf("込込込込込込込");
+		};
 		////bitmap
 		//RECT rcPicture = { 72,128,72 * 2,128 * 2 };
 		//auto pBitmap = DrawManager.CreateBitmap(L"3.jpg", 72, 128);

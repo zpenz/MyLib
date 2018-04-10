@@ -68,10 +68,9 @@ namespace LIB_CONTROL
 	{
 		IDType mID;
 	public:
-		IDType getID() { return mID; }
+		IDType & getID() { return mID; }
 
 		void SetID(IDType id) { mID = id; }
-
 	};
 
 
@@ -153,21 +152,21 @@ namespace LIB_CONTROL
 
 		void SetBoardColor(COLORREF color);
 
-		COLORREF getBoardColor();
+		COLORREF & getBoardColor();
 
-		COLORREF ForceColor() const;
+		COLORREF & ForceColor() ;
 
 		void SetForceColor(COLORREF color);
 
-		COLORREF BackColor() const;
+		COLORREF & BackColor() ;
 
 		void SetBackColor(COLORREF color);
 
-		COLORREF HoverBackColor() const;
+		COLORREF & HoverBackColor() ;
 
 		void SetHoverBackColor(COLORREF color);
 
-		COLORREF HoverForceColor() const;
+		COLORREF & HoverForceColor() ;
 
 		void SetHoverForceColor(COLORREF color);
 
@@ -175,7 +174,7 @@ namespace LIB_CONTROL
 
 		void SetVisible(bool state);
 
-		RECT getRect() const;
+		RECT & getRect() ;
 
 		void AdjustRect(RECT decREct);
 
@@ -206,6 +205,8 @@ namespace LIB_CONTROL
 		HWND mListenedWindow;
 
 	public:
+
+		Control * findElementByID(UINT id);
 
 		bool attachWindow(HWND hWnd);
 
@@ -328,7 +329,8 @@ namespace LIB_CONTROL
 	};
 
 	///<ImageButton>图形按钮</ImageButton>
-	class ImageButton : public ButtonInterface
+	class ImageButton : public ButtonInterface,
+		public REFLECT<ImageButton>
 	{
 		IPIC * pHonverImage;
 
@@ -336,9 +338,15 @@ namespace LIB_CONTROL
 
 		void Draw(Listener * pListener) override;
 
+		ImageButton();
+
 		ImageButton(wstring picLoc,RECT rImgRect);
 
 		ImageButton(IPIC * pBitmap, RECT rImgRect);
+
+		void SetText(wstring text);
+
+		~ImageButton();
 	};
 
 	///<TitleBar>标题栏</TitleBar>

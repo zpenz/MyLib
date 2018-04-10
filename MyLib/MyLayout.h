@@ -53,6 +53,10 @@ namespace Layout
 
 		bool LoadLayoutFile(string filename, Listener * pListener);
 
+		bool SaveLayoutFile(string outFileName,Listener * pListener);
+
+		bool WriteDataWithChar(FILE * pFile, void * data, wchar_t append = L' ');
+
 		~MyLayout();
 	};
 #define ControlLayout MyLayout::getInstance()

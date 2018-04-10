@@ -50,8 +50,6 @@ protected:
 
 	pCallBackFunc mCallBackFunc;
 
-	Listener mListener;
-
 private:
 	 
 	RECT Rect() const;
@@ -67,7 +65,10 @@ private:
 	void UpdateCache(bool topMost);
 
 	void UpdatePosition(WPARAM wParam,LPARAM lParam);
+
 public:
+	Listener mListener;
+
 	BaseWindow();
 
 	BaseWindow(int width, int height,const wstring windowname, const wstring classname, 
