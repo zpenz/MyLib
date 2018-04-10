@@ -4,7 +4,7 @@ namespace LIB_CONTROL
 {
 	using namespace Conver;
 
-	bool DragAdapter::IsDraging()
+	bool DragAdapter::CanDrag()
 	{
 		return mCanDrag;
 	}

@@ -22,8 +22,11 @@ int main()
 		Sleep(1000);
 
 		auto ct = bs.mListener.findElementByID(120); //SAVE
-		if(ct && !ct->mClickFunc) ct->mClickFunc = []() {
-			printf("¹þ¹þ¹þ¹þ¹þ¹þ¹þ");
+		if(ct && !ct->mClickFunc) ct->mClickFunc = [&]() {
+			printf("¿ªÊ¼±£´æ...\n");
+			Layout::ControlLayout.SaveLayoutFile("D:\\window.layout",&bs.mListener);
+			printf("±£´æÍê±Ï...\n");
+
 		};
 		////bitmap
 		//RECT rcPicture = { 72,128,72 * 2,128 * 2 };

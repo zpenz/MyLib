@@ -54,7 +54,7 @@ namespace LIB_CONTROL
 		virtual void Drag(Listener * pListener, int dx, int dy) = 0; ///dx dy Æ«ÒÆ
 
 	public:
-		bool IsDraging();
+		bool CanDrag();
 
 		void Stop();
 
