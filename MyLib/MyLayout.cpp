@@ -77,7 +77,7 @@ namespace Layout
 			ColorStruct(utoi(vParams[10]), utoi(vParams[11]), utoi(vParams[12])),
 			ColorStruct(utoi(vParams[13]), utoi(vParams[14]), utoi(vParams[15])),
 			ColorStruct(utoi(vParams[16]), utoi(vParams[17]), utoi(vParams[18])),
-			NoWarningBool(utoi(vParams[19])));
+			utoi(vParams[19]));
 	}
 
 	wchar_t * MyLayout::getNextToken(wchar_t * startPos,int & pos)
@@ -139,7 +139,8 @@ namespace Layout
 	{
 		IS_RETURN_ERROR(outFileName.empty() || !pListener, false, "输出的layout文件名或者Listener为空");
 		FILE * pfile = nullptr;
-		fopen_s(&pfile, outFileName.c_str(), "w+");
+		_wfopen_s(&pfile, ACharToWChar(COCAST(char *,outFileName.c_str())), L"w+");
+		IS_RETURN_ERROR(!pfile,false,"file open error");
 
 		shared_ptr<void> pExit(NULL, [&](void*) {
 			if (pfile) fclose(pfile);
@@ -148,25 +149,27 @@ namespace Layout
 		auto ListenerList = pListener->Obj();
 		for_each(ListenerList.begin(), ListenerList.end(), [&](Control * pControl)
 		{
-			auto name = WCharToAChar(COCAST(wchar_t *,pControl->getClassName().c_str()));
-			fprintf_s(pfile,"%s ",name);
+			auto name = WCharToAChar(COCAST(wchar_t *, pControl->getClassName().c_str()));
+			fprintf_s(pfile, "%s ", name);
 			fprintf_s(pfile, "%d ", pControl->getID());
 			auto tempText = pControl->Text();
-			if(tempText.empty()) fprintf_s(pfile, "NULL");
-			fprintf_s(pfile, "%s ", WCharToAChar(COCAST(wchar_t *,tempText.c_str())));
+			if (tempText.empty()) fprintf_s(pfile, "NULL");
+			auto text = COCAST(wchar_t *, tempText.c_str());
+			_wsetlocale(0, L"chs");
+			fprintf_s(pfile, "%ls ", text);
 			auto tempRect = pControl->getRect();
-			fprintf_s(pfile, "RECT(%d %d %d %d) ",tempRect.left, tempRect.top,tempRect.right,tempRect.bottom);
+			fprintf_s(pfile, "RECT(%d %d %d %d) ", tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
 			auto tempColor = pControl->ForceColor();
-			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor),GetGValue(tempColor),GetBValue(tempColor));
+			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
 			tempColor = pControl->BackColor();
 			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
 			tempColor = pControl->HoverForceColor();
 			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
 			tempColor = pControl->HoverBackColor();
 			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
-			fprintf_s(pfile,"%d\n",pControl->CanDrag()?1:0);
+			fprintf_s(pfile, "%d\n", pControl->CanDrag() ? 1 : 0);
 		});
-		return false;
+		return true;
 	}
 
 	bool MyLayout::WriteDataWithChar(FILE * pFile, void * data, wchar_t append)
