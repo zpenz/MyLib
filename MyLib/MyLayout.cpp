@@ -11,26 +11,8 @@ namespace Layout
 	{
 		Control * pObj = nullptr;
 
-		auto strContext = mControlType.c_str();
-		auto size = mControlType.length();
-
-		if (mControlType == wstring(L"Button"))
-			pObj = MyFactory.create<Button>("Button");
-		else if (mControlType == L"TitleBar")
-			pObj = MyFactory.create<TitleBar>("TitleBar");
-		else if (mControlType == L"MaxButton")
-			pObj = MyFactory.create<MaxButton>("MaxButton");
-		else if (mControlType == L"MiniButton")
-			pObj = MyFactory.create<MiniButton>("MiniButton");
-		else if (mControlType == L"CloseButton")
-			pObj = MyFactory.create<CloseButton>("CloseButton");
-		else if (mControlType == L"EditBox")
-			pObj = MyFactory.create<EditBox>("EditBox");
-		else if (mControlType == L"LabelBox")
-			pObj = MyFactory.create<LabelBox>("LabelBox");
-		else if (mControlType == L"ImageButton")
-			pObj = MyFactory.create<ImageButton>("ImageButton");
-
+		// 直接使用Control基类指针 将ReflectObject指针转换为Control(dynamic_cast) 
+		pObj = MyFactory.create<Control>(WCharToAChar(COCAST(wchar_t *,mControlType.c_str())));
 		IS_RETURN_ERROR(!pObj,nullptr,"fit error! reason: 控件类型有误");
 		if (mText == L"NULL") mText = L""; //NULL 
 
