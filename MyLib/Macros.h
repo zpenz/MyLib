@@ -19,7 +19,7 @@
 #define SAFE_DELETE(p)  if(p!=nullptr){delete p; p = nullptr;} 
 
 #define MAX_BUF_LENGTH 4096
-#define NoWarningBool(boolvalue) boolvalue==0?false:true;
+#define NoWarningBool(boolvalue) ((boolvalue==0)?false:true)
 
 //type-cast
 #define STCAST(type,des) static_cast<type>(des)

@@ -7,6 +7,11 @@ namespace Layout
 {
 	using namespace Conver;
 
+	LayoutParameter::LayoutParameter(wstring ControlType, UINT ID, wstring text, RECT layoutRect, ColorStruct fcolor, ColorStruct bcolor, ColorStruct hfcolor, ColorStruct hbcolor, bool candrag):
+		mControlType(ControlType),mControlID(ID),mText(text),mLayoutRect(layoutRect),mForceColor(fcolor),mBackColor(bcolor),mHoverForceColor(hfcolor),mHoverBackColor(hbcolor)
+	{
+	}
+
 	Control * LayoutParameter::fit()
 	{
 		Control * pObj = nullptr;
@@ -28,36 +33,6 @@ namespace Layout
 		return pObj;
 	}
 
-	void LayoutParameter::pushParameter(wchar_t * element, int index)
-	{
-		if (index == 1) mControlType = element;
-		if (index == 2) mControlID = utoi(element);
-		if (index == 3) mText = element;
-		//RECT
-		if (index == 4) mLayoutRect.left = utoi(element);
-		if (index == 5) mLayoutRect.top = utoi(element);
-		if (index == 6) mLayoutRect.right = utoi(element);
-		if (index == 7) mLayoutRect.bottom = utoi(element);
-		//RGB 
-		if (index == 8) mForceColor.r = utoi(element);
-		if (index == 9) mForceColor.g = utoi(element);
-		if (index == 10) mForceColor.b = utoi(element);
-		//RGB
-		if (index == 11) mBackColor.r = utoi(element);
-		if (index == 12) mBackColor.g = utoi(element);
-		if (index == 13) mBackColor.b = utoi(element);
-		//RGB
-		if (index == 14) mHoverForceColor.r = utoi(element);
-		if (index == 15) mHoverForceColor.g = utoi(element);
-		if (index == 16) mHoverForceColor.b = utoi(element);
-		//RGB
-		if (index == 17) mHoverBackColor.r = utoi(element);
-		if (index == 18) mHoverBackColor.g = utoi(element);
-		if (index == 19) mHoverBackColor.b = utoi(element);
-		//drag
-		if (index == 20) mCanDrag = NoWarningBool(utoi(element));
-	}
-
 	vector<wstring> MyLayout::sSkipTokens =
 	{
 		L"RECT",L"RGB"
@@ -65,32 +40,46 @@ namespace Layout
 	
 	LayoutParameter MyLayout::ParseLine(wchar_t * lineBuf)
 	{
-		LayoutParameter tempParameter;
-
-		int length = wstring(lineBuf).length(); 
+		vector<wchar_t *> vParams;
+		int length = wstring(lineBuf).length();
 		int index = 1;
-		for(int chPos = 0;chPos<length;chPos++)
+		for (int chPos = 0; chPos < length; chPos++)
 		{
 			int pos;
-			auto token = getNextToken(&lineBuf[chPos],pos);
-			
+			auto token = getNextToken(&lineBuf[chPos], pos);
+
 			if (find_if(sSkipTokens.begin(), sSkipTokens.end(), [&token](wstring skipToken)
 			{
 				if (token == skipToken) return true;
 				return false;
-			}) != sSkipTokens.end()) 
+			}) != sSkipTokens.end())
 			{
 				chPos += pos;
 				SAFE_DELETE(token);
 				continue;
 			}
 
-			tempParameter.pushParameter(token,index);
-			SAFE_DELETE(token);
+			//tempParameter.pushParameter(token,index);
+			vParams.push_back(token);
 			index++;
 			chPos += pos;
 		}
-		return tempParameter;
+
+		shared_ptr<void> SafeDelete(NULL, [&vParams](void *)
+		{
+			for_each(vParams.begin(), vParams.end(), [](wchar_t * pBuf) {
+				SAFE_DELETE(pBuf);
+			});
+		});
+
+		return LayoutParameter(
+			vParams[0], utoi(vParams[1]), vParams[2],
+			MyRect(utoi(vParams[3]), utoi(vParams[4]), utoi(vParams[5]), utoi(vParams[6])),
+			ColorStruct(utoi(vParams[7]), utoi(vParams[8]), utoi(vParams[9])),
+			ColorStruct(utoi(vParams[10]), utoi(vParams[11]), utoi(vParams[12])),
+			ColorStruct(utoi(vParams[13]), utoi(vParams[14]), utoi(vParams[15])),
+			ColorStruct(utoi(vParams[16]), utoi(vParams[17]), utoi(vParams[18])),
+			NoWarningBool(utoi(vParams[19])));
 	}
 
 	wchar_t * MyLayout::getNextToken(wchar_t * startPos,int & pos)

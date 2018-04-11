@@ -41,8 +41,6 @@ namespace Layout
 
 		Control * fit(); 
 
-		void pushParameter(wchar_t * element,int index);
-
 	};
 
 	class MyLayout
