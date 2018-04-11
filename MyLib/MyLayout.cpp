@@ -36,7 +36,7 @@ namespace Layout
 
 	vector<wstring> MyLayout::sSkipTokens =
 	{
-		L"RECT",L"RGB"
+		L"RECT",L"RGB",L"Rect"
 	};
 	
 	LayoutParameter MyLayout::ParseLine(wchar_t * lineBuf)
@@ -155,7 +155,7 @@ namespace Layout
 			if(tempText.empty()) fprintf_s(pfile, "NULL");
 			fprintf_s(pfile, "%s ", WCharToAChar(COCAST(wchar_t *,tempText.c_str())));
 			auto tempRect = pControl->getRect();
-			fprintf_s(pfile, "Rect(%d %d %d %d) ",tempRect.left, tempRect.top,tempRect.right,tempRect.bottom);
+			fprintf_s(pfile, "RECT(%d %d %d %d) ",tempRect.left, tempRect.top,tempRect.right,tempRect.bottom);
 			auto tempColor = pControl->ForceColor();
 			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor),GetGValue(tempColor),GetBValue(tempColor));
 			tempColor = pControl->BackColor();
