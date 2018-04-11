@@ -162,6 +162,16 @@ namespace LIB_CONTROL
 		return mpControl;
 	}
 
+	void Control::SetClassName(wchar_t * className)
+	{
+		mClassName = className;
+	}
+
+	wchar_t * Control::getClassName()
+	{
+		return mClassName;
+	}
+
 	UINT Control::HitTest(Listener * pListener, POINT pt)
 	{
 		return HTCLIENT;

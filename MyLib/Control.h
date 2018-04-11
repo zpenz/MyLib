@@ -73,8 +73,6 @@ namespace LIB_CONTROL
 		void SetID(IDType id) { mID = id; }
 	};
 
-
-
 	class Control: public ImageAdapter,public DragAdapter,public IDAdapter<UINT>
 	{
 
@@ -110,7 +108,13 @@ namespace LIB_CONTROL
 
 		TextLayout * mpTextpLayout;
 
+		wchar_t * mClassName;
+
 	public:
+
+		void SetClassName(wchar_t * className);
+
+		wchar_t * getClassName();
 
 		function<void(void)> mClickFunc;
 

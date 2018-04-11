@@ -21,6 +21,7 @@ namespace Layout
 		IS_RETURN_ERROR(!pObj,nullptr,"fit error! reason: 控件类型有误");
 		if (mText == L"NULL") mText = L""; //NULL 
 
+		pObj->SetClassName(COCAST(wchar_t *,mControlType.c_str()));
 		pObj->SetID(mControlID);
 		pObj->AdjustRect(mLayoutRect);
 		pObj->SetForceColor(mForceColor.getRGB());
@@ -42,7 +43,6 @@ namespace Layout
 	{
 		vector<wchar_t *> vParams;
 		int length = wstring(lineBuf).length();
-		int index = 1;
 		for (int chPos = 0; chPos < length; chPos++)
 		{
 			int pos;
@@ -59,9 +59,7 @@ namespace Layout
 				continue;
 			}
 
-			//tempParameter.pushParameter(token,index);
 			vParams.push_back(token);
-			index++;
 			chPos += pos;
 		}
 
@@ -92,11 +90,9 @@ namespace Layout
 			if (startPos[chPos] == '(' || startPos[chPos] == '('|| startPos[chPos] == ')') { size++; break;}
 			buf[size++] = startPos[chPos];
 		}
-
 		wchar_t * ret = new wchar_t[size+1]();
 		wmemcpy(ret, buf, size);
 		ret[size] = '\0';
-
 		while (startPos[size] == L' ') size++;
 		pos = size - 1;
 
@@ -152,7 +148,7 @@ namespace Layout
 		auto ListenerList = pListener->Obj();
 		for_each(ListenerList.begin(), ListenerList.end(), [&](Control * pControl)
 		{
-			fprintf_s(pfile,"%s ",typeid(pControl).name());
+			fprintf_s(pfile,"%s ", WCharToAChar(pControl->getClassName()));
 			fprintf_s(pfile, "%d ", pControl->getID());
 			auto tempText = pControl->Text();
 			if(tempText.empty()) fprintf_s(pfile, "NULL");
