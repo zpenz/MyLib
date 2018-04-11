@@ -162,12 +162,12 @@ namespace LIB_CONTROL
 		return mpControl;
 	}
 
-	void Control::SetClassName(wchar_t * className)
+	void Control::SetClassName(wstring className)
 	{
 		mClassName = className;
 	}
 
-	wchar_t * Control::getClassName()
+	wstring Control::getClassName()
 	{
 		return mClassName;
 	}

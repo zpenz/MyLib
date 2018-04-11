@@ -148,7 +148,8 @@ namespace Layout
 		auto ListenerList = pListener->Obj();
 		for_each(ListenerList.begin(), ListenerList.end(), [&](Control * pControl)
 		{
-			fprintf_s(pfile,"%s ", WCharToAChar(pControl->getClassName()));
+			auto name = WCharToAChar(COCAST(wchar_t *,pControl->getClassName().c_str()));
+			fprintf_s(pfile,"%s ",name);
 			fprintf_s(pfile, "%d ", pControl->getID());
 			auto tempText = pControl->Text();
 			if(tempText.empty()) fprintf_s(pfile, "NULL");

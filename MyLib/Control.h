@@ -108,13 +108,13 @@ namespace LIB_CONTROL
 
 		TextLayout * mpTextpLayout;
 
-		wchar_t * mClassName;
+		wstring mClassName;
 
 	public:
 
-		void SetClassName(wchar_t * className);
+		void SetClassName(wstring className);
 
-		wchar_t * getClassName();
+		wstring getClassName();
 
 		function<void(void)> mClickFunc;
 
