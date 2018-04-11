@@ -16,6 +16,8 @@ namespace Layout
 	{
 		
 	public:
+		LayoutParameter(wstring ControlType, UINT ID,wstring text,RECT layoutRect, ColorStruct fcolor, ColorStruct bcolor,
+			ColorStruct hfcolor, ColorStruct hbcolor, bool candrag);
 
 		LayoutParameter() {}
 

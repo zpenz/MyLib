@@ -28,7 +28,6 @@ namespace Layout
 		return pObj;
 	}
 
-
 	void LayoutParameter::pushParameter(wchar_t * element, int index)
 	{
 		if (index == 1) mControlType = element;
@@ -67,6 +66,7 @@ namespace Layout
 	LayoutParameter MyLayout::ParseLine(wchar_t * lineBuf)
 	{
 		LayoutParameter tempParameter;
+
 		int length = wstring(lineBuf).length(); 
 		int index = 1;
 		for(int chPos = 0;chPos<length;chPos++)

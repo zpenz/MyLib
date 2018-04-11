@@ -98,11 +98,14 @@ namespace ARROW
 	};
 }
 
-typedef struct 
+typedef struct ColorStruct
 {
 	BYTE r, g, b;
 
 	COLORREF getRGB() { return RGB(r,g,b); }
+
+	ColorStruct(BYTE rc, BYTE gc, BYTE bc) :r(rc),g(gc),b(bc) {}
+	ColorStruct() {}
 }ColorStruct;
 
 void ErrorMessage(const char * _error);
