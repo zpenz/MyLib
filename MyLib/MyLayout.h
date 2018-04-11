@@ -14,6 +14,7 @@ namespace Layout
 
 	class LayoutParameter
 	{
+		
 	public:
 
 		LayoutParameter() {}
@@ -39,11 +40,14 @@ namespace Layout
 		Control * fit(); 
 
 		void pushParameter(wchar_t * element,int index);
+
 	};
 
 	class MyLayout
 	{
 	public:
+
+		static vector<wstring> sSkipTokens;
 
 		SINGLE_INSTANCE(MyLayout)
 

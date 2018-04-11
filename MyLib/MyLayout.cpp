@@ -31,35 +31,39 @@ namespace Layout
 
 	void LayoutParameter::pushParameter(wchar_t * element, int index)
 	{
-		
 		if (index == 1) mControlType = element;
 		if (index == 2) mControlID = utoi(element);
 		if (index == 3) mText = element;
 		//RECT
-		if (index == 5) mLayoutRect.left = utoi(element);
-		if (index == 6) mLayoutRect.top = utoi(element);
-		if (index == 7) mLayoutRect.right = utoi(element);
-		if (index == 8) mLayoutRect.bottom = utoi(element);
+		if (index == 4) mLayoutRect.left = utoi(element);
+		if (index == 5) mLayoutRect.top = utoi(element);
+		if (index == 6) mLayoutRect.right = utoi(element);
+		if (index == 7) mLayoutRect.bottom = utoi(element);
 		//RGB 
-		if (index == 10) mForceColor.r = utoi(element);
-		if (index == 11) mForceColor.g = utoi(element);
-		if (index == 12) mForceColor.b = utoi(element);
+		if (index == 8) mForceColor.r = utoi(element);
+		if (index == 9) mForceColor.g = utoi(element);
+		if (index == 10) mForceColor.b = utoi(element);
 		//RGB
-		if (index == 14) mBackColor.r = utoi(element);
-		if (index == 15) mBackColor.g = utoi(element);
-		if (index == 16) mBackColor.b = utoi(element);
+		if (index == 11) mBackColor.r = utoi(element);
+		if (index == 12) mBackColor.g = utoi(element);
+		if (index == 13) mBackColor.b = utoi(element);
 		//RGB
-		if (index == 18) mHoverForceColor.r = utoi(element);
-		if (index == 19) mHoverForceColor.g = utoi(element);
-		if (index == 20) mHoverForceColor.b = utoi(element);
+		if (index == 14) mHoverForceColor.r = utoi(element);
+		if (index == 15) mHoverForceColor.g = utoi(element);
+		if (index == 16) mHoverForceColor.b = utoi(element);
 		//RGB
-		if (index == 22) mHoverBackColor.r = utoi(element);
-		if (index == 23) mHoverBackColor.g = utoi(element);
-		if (index == 24) mHoverBackColor.b = utoi(element);
+		if (index == 17) mHoverBackColor.r = utoi(element);
+		if (index == 18) mHoverBackColor.g = utoi(element);
+		if (index == 19) mHoverBackColor.b = utoi(element);
 		//drag
-		if (index == 25) mCanDrag = NoWarningBool(utoi(element));
+		if (index == 20) mCanDrag = NoWarningBool(utoi(element));
 	}
 
+	vector<wstring> MyLayout::sSkipTokens =
+	{
+		L"RECT",L"RGB"
+	};
+	
 	LayoutParameter MyLayout::ParseLine(wchar_t * lineBuf)
 	{
 		LayoutParameter tempParameter;
@@ -69,12 +73,23 @@ namespace Layout
 		{
 			int pos;
 			auto token = getNextToken(&lineBuf[chPos],pos);
+			
+			if (find_if(sSkipTokens.begin(), sSkipTokens.end(), [&token](wstring skipToken)
+			{
+				if (token == skipToken) return true;
+				return false;
+			}) != sSkipTokens.end()) 
+			{
+				chPos += pos;
+				SAFE_DELETE(token);
+				continue;
+			}
+
 			tempParameter.pushParameter(token,index);
-			SAFE_DELETE(token);// 释放getNextToken分配的内存 
+			SAFE_DELETE(token);
 			index++;
 			chPos += pos;
 		}
-
 		return tempParameter;
 	}
 
@@ -85,7 +100,7 @@ namespace Layout
 		for (int chPos = 0; chPos < STCAST(int,wcslen(startPos)); chPos++)
 		{
 			if (startPos[chPos] == L' ' ) break;
-			if (startPos[chPos] == '(' || startPos[chPos] == '(') { size++; break;}
+			if (startPos[chPos] == '(' || startPos[chPos] == '('|| startPos[chPos] == ')') { size++; break;}
 			buf[size++] = startPos[chPos];
 		}
 
