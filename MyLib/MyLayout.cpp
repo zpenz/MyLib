@@ -8,7 +8,7 @@ namespace Layout
 	using namespace Conver;
 
 	LayoutParameter::LayoutParameter(wstring ControlType, UINT ID, wstring text, RECT layoutRect, ColorStruct fcolor, ColorStruct bcolor, ColorStruct hfcolor, ColorStruct hbcolor, bool candrag):
-		mControlType(ControlType),mControlID(ID),mText(text),mLayoutRect(layoutRect),mForceColor(fcolor),mBackColor(bcolor),mHoverForceColor(hfcolor),mHoverBackColor(hbcolor)
+		mControlType(ControlType),mControlID(ID),mText(text),mLayoutRect(layoutRect),mForceColor(fcolor),mBackColor(bcolor),mHoverForceColor(hfcolor),mHoverBackColor(hbcolor),mCanDrag(candrag)
 	{
 	}
 
