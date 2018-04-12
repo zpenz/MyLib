@@ -19,7 +19,7 @@ namespace LIB_CONTROL
 		mCanDrag = DragState;
 	}
 
-	DragAdapter::DragAdapter():mCanDrag(false)
+	DragAdapter::DragAdapter():mCanDrag(false),mbDraging(false)
 	{
 	}
 
@@ -233,6 +233,7 @@ namespace LIB_CONTROL
 	void Control::InputChar(Listener * pListener, wchar_t cUnicode)
 	{
 		if (!mOwnCaret) return;
+		if (mReadOnly) return; //Ö»¶Á
 		if (!mpTextpLayout) return;
 		if (!mFocusCaret) return;
 
@@ -407,12 +408,10 @@ namespace LIB_CONTROL
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
 		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr),mBoardColor(RGB(255,255,255))
 	{
-		mbDraging = false;
 	}
 
-	Control::Control() :Control(L"")
+	Control::Control():Control(L"")
 	{
-		mbDraging = false;
 	}
 
 	Control::Control(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,rc)
@@ -422,7 +421,6 @@ namespace LIB_CONTROL
 		SetHoverBackColor(hoverBackColor);
 		SetHoverForceColor(hoverForceColor);
 		mBDownInternal = false;
-		mbDraging = false;
 	}
 
 	void ButtonInterface::SetButtonDownInternal(bool isDownInternal)
@@ -551,7 +549,8 @@ namespace LIB_CONTROL
 	}
 
 	TitleBar::TitleBar(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text, rc, forceColor, backColor,
-		hoverForceColor, hoverBackColor) {
+		hoverForceColor, hoverBackColor) 
+	{
 	}
 
 	TitleBar::~TitleBar()
@@ -782,45 +781,38 @@ namespace LIB_CONTROL
 
 
 	////////////////////////////////////////////////////////////////////////// EditBox
-	EditBox::EditBox(RECT rc,string defaultText)
+	EditBoxInterface::EditBoxInterface(RECT rc,string defaultText)
 	{
 		mForceColor = mHoverForceColor = RGB(255,255,255);
 		mBackColor = mBackColor = RGB(116,116,119);
 	}
 
-	EditBox::EditBox():Control()
+	EditBoxInterface::EditBoxInterface():Control()
 	{
 		mOwnCaret = true;
 	}
 
-	EditBox::EditBox(wstring defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor) :Control(defaultText,
+	EditBoxInterface::EditBoxInterface(wstring defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor) :Control(defaultText,
 		rc, forceColor, backColor, hoverForceColor, hoverBackColor) {
 		mOwnCaret = true; //must have caret
 	}
 
-	void EditBox::ChangeFrontSize(float newSize)
-	{
-		mFrontSize = newSize;
-	}
-
-	void EditBox::ChangeFrontName(wstring newFrontName)
+	void EditBoxInterface::ChangeFrontName(wstring newFrontName)
 	{
 		mFrontName = newFrontName;
 	}
 
-	void EditBox::Draw(Listener * pListener)
+	void EditBoxInterface::Draw(Listener * pListener)
 	{
 		DrawManager.DrawRectangle(mRect,COLOREX(mBackColor),true);
 		DrawManager.DrawRectangle(mRect,mBoardColor, false); //draw board
 		DrawManager.DrawTextW(mText, mRect, mForceColor, STCAST(float, RECTHEIGHT(mRect) - ALIGN_UPDPWNDISTANCE), &mpTextpLayout,ALIGN_TEXT_LEFT,ALIGN_PARAGRAPH_CENTER);
 	}
 	
-	UINT EditBox::HitTest(Listener * pListener, POINT pt)
+	UINT EditBoxInterface::HitTest(Listener * pListener, POINT pt)
 	{
 		return HTCLIENT;
 	}
-
-
 
 	////////////////////////////////////////////////////////////////////////// ComposeControl
 	bool ComposeControl::Attach(Listener * pListener)
@@ -879,5 +871,28 @@ namespace LIB_CONTROL
 	}
 
 
+
+	bool ReadAble::isReadOnly()
+	{
+		return mReadOnly;
+	}
+
+	void ReadAble::setReadAccess(bool readAccess)
+	{
+		mReadOnly = readAccess;
+	}
+
+	ReadAble::ReadAble():mReadOnly(true)
+	{
+	}
+
+	ReadOnlyEditBox::ReadOnlyEditBox():EditBoxInterface()
+	{
+	}
+
+	EditBox::EditBox() : EditBoxInterface()
+	{
+		mReadOnly = false;
+	}
 
 }

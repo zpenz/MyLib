@@ -73,7 +73,20 @@ namespace LIB_CONTROL
 		void SetID(IDType id) { mID = id; }
 	};
 
-	class Control: public ImageAdapter,public DragAdapter,public IDAdapter<UINT>
+	class ReadAble
+	{
+	protected:
+		bool mReadOnly;
+	public:
+		bool isReadOnly();
+		
+		void setReadAccess(bool readAccess);
+
+		ReadAble();
+	};
+
+	class Control: public ImageAdapter,public DragAdapter,
+		public ReadAble,public IDAdapter<UINT>
 	{
 
 	protected:
@@ -348,8 +361,6 @@ namespace LIB_CONTROL
 
 		ImageButton(IPIC * pBitmap, RECT rImgRect);
 
-		void SetText(wstring text);
-
 		~ImageButton();
 	};
 
@@ -375,17 +386,12 @@ namespace LIB_CONTROL
 		~TitleBar();
 	};
 
-	///<EditBox>±à¼­¿ò</EditBox>
-	class EditBox : public Control
-		, public REFLECT<EditBox>
+	///<EditBoxInterface>±à¼­¿ò½Ó¿Ú</EditBoxInterface>
+	class EditBoxInterface : public Control
 	{
-		float mFrontSize;
-
 		wstring mFrontName;
 
 	public:
-
-		void ChangeFrontSize(float newSize);
 
 		void ChangeFrontName(wstring newFrontName);
 
@@ -393,11 +399,24 @@ namespace LIB_CONTROL
 
 		UINT HitTest(Listener * pListener, POINT pt) override;
 
+		EditBoxInterface();
+
+		EditBoxInterface(RECT rc, string defaultText = "");
+
+		EditBoxInterface(wstring defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+	};
+
+	class EditBox :public EditBoxInterface,
+		public REFLECT<EditBox> {
+	public:
 		EditBox();
+	};
 
-		EditBox(RECT rc, string defaultText = "");
-
-		EditBox(wstring defaultText, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
+	class ReadOnlyEditBox : public EditBoxInterface,
+		public REFLECT<ReadOnlyEditBox>
+	{
+	public:
+		ReadOnlyEditBox();
 	};
 
 	///<LabelBox>±êÇ©</LabelBox>
