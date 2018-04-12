@@ -232,36 +232,56 @@ namespace LIB_CONTROL
 
 	void Control::InputChar(Listener * pListener, wchar_t cUnicode)
 	{
+		//输入字符事件处理
 		if (!mOwnCaret) return;
 		if (mReadOnly) return; //只读
 		if (!mpTextpLayout) return;
 		if (!mFocusCaret) return;
 
+		auto index = CaretManager.getIndex();
+		if (mText.empty()) return;
+		if (index < 0 || index > mText.size() - 1) return;
 		if (cUnicode == '\b') 
 		{
-			if (mText.size() <= 0) return;
-			auto index = CaretManager.getIndex();
-			if (index < 0 || index > mText.size()-1) return;	
 			mText.erase(index,1); 	
-			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), false);
+			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, false);
 			CaretManager.DecIndex();
 		}
 		else if (cUnicode == VK_LEFT)
-		{
-			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), false);
+		{   
+			if (index == 0) {
+				CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, false);
+				CaretManager.isTrial = false;
+				return;
+			}
+			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, false);
 			CaretManager.DecIndex();
+			CaretManager.isTrial = false;
 		}
 		else if (cUnicode == VK_RIGHT)
 		{
-			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), true);
+			
+			if (index == mText.size()-1) {
+				CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, true);
+				CaretManager.isTrial = true;
+				return;
+			}
+			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, true);
 			CaretManager.IncIndex();
+			CaretManager.isTrial = true;
 		}
 		else
 		{
+			auto posInsert = index;
+			if (CaretManager.isTrial) posInsert = index + 1;
+			//添加字符
 			if (mText.empty()) mText = wstring(&cUnicode);
-			else mText = mText.insert(CaretManager.getIndex() + 1, wstring(&cUnicode));
+			else
+			{
+				mText = mText.insert(posInsert, wstring(&cUnicode));
+			}
 			Draw(pListener);
-			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex() + 1, true);
+			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, posInsert, true);
 			CaretManager.IncIndex();
 		}
 	}

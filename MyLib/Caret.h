@@ -7,6 +7,7 @@
 
 class MyCaret
 {
+
 protected:
 
 	POINT mCaretPos;
@@ -46,6 +47,8 @@ public:
 	UINT height();
 	
 	bool attrach(HWND hWnd); //must call first
+
+	bool isTrial; //插入符号在当前的符号的尾部
 
 	POINT PointOfDraw();
 
