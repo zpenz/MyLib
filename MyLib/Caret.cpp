@@ -34,6 +34,7 @@ void MyCaret::IncIndex()
 void MyCaret::DecIndex()
 {
 	mInsertPos--;
+	if (mInsertPos < 0) mInsertPos = 0;
 }
 
 bool MyCaret::IsCaretExist()

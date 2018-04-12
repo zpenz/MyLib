@@ -263,7 +263,7 @@ namespace LIB_CONTROL
 			if (tempPoint == CaretPosition)
 			{
 				CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), false);
-				CaretManager.DecIndex(); // 让它以为是后置的
+				CaretManager.DecIndex(); // "后置"
 			}
 		}
 		else if (cUnicode == VK_RIGHT)
@@ -291,8 +291,8 @@ namespace LIB_CONTROL
 				mText = mText.insert(posInsert, wstring(&cUnicode));
 			}
 			Draw(pListener);
-			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, posInsert, true);
 			CaretManager.IncIndex();
+			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, posInsert, true);
 		}
 	}
 
