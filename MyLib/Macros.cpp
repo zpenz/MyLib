@@ -219,7 +219,13 @@ namespace Conver
 
 	int utoi(wchar_t * Wchar)
 	{
-		return atoi(WCharToAChar(Wchar));;
+		return atoi(WCharToAChar(Wchar));
+	}
+
+	bool utob(wchar_t * Wchar)
+	{
+		if (atoi(WCharToAChar(Wchar)) == 0) return false;
+		return true;
 	}
 
 	MyRect::MyRect(INT left, INT top, INT right, INT bottom):mLeft(left),mRight(right),

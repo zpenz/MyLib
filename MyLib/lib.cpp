@@ -289,6 +289,10 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 {
 	static HDC hDC;
 	static BaseWindow * window;
+	static vector<UINT> vImportKeyMessage = 
+	{
+		VK_LEFT,VK_RIGHT,VK_UP,VK_DOWN
+	};
 
 	switch (uMsg)
 	{
@@ -325,7 +329,10 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_KEYUP:
 			break;
 		case WM_KEYDOWN:
-			break;
+			if (find_if(vImportKeyMessage.begin(),vImportKeyMessage.end(),[wParam](UINT & uint){
+				if (wParam == uint) return true;
+				return false;
+			}) == vImportKeyMessage.end()) break;
 		case WM_CHAR:
 		case WM_UNICHAR:
 		case WM_IME_CHAR:

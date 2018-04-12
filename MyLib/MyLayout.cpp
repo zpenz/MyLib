@@ -77,7 +77,7 @@ namespace Layout
 			ColorStruct(utoi(vParams[10]), utoi(vParams[11]), utoi(vParams[12])),
 			ColorStruct(utoi(vParams[13]), utoi(vParams[14]), utoi(vParams[15])),
 			ColorStruct(utoi(vParams[16]), utoi(vParams[17]), utoi(vParams[18])),
-			utoi(vParams[19]));
+			utob(vParams[19]));
 	}
 
 	wchar_t * MyLayout::getNextToken(wchar_t * startPos,int & pos)

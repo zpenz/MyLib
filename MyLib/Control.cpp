@@ -246,6 +246,16 @@ namespace LIB_CONTROL
 			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), false);
 			CaretManager.DecIndex();
 		}
+		else if (cUnicode == VK_LEFT)
+		{
+			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), false);
+			CaretManager.DecIndex();
+		}
+		else if (cUnicode == VK_RIGHT)
+		{
+			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), true);
+			CaretManager.IncIndex();
+		}
 		else
 		{
 			if (mText.empty()) mText = wstring(&cUnicode);
@@ -512,7 +522,7 @@ namespace LIB_CONTROL
 	{
 
 	}
-
+////////////////////////////////////////////////////////////////////////// ButtonInterface
 	void ButtonInterface::SetButtonDownInternal(bool isDownInternal)
 	{
 		mBDownInternal = isDownInternal;

@@ -189,6 +189,8 @@ namespace Conver
 
 	int utoi(wchar_t * Wchar);
 
+	bool utob(wchar_t * Wchar);
+
 	///<d2dConver>some d2d conver</d2dConver>
 	D2D1_POINT_2F & PointToD2DPointF(POINT & pt);
 
