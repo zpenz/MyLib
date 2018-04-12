@@ -265,6 +265,11 @@ namespace Conver
 		return tempPoint;
 	}
 
+	bool Point::operator==(Point pt)
+	{
+		return pt.x == x && pt.y == y;
+	}
+
 	Point::operator POINT()
 	{
 		POINT pt = {x,y};

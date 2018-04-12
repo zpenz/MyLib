@@ -242,6 +242,8 @@ namespace Conver
 
 		Point operator= (POINT & pt);
 
+		bool operator==(Point pt);
+
 		operator POINT();
 
 		Point operator-(POINT pt);
