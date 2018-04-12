@@ -413,22 +413,26 @@ namespace LIB_CONTROL
 	};
 
 	class ReadOnlyEditBox : public EditBoxInterface,
-		public REFLECT<ReadOnlyEditBox>
-	{
+		public REFLECT<ReadOnlyEditBox>{
 	public:
 		ReadOnlyEditBox();
 	};
 
-	///<LabelBox>标签</LabelBox>
-	class LabelBox :public Control
-		, public REFLECT<LabelBox>
+	///<LabelBoxInterface>标签框接口</LabelBoxInterface>
+	class LabelBoxInterface :public Control
 	{
 	public:
-		LabelBox();
+		LabelBoxInterface();
 
 		void Draw(Listener * pListener) override;
 
 		UINT HitTest(Listener * pListener, POINT pt) override;
+	};
+
+	class LabelBox : public LabelBoxInterface,
+		public REFLECT<LabelBox>{
+	public:
+		LabelBox();
 	};
 
 	///<ComposeControl>组合控件</ComposeControl>

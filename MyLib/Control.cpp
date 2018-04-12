@@ -241,17 +241,18 @@ namespace LIB_CONTROL
 		{
 			if (mText.size() <= 0) return;
 			auto index = CaretManager.getIndex();
-			mText.erase(index,1); 
+			if (index < 0 || index > mText.size()-1) return;	
+			mText.erase(index,1); 	
 			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), false);
 			CaretManager.DecIndex();
 		}
 		else
 		{
-			if (mText.size() == 0) mText = wstring(&cUnicode);
+			if (mText.empty()) mText = wstring(&cUnicode);
 			else mText = mText.insert(CaretManager.getIndex() + 1, wstring(&cUnicode));
-			Draw(pListener);//must draw to find next pos
-			CaretManager.IncIndex();
+			Draw(pListener);
 			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex() + 1, true);
+			CaretManager.IncIndex();
 		}
 	}
 
@@ -410,7 +411,7 @@ namespace LIB_CONTROL
 	{
 	}
 
-	Control::Control():Control(L"")
+	Control::Control():Control(L"",nullRect)
 	{
 	}
 
@@ -423,53 +424,7 @@ namespace LIB_CONTROL
 		mBDownInternal = false;
 	}
 
-	void ButtonInterface::SetButtonDownInternal(bool isDownInternal)
-	{
-		mBDownInternal = isDownInternal;
-	}
 
-	void ButtonInterface::SetBoardColor(COLORREF cBoardColor)
-	{
-		mBoardColor = cBoardColor;
-	}
-
-	void ButtonInterface::NeedDrawBoard(bool bDrawBoard)
-	{ 
-		mBoardColor = bDrawBoard;
-	}
-
-	void ButtonInterface::Draw(Listener * pListener)
-	{
-		if (!mMouseInternal)
-		{
-			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), &mpTextpLayout, true);
-			IS_ERROR_EXIT(!ret, "Draw Button failed!");
-		}
-		else
-		{
-			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
-			IS_ERROR_EXIT(!ret, "Draw  honvered Button failed!");
-		}
-	}
-
-	UINT ButtonInterface::HitTest(Listener * pListener,POINT pt)
-	{
-		return HTCLIENT;
-	}
-
-	ButtonInterface::ButtonInterface() :ButtonInterface(L"",nullRect)
-	{
-
-	}
-
-	ButtonInterface::ButtonInterface(wstring text, RECT rc):Control(text,rc),mBoardColor(mBackColor), mDrawBoard(false)
-	{
-	}
-
-	ButtonInterface::ButtonInterface(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,
-		rc,forceColor,backColor,hoverForceColor,hoverBackColor), mBoardColor(mBackColor), mDrawBoard(false)
-	{
-	}
 
 	bool ImageAdapter::SetImage(IPIC * img)
 	{
@@ -530,7 +485,7 @@ namespace LIB_CONTROL
 		AdjustRect(MyRect(0, 0, RECTWIDTH(newRect)-3*titleBarHeight, titleBarHeight));
 	}
 
-	TitleBar::TitleBar():Control(L"", nullRect)
+	TitleBar::TitleBar()
 	{
 		SetID(CONTROL_TYPE_TITLEBAR);
 		//test sprite
@@ -558,12 +513,61 @@ namespace LIB_CONTROL
 
 	}
 
-	Button::Button():ButtonInterface()
+	void ButtonInterface::SetButtonDownInternal(bool isDownInternal)
 	{
-		SetID(CONTROL_TYPE_DEFAULT_BUTTON);
+		mBDownInternal = isDownInternal;
 	}
 
-	CloseButton::CloseButton():ButtonInterface()
+	void ButtonInterface::SetBoardColor(COLORREF cBoardColor)
+	{
+		mBoardColor = cBoardColor;
+	}
+
+	void ButtonInterface::NeedDrawBoard(bool bDrawBoard)
+	{
+		mBoardColor = bDrawBoard;
+	}
+
+	void ButtonInterface::Draw(Listener * pListener)
+	{
+		if (!mMouseInternal)
+		{
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), &mpTextpLayout, true);
+			IS_ERROR_EXIT(!ret, "Draw Button failed!");
+		}
+		else
+		{
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
+			IS_ERROR_EXIT(!ret, "Draw  honvered Button failed!");
+		}
+	}
+
+	UINT ButtonInterface::HitTest(Listener * pListener, POINT pt)
+	{
+		return HTCLIENT;
+	}
+
+	ButtonInterface::ButtonInterface()
+	{
+		mDrawBoard = false;
+	}
+
+	ButtonInterface::ButtonInterface(wstring text, RECT rc) :Control(text, rc), mBoardColor(mBackColor), mDrawBoard(false)
+	{
+	}
+
+	ButtonInterface::ButtonInterface(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor) : Control(text,
+		rc, forceColor, backColor, hoverForceColor, hoverBackColor), mBoardColor(mBackColor), mDrawBoard(false)
+	{
+	}
+
+	Button::Button()
+	{
+		SetID(CONTROL_TYPE_DEFAULT_BUTTON);
+		
+	}
+
+	CloseButton::CloseButton()
 	{
 		SetID(CONTROL_TYPE_CLOSE_BUTTON);
 	}
@@ -611,7 +615,7 @@ namespace LIB_CONTROL
 		AdjustRect(MyRect(RECTWIDTH(newRect)-btnHeight,0, RECTWIDTH(newRect), btnHeight));
 	}
 
-	MiniButton::MiniButton():ButtonInterface()
+	MiniButton::MiniButton()
 	{
 		SetID(CONTROL_TYPE_MINI_BUTTON);
 	}
@@ -787,7 +791,7 @@ namespace LIB_CONTROL
 		mBackColor = mBackColor = RGB(116,116,119);
 	}
 
-	EditBoxInterface::EditBoxInterface():Control()
+	EditBoxInterface::EditBoxInterface()
 	{
 		mOwnCaret = true;
 	}
@@ -854,23 +858,21 @@ namespace LIB_CONTROL
 	}
 
 
-////////////////////////////////////////////////////////////////////////// LableBox
-	LabelBox::LabelBox():Control(L"")
+////////////////////////////////////////////////////////////////////////// LabelBoxInterface
+	LabelBoxInterface::LabelBoxInterface()
 	{
 	}
 
-	void LabelBox::Draw(Listener * pListener)
+	void LabelBoxInterface::Draw(Listener * pListener)
 	{
 		Control::Draw(pListener);
 		DrawManager.DrawTextW(mText, mRect, mForceColor, STCAST(float,RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE),&mpTextpLayout);
 	}
 
-	UINT LabelBox::HitTest(Listener * pListener, POINT pt)
+	UINT LabelBoxInterface::HitTest(Listener * pListener, POINT pt)
 	{
 		return HTCLIENT;
 	}
-
-
 
 	bool ReadAble::isReadOnly()
 	{
@@ -886,13 +888,13 @@ namespace LIB_CONTROL
 	{
 	}
 
-	ReadOnlyEditBox::ReadOnlyEditBox():EditBoxInterface()
-	{
-	}
+	ReadOnlyEditBox::ReadOnlyEditBox(){}
 
-	EditBox::EditBox() : EditBoxInterface()
+	EditBox::EditBox()
 	{
 		mReadOnly = false;
 	}
+
+	LabelBox::LabelBox(){}
 
 }
