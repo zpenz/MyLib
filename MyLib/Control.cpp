@@ -209,6 +209,7 @@ namespace LIB_CONTROL
 		CaretManager.ShowCaret();
 		IS_RETURN_ERROR(!mpTextpLayout,0,"Control::LButtonDown mpTextLayout null...");
 		CaretManager.AdjustPos(mRect,mpTextpLayout,&pt);
+		CaretManager.isTrial = true;
 		return 0; 
 	}
 
@@ -239,6 +240,9 @@ namespace LIB_CONTROL
 		if (!mFocusCaret) return;
 
 		auto index = CaretManager.getIndex();
+		auto CaretPosition = CaretManager.pos();
+		Point tempPoint; 
+
 		if (mText.empty()) return;
 		if (index < 0 || index > mText.size() - 1) return;
 		if (cUnicode == '\b') 
@@ -246,6 +250,8 @@ namespace LIB_CONTROL
 			mText.erase(index,1); 	
 			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, false);
 			CaretManager.DecIndex();
+
+			CaretManager.isTrial = true;
 		}
 		else if (cUnicode == VK_LEFT)
 		{   
@@ -256,6 +262,15 @@ namespace LIB_CONTROL
 			}
 			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, false);
 			CaretManager.DecIndex();
+			
+			//坐标没变 在调整一次
+			tempPoint = CaretManager.pos();
+			if (tempPoint.x == CaretPosition.x && tempPoint.y == CaretPosition.y)
+			{
+				CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), false);
+				CaretManager.DecIndex();
+			}
+				
 			CaretManager.isTrial = false;
 		}
 		else if (cUnicode == VK_RIGHT)
@@ -268,6 +283,14 @@ namespace LIB_CONTROL
 			}
 			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, true);
 			CaretManager.IncIndex();
+
+			//坐标没变 在调整一次
+			tempPoint = CaretManager.pos();
+			if (tempPoint.x == CaretPosition.x && tempPoint.y == CaretPosition.y)
+			{
+				CaretManager.SetCaretPosEx(mRect, mpTextpLayout, CaretManager.getIndex(), true);
+				CaretManager.IncIndex();
+			}
 			CaretManager.isTrial = true;
 		}
 		else
@@ -283,6 +306,7 @@ namespace LIB_CONTROL
 			Draw(pListener);
 			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, posInsert, true);
 			CaretManager.IncIndex();
+			CaretManager.isTrial = true;
 		}
 	}
 
