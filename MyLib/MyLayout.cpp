@@ -156,31 +156,38 @@ namespace Layout
 		auto ListenerList = pListener->Obj();
 		for_each(ListenerList.begin(), ListenerList.end(), [&](Control * pControl)
 		{
-			auto name = WCharToAChar(COCAST(wchar_t *, pControl->getClassName().c_str()));
-			fprintf_s(pfile, "%s ", name);
-			fprintf_s(pfile, "%d ", pControl->getID());
-			auto tempText = pControl->Text();
-			if (tempText.empty()) fprintf_s(pfile, "NULL");
-			auto text = COCAST(wchar_t *, tempText.c_str());
-			_wsetlocale(0, L"chs");
-			fprintf_s(pfile, "%ls ", text);
-			auto tempRect = pControl->getRect();
-			fprintf_s(pfile, "RECT(%d %d %d %d) ", tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
-			auto tempColor = pControl->ForceColor();
-			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
-			tempColor = pControl->BackColor();
-			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
-			tempColor = pControl->HoverForceColor();
-			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
-			tempColor = pControl->HoverBackColor();
-			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
-			fprintf_s(pfile, "%d ", pControl->CanDrag()?1:0);
-			fprintf_s(pfile, "%d ", pControl->HaveBoard()?1:0);
-			tempColor = pControl->getBoardColor();
-			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
-			fprintf_s(pfile, "%f\n", pControl->getBoardSize());
-
+			SaveObject(pfile, pControl);
 		});
+		return true;
+	}
+
+	bool MyLayout::SaveObject(FILE  * pfile, Control * pControl)
+	{
+		IS_RETURN_ERROR(!pfile, false, "SaveObject::file null");
+		IS_RETURN_ERROR(!pControl, false, "SaveObject::pControl null");
+		auto name = WCharToAChar(COCAST(wchar_t *, pControl->getClassName().c_str()));
+		fprintf_s(pfile, "%s ", name);
+		fprintf_s(pfile, "%d ", pControl->getID());
+		auto tempText = pControl->Text();
+		if (tempText.empty()) fprintf_s(pfile, "NULL");
+		auto text = COCAST(wchar_t *, tempText.c_str());
+		_wsetlocale(0, L"chs");
+		fprintf_s(pfile, "%ls ", text);
+		auto tempRect = pControl->getRect();
+		fprintf_s(pfile, "RECT(%d %d %d %d) ", tempRect.left, tempRect.top, tempRect.right, tempRect.bottom);
+		auto tempColor = pControl->ForceColor();
+		fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
+		tempColor = pControl->BackColor();
+		fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
+		tempColor = pControl->HoverForceColor();
+		fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
+		tempColor = pControl->HoverBackColor();
+		fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
+		fprintf_s(pfile, "%d ", pControl->CanDrag() ? 1 : 0);
+		fprintf_s(pfile, "%d ", pControl->HaveBoard() ? 1 : 0);
+		tempColor = pControl->getBoardColor();
+		fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
+		fprintf_s(pfile, "%f\n", pControl->getBoardSize());
 		return true;
 	}
 

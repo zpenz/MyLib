@@ -442,6 +442,31 @@ namespace LIB_CONTROL
 		LabelBox();
 	};
 
+	class DrawAbleLabel : public LabelBoxInterface,
+		public REFLECT<DrawAbleLabel>
+	{
+	public:
+		DrawAbleLabel();
+
+		~DrawAbleLabel();
+
+		wstring  mStateType;
+
+		POINT mStartDrawPoint;
+
+		POINT mEndDrawPoint;
+
+		list<Control *> mDrawSet;
+
+		void Draw(Listener * pListener) override;
+
+		UINT LButtonDown(Listener * pListener, POINT pt) override;
+
+		UINT LButtonUp(Listener * pListener, POINT pt) override;
+
+		void MouseMove(Listener * pListener, POINT pt) override;
+	};
+
 	class ForceLabel : public LabelBoxInterface,
 		public REFLECT<ForceLabel>
 	{

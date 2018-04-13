@@ -933,6 +933,44 @@ namespace LIB_CONTROL
 
 	LabelBox::LabelBox(){}
 
+	DrawAbleLabel::DrawAbleLabel()
+	{
+	}
+
+	DrawAbleLabel::~DrawAbleLabel()
+	{
+		SAFE_DELETE_ALL(mDrawSet);
+	}
+
+	void DrawAbleLabel::Draw(Listener * pListener)
+	{
+		__super::Draw(pListener);
+		if (mStateType.empty()) return;
+	}
+
+	UINT DrawAbleLabel::LButtonDown(Listener * pListener, POINT pt)
+	{
+		if (mStateType.empty()) return 0;
+		mStartDrawPoint = pt;
+		return 0;
+	}
+
+	UINT DrawAbleLabel::LButtonUp(Listener * pListener, POINT pt)
+	{
+		mStateType.clear();
+		mEndDrawPoint = pt;
+		Control * pControl = nullptr;
+		//pControl = MyFactory.create(WCharToAChar(COCAST(wchar_t *, mStateType.c_str())));;
+		//pListener->attach(pControl);
+		return 0;
+	}
+
+	void DrawAbleLabel::MouseMove(Listener * pListener, POINT pt)
+	{
+		if (mStateType.empty()) return;
+		mEndDrawPoint = pt;
+	}
+
 	ForceLabel::ForceLabel() {}
 
 	void ForceLabel::Draw(Listener * pListener)

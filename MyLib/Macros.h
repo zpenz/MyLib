@@ -151,6 +151,13 @@ void ErrorMessage(const char * _error);
 		{\
 			ErrorMessage(sErrorMessage);\
 		}
+
+#define SAFE_DELETE_ALL(elements)\
+	    for(auto it = elements.begin();it!=elements.end();it++)\
+		{\
+		SAFE_DELETE(*it);\
+		}
+
 		
 namespace Conver
 {
