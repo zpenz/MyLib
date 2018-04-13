@@ -145,7 +145,7 @@ namespace LIB_CONTROL
 
 		virtual void InputChar(Listener * pListener, wchar_t cUnicode);
 
-		virtual void Focus(Listener * pListener,HWND hWnd);
+		virtual void Focus(Listener * pListener);
 
 		virtual void KillFocus(Listener * pListener);
 
@@ -427,6 +427,7 @@ namespace LIB_CONTROL
 		void Draw(Listener * pListener) override;
 
 		UINT HitTest(Listener * pListener, POINT pt) override;
+
 	};
 
 	class LabelBox : public LabelBoxInterface,
@@ -435,12 +436,22 @@ namespace LIB_CONTROL
 		LabelBox();
 	};
 
+	class ForceLabel : public LabelBoxInterface,
+		public REFLECT<ForceLabel>
+	{
+		bool mDrawForce;
+	public:
+		ForceLabel();
+
+		void Draw(Listener * pListener) override;
+	};
+
 	///<ComposeControl>组合控件</ComposeControl>
 	class ComposeControl :public Control
 	{
 	protected:
 
-		list<ComposeControl *>  mControl; //mControl 所有坐标相对于 最外面的包围矩形
+		list<ComposeControl *>  mControl; 
 
 		Listener * pmListener;
 

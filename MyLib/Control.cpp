@@ -108,7 +108,7 @@ namespace LIB_CONTROL
 			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
 				if (pControl->mClickFunc) pControl->mClickFunc(); //调用点击事件
-				pControl->Focus(this, mListenedWindow); //SetFocus
+				pControl->Focus(this); //SetFocus
 				if (pControl->LButtonDown(this, pt) != SHOULD_DO_NOTHING) return ret;
 			}
 			return ret;
@@ -242,6 +242,7 @@ namespace LIB_CONTROL
 		auto CaretPosition = CaretManager.pos();
 		Point tempPoint; 
 
+		CaretManager.isHead = false;
 		if ( index == -1 ) { index = 0; CaretManager.isHead = true; }
 		if ( index!= 0 &&index > STCAST(int,mText.size() - 1)) index = mText.size() - 1;
 		if (cUnicode == '\b') 
@@ -304,7 +305,7 @@ namespace LIB_CONTROL
 		mRect = RectOffSet(mRect,dx,dy,dx,dy);
 	}
 
-	void Control::Focus(Listener * pListener, HWND hWnd)
+	void Control::Focus(Listener * pListener)
 	{
 		mFocusCaret = true;
 	}
@@ -900,9 +901,8 @@ namespace LIB_CONTROL
 
 
 ////////////////////////////////////////////////////////////////////////// LabelBoxInterface
-	LabelBoxInterface::LabelBoxInterface()
-	{
-	}
+	LabelBoxInterface::LabelBoxInterface() {}
+
 
 	void LabelBoxInterface::Draw(Listener * pListener)
 	{
@@ -937,5 +937,20 @@ namespace LIB_CONTROL
 	}
 
 	LabelBox::LabelBox(){}
+
+	ForceLabel::ForceLabel() {}
+
+	void ForceLabel::Draw(Listener * pListener)
+	{
+		if (mFocusCaret)
+		{
+			DrawManager.DrawRectWithTextW(mRect,mText,mBackColor,mForceColor,&mpTextpLayout,true,ALIGN_TEXT_LEFT);
+		}
+		else
+		{
+			DrawManager.DrawRectWithTextW(mRect, mText,mHonverBackColor, mHoverForceColor, &mpTextpLayout,true, ALIGN_TEXT_LEFT);
+		}
+	}
+
 
 }
