@@ -130,6 +130,16 @@ namespace LIB_CONTROL
 		return ret;
 	}
 
+
+	void Listener::MouseMove(POINT pt)
+	{
+		for_each(mpControl.begin(), mpControl.end(), [&](Control * ItControl) {
+			if (ItControl->IsMouseInteral()) ItControl->MouseMove(this, pt);
+		});
+		return;
+	}
+
+
 	UINT Listener::HitTest( POINT pt)
 	{
 		Control * pTempControl = NULL;
@@ -141,14 +151,6 @@ namespace LIB_CONTROL
 		});
 		if(!pTempControl)  return HTCLIENT;
 		return pTempControl->HitTest(this, pt);
-	}
-
-	void Listener::MouseMove(POINT pt)
-	{
-		for_each(mpControl.begin(), mpControl.end(), [&](Control * ItControl) {
-			if (ItControl->IsMouseInteral()) ItControl->MouseMove(this,pt);
-		});
-		return;
 	}
 
 	void Listener::ChangeSize(RECT newRect)

@@ -203,7 +203,22 @@ namespace LIB_CONTROL
 		virtual ~Control();
 	};
 
-	
+	template<class StackType>
+	class Stack
+	{
+		UINT mStackCount;
+		list<StackType>	mStackData;
+	public:
+		void count() { return mStackCount; }
+		void Push(StackType data) { mStackData.push_back(data); mStackCount++; }
+		StackType Pop() 
+		{
+			if (mStackCount == 0) return nullptr;
+			mStackCount--;
+			return *(--mStackData.end());
+		}
+	};
+
 	class Listener
 	{
 	protected:
@@ -232,9 +247,9 @@ namespace LIB_CONTROL
 
 		UINT LButtonUp(POINT pt);
 
-		UINT HitTest(POINT pt);
-
 		void MouseMove(POINT pt);
+
+		UINT HitTest(POINT pt);
 
 		void ChangeSize(RECT newRect);
 
