@@ -24,7 +24,7 @@ protected:
 
 	bool mHide;
 
-	UINT32 mInsertPos; 
+	int mInsertPos; 
 
 	HWND mAttachWindow;
 
@@ -48,13 +48,15 @@ public:
 	
 	bool attrach(HWND hWnd); //must call first
 
-	bool isTrial; //插入符号在当前的符号的尾部
+	bool isTrial; //尾部
+
+	bool isHead; //头部
 
 	POINT PointOfDraw();
 
-	UINT32 getIndex() const;//插入符的索引..
+	int getIndex() const;//插入符的索引..
 
-	void setIndex(UINT32 newIndex);
+	void setIndex(int newIndex);
 
 	void IncIndex(); //++
 
@@ -90,7 +92,7 @@ public:
 	void AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * pTestPoint = nullptr, bool SkipThis = false);
 
 	///<summary>设置光标正确位置!</summary><param name = "index">"索引位置"</param>
-	POINT SetCaretPosEx(RECT layoutBox, TextLayout * pTestMatric,UINT32 index,bool isTrailingHit = true);
+	POINT SetCaretPosEx(RECT layoutBox, TextLayout * pTestMatric,int index,bool isTrailingHit = true);
 
 	void Color(COLORREF caretColor);
 

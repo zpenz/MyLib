@@ -6,7 +6,7 @@ bool MyCaret::attrach(HWND hWnd)
 {
 	IS_RETURN_ERROR(!hWnd,false,"attrached window null")
 	mAttachWindow = hWnd;
-	isTrial = true;
+	isTrial = isHead = false;
 	return true;
 }
 
@@ -16,12 +16,12 @@ POINT MyCaret::PointOfDraw()
 	return mCaretPos;
 }
 
-UINT32 MyCaret::getIndex() const
+int MyCaret::getIndex() const
 {
 	return mInsertPos;
 }
 
-void MyCaret::setIndex(UINT32 newIndex)
+void MyCaret::setIndex(int newIndex)
 {
 	mInsertPos = newIndex;
 }
@@ -33,8 +33,7 @@ void MyCaret::IncIndex()
 
 void MyCaret::DecIndex()
 {
-	mInsertPos--;
-	if (mInsertPos < 0) mInsertPos = 0;
+	mInsertPos--; 	
 }
 
 bool MyCaret::IsCaretExist()
@@ -183,6 +182,7 @@ void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoi
 	auto ret = pTestMatric->HitTestPoint(x, y, &isTrail, &inside, pMatrics);
 	IS_RETURN_ERROR(FAILED(ret), , "Caret HitTestPoint error!");
 	int hitTextPos = pMatrics->textPosition;
+	if (hitTextPos == -1) isHead = true;
 	
 	if (isTrail || SkipThis)
 	{
@@ -200,7 +200,7 @@ void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoi
 	SAFE_DELETE(pMatrics);
 }
 
-POINT MyCaret::SetCaretPosEx(RECT layoutBox, TextLayout * pTestMatric, UINT32 index, bool isTrailingHit)
+POINT MyCaret::SetCaretPosEx(RECT layoutBox, TextLayout * pTestMatric, int index, bool isTrailingHit)
 {
 	using namespace Conver;
 	HitTestMatric Matrics;
