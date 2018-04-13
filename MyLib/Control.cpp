@@ -242,9 +242,8 @@ namespace LIB_CONTROL
 		auto CaretPosition = CaretManager.pos();
 		Point tempPoint; 
 
-		if (mText.empty()) return;
-		if (index == -1) { index = 0; CaretManager.isHead = true; }
-		if (index > mText.size() - 1) index = mText.size() - 1;
+		if ( index == -1 ) { index = 0; CaretManager.isHead = true; }
+		if ( index!= 0 &&index > STCAST(int,mText.size() - 1)) index = mText.size() - 1;
 		if (cUnicode == '\b') 
 		{
 			mText.erase(index,1); 	
@@ -255,6 +254,7 @@ namespace LIB_CONTROL
 		{
 			if (index == 0) {
 				CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, false);
+				CaretManager.DecIndex();
 				return;
 			}
 			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, false);
@@ -285,7 +285,8 @@ namespace LIB_CONTROL
  			auto posInsert = index + 1;
 			if (CaretManager.isHead) { posInsert = 0; CaretManager.isHead = false; }
 			//Ìí¼Ó×Ö·û
-			if (mText.empty()) mText = wstring(&cUnicode);
+			if (mText.empty()) 
+				mText = cUnicode;
 			else
 			{
 				mText = mText.insert(posInsert, wstring(&cUnicode));
