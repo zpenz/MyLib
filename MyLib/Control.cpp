@@ -446,7 +446,7 @@ namespace LIB_CONTROL
 
 	Control::Control(wstring text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
-		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr)
+		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr),mFocusCaret(false)
 	{
 	}
 
@@ -460,9 +460,7 @@ namespace LIB_CONTROL
 		SetBackColor(backColor);
 		SetHoverBackColor(hoverBackColor);
 		SetHoverForceColor(hoverForceColor);
-		mBDownInternal = false;
 	}
-
 
 
 	bool ImageAdapter::SetImage(IPIC * img)
@@ -821,8 +819,6 @@ namespace LIB_CONTROL
 		SAFE_RELEASE(pHonverImage);
 	}
 
-
-
 	////////////////////////////////////////////////////////////////////////// EditBox
 	EditBoxInterface::EditBoxInterface(RECT rc,string defaultText)
 	{
@@ -939,7 +935,7 @@ namespace LIB_CONTROL
 
 	void ForceLabel::Draw(Listener * pListener)
 	{
-		if (mFocusCaret)
+		if (!mFocusCaret)
 		{
 			DrawManager.DrawRectWithTextW(mRect,mText,mBackColor,mForceColor,&mpTextpLayout,true,ALIGN_TEXT_LEFT);
 		}

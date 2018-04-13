@@ -230,7 +230,7 @@ namespace Conver
 
 	float utof(wchar_t * Wchar)
 	{
-		return atof(WCharToAChar(Wchar));
+		return STCAST(float,atof(WCharToAChar(Wchar)));
 	}
 
 	MyRect::MyRect(INT left, INT top, INT right, INT bottom):mLeft(left),mRight(right),
