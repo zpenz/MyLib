@@ -10,9 +10,7 @@
 namespace LIB_CONTROL
 {
 	using namespace std;
-
 	using namespace MyMessage;
-
 	using namespace REFLECTION;
 
 	class Listener;
@@ -21,45 +19,28 @@ namespace LIB_CONTROL
 	{
 	protected:
 		IPIC * pImage;
-		
 		bool bDrawImage;
-
 		RECT mImgRec;
-
 	public:
-
 		bool SetImage(IPIC * img);
-
 		bool LoadFromFile(wstring strFileName);
-
 		void SetImgRect(RECT desRect);
-
 		RECT ImgRect() const; 
-
 		ImageAdapter();
-
 		~ImageAdapter();
 	};
 
 	class DragAdapter
 	{
 	protected:
-
 		bool mCanDrag; //Drag
-
 		bool mbDraging; //Draging
-
 		int mLeft, mTop;
-
 		virtual void Drag(Listener * pListener, int dx, int dy) = 0; ///dx dy 偏移
-
 	public:
 		bool CanDrag();
-
 		void Stop();
-
 		void SetDrag(bool DragState);
-
 		DragAdapter();
 	};
 
@@ -69,7 +50,6 @@ namespace LIB_CONTROL
 		IDType mID;
 	public:
 		IDType & getID() { return mID; }
-
 		void SetID(IDType id) { mID = id; }
 	};
 
@@ -79,14 +59,29 @@ namespace LIB_CONTROL
 		bool mReadOnly;
 	public:
 		bool isReadOnly();
-		
 		void setReadAccess(bool readAccess);
-
 		ReadAble();
 	};
 
+	template<class BoardType>
+	class BoardAdapter
+	{
+	protected:
+		bool mHaveBoard;
+		BoardType mBoardSize;
+		COLORREF mBoardColor;
+	public:
+		bool HaveBoard() { return mHaveBoard; }
+		void SetBoard(bool haveBoard) { mHaveBoard = haveBoard; }
+		void setBoardSize(BoardType boardSize) { mBoardSize = boardSize; }
+		BoardType & getBoardSize() { return mBoardSize; }
+		const COLORREF & getBoardColor() { return mBoardColor; }
+		void setBoardColor(COLORREF boardColor) {mBoardColor = boardColor;}
+		BoardAdapter():mHaveBoard(false),mBoardSize(1.0),mBoardColor(RGB(255,255,255)) {}
+	};
+
 	class Control: public ImageAdapter,public DragAdapter,
-		public ReadAble,public IDAdapter<UINT>
+		public ReadAble,public IDAdapter<UINT>,public BoardAdapter<float>
 	{
 
 	protected:
@@ -98,8 +93,6 @@ namespace LIB_CONTROL
 		COLORREF mForceColor, mBackColor;
 
 		COLORREF mHonverBackColor, mHoverForceColor;
-
-		COLORREF mBoardColor;
 
 		bool mVisible;
 
@@ -151,6 +144,8 @@ namespace LIB_CONTROL
 
 		virtual void Sizing(RECT newRect);
 
+		void DrawBoard(Listener * pListener);
+
 		void Drag(Listener * pListener, int dx, int dy) override;
 
 		bool HaveCaret();
@@ -166,10 +161,6 @@ namespace LIB_CONTROL
 		wstring Text() const;
 
 		void SetText(wstring text);
-
-		void SetBoardColor(COLORREF color);
-
-		COLORREF & getBoardColor();
 
 		COLORREF & ForceColor() ;
 
@@ -418,7 +409,7 @@ namespace LIB_CONTROL
 		ReadOnlyEditBox();
 	};
 
-	///<LabelBoxInterface>标签框接口</LabelBoxInterface>
+	///<LabelBoxInterface>标签接口</LabelBoxInterface>
 	class LabelBoxInterface :public Control
 	{
 	public:
@@ -456,7 +447,6 @@ namespace LIB_CONTROL
 		Listener * pmListener;
 
 	public:
-
 		bool Attach(Listener * pListener);
 
 		bool Add(Control * pControl);
@@ -466,7 +456,6 @@ namespace LIB_CONTROL
 		virtual UINT HitTest(POINT pt);
 
 		virtual void Hover(POINT pt);
-
 	};
 }
 

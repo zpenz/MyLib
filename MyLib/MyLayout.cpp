@@ -7,8 +7,10 @@ namespace Layout
 {
 	using namespace Conver;
 
-	LayoutParameter::LayoutParameter(wstring ControlType, UINT ID, wstring text, RECT layoutRect, ColorStruct fcolor, ColorStruct bcolor, ColorStruct hfcolor, ColorStruct hbcolor, bool candrag):
-		mControlType(ControlType),mControlID(ID),mText(text),mLayoutRect(layoutRect),mForceColor(fcolor),mBackColor(bcolor),mHoverForceColor(hfcolor),mHoverBackColor(hbcolor),mCanDrag(candrag)
+	LayoutParameter::LayoutParameter(wstring ControlType, UINT ID, wstring text, RECT layoutRect, ColorStruct fcolor, ColorStruct bcolor, ColorStruct hfcolor, ColorStruct hbcolor,
+		bool candrag, bool haveBoard, ColorStruct boardColor, float boardSize):
+		mControlType(ControlType),mControlID(ID),mText(text),mLayoutRect(layoutRect),mForceColor(fcolor),mBackColor(bcolor),
+		mHoverForceColor(hfcolor),mHoverBackColor(hbcolor),mCanDrag(candrag),mHaveBoard(haveBoard),mBoardColor(boardColor),mBoardSize(boardSize)
 	{
 	}
 
@@ -24,13 +26,15 @@ namespace Layout
 		pObj->SetClassName(COCAST(wchar_t *,mControlType.c_str()));
 		pObj->SetID(mControlID);
 		pObj->AdjustRect(mLayoutRect);
-		pObj->SetForceColor(mForceColor.getRGB());
-		pObj->SetBackColor(mBackColor.getRGB());
-		pObj->SetHoverForceColor(mHoverForceColor.getRGB());
-		pObj->SetHoverBackColor(mHoverBackColor.getRGB());
+		pObj->SetForceColor(mForceColor);
+		pObj->SetBackColor(mBackColor);
+		pObj->SetHoverForceColor(mHoverForceColor);
+		pObj->SetHoverBackColor(mHoverBackColor);
 		pObj->SetText(mText);
 		pObj->SetDrag(mCanDrag);
-		
+		pObj->SetBoard(mHaveBoard);
+		pObj->setBoardColor(mBoardColor);
+		pObj->setBoardSize(mBoardSize);
 		return pObj;
 	}
 
@@ -77,7 +81,10 @@ namespace Layout
 			ColorStruct(utoi(vParams[10]), utoi(vParams[11]), utoi(vParams[12])),
 			ColorStruct(utoi(vParams[13]), utoi(vParams[14]), utoi(vParams[15])),
 			ColorStruct(utoi(vParams[16]), utoi(vParams[17]), utoi(vParams[18])),
-			utob(vParams[19]));
+			utob(vParams[19]),
+			utob(vParams[20]),
+			ColorStruct(utoi(vParams[21]), utoi(vParams[22]), utoi(vParams[23])),
+			utof(vParams[24]));
 	}
 
 	wchar_t * MyLayout::getNextToken(wchar_t * startPos,int & pos)
@@ -167,7 +174,12 @@ namespace Layout
 			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
 			tempColor = pControl->HoverBackColor();
 			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
-			fprintf_s(pfile, "%d\n", pControl->CanDrag() ? 1 : 0);
+			fprintf_s(pfile, "%d ", pControl->CanDrag()?1:0);
+			fprintf_s(pfile, "%d ", pControl->HaveBoard()?1:0);
+			tempColor = pControl->getBoardColor();
+			fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
+			fprintf_s(pfile, "%f\n", pControl->getBoardSize());
+
 		});
 		return true;
 	}

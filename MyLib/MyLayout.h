@@ -17,7 +17,7 @@ namespace Layout
 		
 	public:
 		LayoutParameter(wstring ControlType, UINT ID,wstring text,RECT layoutRect, ColorStruct fcolor, ColorStruct bcolor,
-			ColorStruct hfcolor, ColorStruct hbcolor, bool candrag);
+			ColorStruct hfcolor, ColorStruct hbcolor, bool candrag,bool hasBoard = false, ColorStruct boardColor = ColorStruct(255,255,255),float boardSize = 1.0);
 
 		LayoutParameter() {}
 
@@ -41,6 +41,11 @@ namespace Layout
 
 		Control * fit(); 
 
+		bool mHaveBoard;
+
+		ColorStruct mBoardColor;
+		
+		float mBoardSize;
 	};
 
 	class MyLayout

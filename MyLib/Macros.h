@@ -103,9 +103,11 @@ typedef struct ColorStruct
 	BYTE r, g, b;
 
 	COLORREF getRGB() { return RGB(r,g,b); }
-
+	
+	operator COLORREF() { return RGB(r,g,b); }
 	ColorStruct(BYTE rc, BYTE gc, BYTE bc) :r(rc),g(gc),b(bc) {}
 	ColorStruct() {}
+
 }ColorStruct;
 
 void ErrorMessage(const char * _error);
@@ -188,8 +190,8 @@ namespace Conver
 	wchar_t * ACharToWChar(char * Achar,UINT codePage = CP_UTF8);
 
 	int utoi(wchar_t * Wchar);
-
 	bool utob(wchar_t * Wchar);
+	float utof(wchar_t * Wchar);
 
 	///<d2dConver>some d2d conver</d2dConver>
 	D2D1_POINT_2F & PointToD2DPointF(POINT & pt);

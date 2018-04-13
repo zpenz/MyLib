@@ -74,6 +74,7 @@ namespace LIB_CONTROL
 	{
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->Draw(this);
+			pControl->DrawBoard(this);
 		});
 		//render caret
 		CaretManager.Render();
@@ -320,6 +321,12 @@ namespace LIB_CONTROL
 
 	}
 
+	void Control::DrawBoard(Listener * pListener)
+	{
+		if (!mHaveBoard) return;
+		DrawManager.DrawRectangle(mRect,mBoardColor,false,mBoardSize);
+	}
+
 	bool Control::HaveCaret()
 	{
 		return mOwnCaret;
@@ -354,16 +361,6 @@ namespace LIB_CONTROL
 	void Control::SetText(wstring text)
 	{
 		if (!text.empty()) mText = text;
-	}
-
-	void Control::SetBoardColor(COLORREF color)
-	{
-		mBoardColor = color;
-	}
-
-	COLORREF & Control::getBoardColor()
-	{
-		return mBoardColor;
 	}
 
 	COLORREF & Control::ForceColor() 
@@ -449,7 +446,7 @@ namespace LIB_CONTROL
 
 	Control::Control(wstring text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
-		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr),mBoardColor(RGB(255,255,255))
+		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr)
 	{
 	}
 

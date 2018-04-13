@@ -187,7 +187,7 @@ ID2D1RenderTarget * My2DDraw::getRenderTarget()
 	return mRenderTarget; 
 }
 
-bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle)
+bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle, float boardSize)
 {
 	IS_RETURN_ERROR(mRenderTarget==nullptr,false,"RenderTargetÎª¿Õ");
 	auto tempSolidBrush = CreateBrush(RectColor);
@@ -195,7 +195,7 @@ bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle)
 	mRenderTarget->BeginDraw();
 	D2D1_RECT_F desRect = MyRect(Rect);
 	if (!isFillRectangle)
-		mRenderTarget->DrawRectangle(desRect, tempSolidBrush);
+		mRenderTarget->DrawRectangle(desRect, tempSolidBrush,boardSize);
 	else
 		mRenderTarget->FillRectangle(desRect, tempSolidBrush);
 	auto hr = mRenderTarget->EndDraw();

@@ -45,7 +45,7 @@ public:
 
 	ID2D1SolidColorBrush * CreateBrush(MyColor BrushColor = MyColor::Black);
 
-	bool DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle = false);
+	bool DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle = false,float boardSize = 1.0);
 
 	bool DrawText(std::string text, RECT layoutBox,MyColor TextColor,float fontSize,_Out_ TextLayout ** pLayout, ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
 

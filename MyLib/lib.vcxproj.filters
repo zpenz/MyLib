@@ -13,26 +13,26 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\Control">
+    <Filter Include="Control">
       <UniqueIdentifier>{b47a81b1-4f40-4791-b2c1-8d15dfdba8ea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\同步">
-      <UniqueIdentifier>{83302f98-7f76-4e55-a44c-a366394c5602}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Macro">
-      <UniqueIdentifier>{646a81d0-cbf9-495e-a039-dda97b979ab1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Draw">
+    <Filter Include="Draw">
       <UniqueIdentifier>{7732b972-94b7-4236-8891-2e1c7d066ea4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Window">
-      <UniqueIdentifier>{48fe55e6-33b4-4522-984c-fcd85391a7f1}</UniqueIdentifier>
+    <Filter Include="Macro">
+      <UniqueIdentifier>{646a81d0-cbf9-495e-a039-dda97b979ab1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\File">
+    <Filter Include="Simple Reflection">
+      <UniqueIdentifier>{a8506c9b-0a32-435f-9e91-776f0b5caad6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File">
       <UniqueIdentifier>{04e415e3-a22b-46dc-b237-35f25fdec1e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\Simple Reflection">
-      <UniqueIdentifier>{a8506c9b-0a32-435f-9e91-776f0b5caad6}</UniqueIdentifier>
+    <Filter Include="Window">
+      <UniqueIdentifier>{48fe55e6-33b4-4522-984c-fcd85391a7f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="同步">
+      <UniqueIdentifier>{83302f98-7f76-4e55-a44c-a366394c5602}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,40 +46,40 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Control.h">
-      <Filter>头文件\Control</Filter>
+      <Filter>Control</Filter>
     </ClInclude>
     <ClInclude Include="SemaphoreManager.h">
-      <Filter>头文件\同步</Filter>
+      <Filter>同步</Filter>
     </ClInclude>
     <ClInclude Include="Macros.h">
-      <Filter>头文件\Macro</Filter>
+      <Filter>Macro</Filter>
     </ClInclude>
     <ClInclude Include="2Draw.h">
-      <Filter>头文件\Draw</Filter>
+      <Filter>Draw</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
-      <Filter>头文件\Draw</Filter>
+      <Filter>Draw</Filter>
     </ClInclude>
     <ClInclude Include="Caret.h">
-      <Filter>头文件\Draw</Filter>
+      <Filter>Draw</Filter>
     </ClInclude>
     <ClInclude Include="lib.h">
-      <Filter>头文件\Window</Filter>
+      <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="lib2d.h">
-      <Filter>头文件\Window</Filter>
+      <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="libD3D.h">
-      <Filter>头文件\Window</Filter>
+      <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="libd11.h">
-      <Filter>头文件\Window</Filter>
+      <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="MyLayout.h">
-      <Filter>头文件\File</Filter>
+      <Filter>File</Filter>
     </ClInclude>
     <ClInclude Include="reflect.h">
-      <Filter>头文件\Simple Reflection</Filter>
+      <Filter>Simple Reflection</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -87,40 +87,40 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Control.cpp">
-      <Filter>头文件\Control</Filter>
+      <Filter>Control</Filter>
     </ClCompile>
     <ClCompile Include="SemaphoreManager.cpp">
-      <Filter>头文件\同步</Filter>
+      <Filter>同步</Filter>
     </ClCompile>
     <ClCompile Include="Macros.cpp">
-      <Filter>头文件\Macro</Filter>
+      <Filter>Macro</Filter>
     </ClCompile>
     <ClCompile Include="2Draw.cpp">
-      <Filter>头文件\Draw</Filter>
+      <Filter>Draw</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
-      <Filter>头文件\Draw</Filter>
+      <Filter>Draw</Filter>
     </ClCompile>
     <ClCompile Include="Caret.cpp">
-      <Filter>头文件\Draw</Filter>
+      <Filter>Draw</Filter>
     </ClCompile>
     <ClCompile Include="lib.cpp">
-      <Filter>头文件\Window</Filter>
+      <Filter>Window</Filter>
     </ClCompile>
     <ClCompile Include="lib2d.cpp">
-      <Filter>头文件\Window</Filter>
+      <Filter>Window</Filter>
     </ClCompile>
     <ClCompile Include="libD3D.cpp">
-      <Filter>头文件\Window</Filter>
+      <Filter>Window</Filter>
     </ClCompile>
     <ClCompile Include="libd11.cpp">
-      <Filter>头文件\Window</Filter>
+      <Filter>Window</Filter>
     </ClCompile>
     <ClCompile Include="MyLayout.cpp">
-      <Filter>头文件\File</Filter>
+      <Filter>File</Filter>
     </ClCompile>
     <ClCompile Include="reflect.cpp">
-      <Filter>头文件\Simple Reflection</Filter>
+      <Filter>Simple Reflection</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

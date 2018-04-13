@@ -228,6 +228,11 @@ namespace Conver
 		return true;
 	}
 
+	float utof(wchar_t * Wchar)
+	{
+		return atof(WCharToAChar(Wchar));
+	}
+
 	MyRect::MyRect(INT left, INT top, INT right, INT bottom):mLeft(left),mRight(right),
 		mTop(top),mBottom(bottom)
 	{
