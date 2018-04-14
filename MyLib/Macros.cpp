@@ -9,8 +9,9 @@ void ErrorMessage(const char * _error)
 	exit(0);
 }
 
-HCURSOR ARROW::ArrowShape::SHAPE_ARROW = LoadCursor(NULL, IDC_ARROW);
-HCURSOR ARROW::ArrowShape::SHAPE_I = LoadCursor(NULL, IDC_IBEAM);
+HCURSOR ArrowShape::SHAPE_ARROW = LoadCursor(NULL, IDC_ARROW);
+HCURSOR ArrowShape::SHAPE_I = LoadCursor(NULL, IDC_IBEAM);
+HCURSOR ArrowShape::SHAPE_CROSS = LoadCursor(NULL, IDC_CROSS);
 
 namespace Conver
 {

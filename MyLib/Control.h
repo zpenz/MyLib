@@ -231,6 +231,8 @@ namespace LIB_CONTROL
 
 		Control * findElementByID(UINT id);
 
+		bool AddClickFuncByID(UINT id,function<void(void)> pFunc,bool rewrite = false);
+
 		bool attachWindow(HWND hWnd);
 
 		bool attach(Control * pControl);
@@ -445,6 +447,7 @@ namespace LIB_CONTROL
 	class DrawAbleLabel : public LabelBoxInterface,
 		public REFLECT<DrawAbleLabel>
 	{
+		int mSubID;
 	public:
 		DrawAbleLabel();
 
@@ -457,6 +460,8 @@ namespace LIB_CONTROL
 		POINT mEndDrawPoint;
 
 		list<Control *> mDrawSet;
+
+		Control * pBufferControl;
 
 		void Draw(Listener * pListener) override;
 

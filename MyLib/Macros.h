@@ -12,6 +12,7 @@
 # include "libd11.h"
 # endif
 
+#define DEFAULT_CONTROL_ID 678
 #define SCREEN_WIDTH  GetDeviceCaps(GetDC(NULL),HORZRES)
 #define SCREEN_HEIGHT GetDeviceCaps(GetDC(NULL),VERTRES)
 #define MAX_KEYS 256
@@ -88,15 +89,14 @@ namespace LIB_WINDOW
 	}
 }
 
-namespace ARROW
+
+struct ArrowShape
 {
-	class ArrowShape
-	{
-	public:
-		static HCURSOR SHAPE_ARROW;
-		static HCURSOR SHAPE_I;
-	};
-}
+	static HCURSOR SHAPE_ARROW;
+	static HCURSOR SHAPE_I;
+	static HCURSOR SHAPE_CROSS;
+};
+
 
 typedef struct ColorStruct
 {
@@ -139,6 +139,11 @@ void ErrorMessage(const char * _error);
 #define LOG_WARNING(format,...)\
 		OutputDebugStringA(Conver::Format("[WARN]:%s\n",format).c_str());
 
+#define IS_RETURN(condition,returnValue)\
+		if(condition)\
+		{\
+			return returnValue;\
+		}
 
 #define IS_RETURN_FUNC(condition,returnValue,FUNC)\
 		if(condition)\
@@ -158,13 +163,25 @@ void ErrorMessage(const char * _error);
 		SAFE_DELETE(*it);\
 		}
 
-		
-namespace Conver
-{
+#define SAFE_REMOVE_ONE(elements,element)\
+	    for(auto it = elements.begin();it!=elements.end();it++)\
+		{\
+			if(*it == element )\
+			{\
+				it = elements.erase(it);\
+				SAFE_DELETE(element);\
+			}\
+		}
 
 #define RECTWIDTH(rc) rc.right - rc.left
 #define RECTHEIGHT(rc) rc.bottom - rc.top
 #define nullRect MyRect{0,0,0,0}
+#define nullPoint Point{-1,-1}
+	
+namespace Conver
+{
+
+
 	using namespace std;
 
 	string Format(char * format,...);

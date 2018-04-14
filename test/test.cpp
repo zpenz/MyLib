@@ -11,7 +11,6 @@ int main()
 {
 	BaseWindow bs;
 	bs.Show();
-	auto DeskTop = GetDesktopWindow();
 	
 	while (1)
 	{
@@ -21,35 +20,18 @@ int main()
 		cout <<(UINT)GetRValue(color)<<(UINT)GetGValue(color)<< (UINT)GetBValue(color)<<endl;
 		Sleep(1000);
 
-		auto ct = bs.mListener.findElementByID(120); //SAVE
-		if(ct && !ct->mClickFunc) ct->mClickFunc = [&]() {
+		//SAVE
+		bs.mListener.AddClickFuncByID(120, [&]() {
 			printf("开始保存...\n");
-			Layout::ControlLayout.SaveLayoutFile("D:\\window.layout",&bs.mListener);
+			Layout::ControlLayout.SaveLayoutFile("D:\\window.layout", &bs.mListener);
 			printf("保存完毕...\n");
+		});
 
-		};
-		////bitmap
-		//RECT rcPicture = { 72,128,72 * 2,128 * 2 };
-		//auto pBitmap = DrawManager.CreateBitmap(L"3.jpg", 72, 128);
-		//DrawManager.DrawPicture(pBitmap, rcPicture);
-		//RECT rcRectangle = { 0,0,72,128 };
-		//DrawManager.DrawPicture(pBitmap, rcRectangle);
-
-		////Rectangle
-		//rcRectangle = { 150,150,200,200 };
-		//auto pPinkBrush = DrawManager.CreateBrush(MyColor::Pink);
-		//DrawManager.DrawRectangle(rcRectangle, true, pPinkBrush);
-		//rcRectangle = { 400,150,450,200 };
-		//DrawManager.DrawRectangle(rcRectangle, true, pPinkBrush);
-
-		////Ellipse
-		//POINT pt = { 300,300 };
-		//auto pGoldBrush = DrawManager.CreateBrush(MyColor::Gold);
-		//DrawManager.DrawEllipse(pt, 100.0, 50.0, false, pGoldBrush);
-		//pt = { 250,300 };
-		//DrawManager.DrawEllipse(pt, 10, 20, false, pGoldBrush);
-		//pt = { 340,300 };
-		//DrawManager.DrawEllipse(pt, 10, 20, false, pGoldBrush);
+		//LabelBox
+		bs.mListener.AddClickFuncByID(126, [&]() {
+			DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->mStateType = L"LabelBox";
+			printf("选择...\n");
+		});
 	}
 
     return 0;

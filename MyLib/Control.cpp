@@ -38,6 +38,15 @@ namespace LIB_CONTROL
 		 return *tempControl;
 	}
 
+	bool Listener::AddClickFuncByID(UINT id,function<void(void)> pFunc,bool rewrite)
+	{
+		auto pControl = findElementByID(id);
+		IS_RETURN_ERROR(!pControl,false,"找不到指定的控件");
+		IS_RETURN(!rewrite && pControl->mClickFunc != nullptr, false);
+		pControl->mClickFunc = pFunc;
+		return true;
+	}
+
 	bool Listener::attachWindow(HWND hWnd)
 	{
 		IS_RETURN_ERROR(!hWnd,false,"attachWindow 失败! 句柄为空");
@@ -196,8 +205,8 @@ namespace LIB_CONTROL
 	void Control::Hover(Listener * pListener, POINT pt)
 	{
 		if (!mOwnCaret) return;
-		if (mMouseInternal) SetCursor(ARROW::ArrowShape::SHAPE_I);
-		else SetCursor(ARROW::ArrowShape::SHAPE_ARROW);
+		if (mMouseInternal) SetCursor(ArrowShape::SHAPE_I);
+		else SetCursor(ArrowShape::SHAPE_ARROW);
 	}
 
 	UINT Control::LButtonDown(Listener * pListener,POINT pt)
@@ -935,6 +944,9 @@ namespace LIB_CONTROL
 
 	DrawAbleLabel::DrawAbleLabel()
 	{
+		pBufferControl = nullptr;
+		mStartDrawPoint = nullPoint;
+		mSubID = DEFAULT_CONTROL_ID;
 	}
 
 	DrawAbleLabel::~DrawAbleLabel()
@@ -957,18 +969,41 @@ namespace LIB_CONTROL
 
 	UINT DrawAbleLabel::LButtonUp(Listener * pListener, POINT pt)
 	{
-		mStateType.clear();
+		if (mStateType.empty()) return 0;
+		if (pBufferControl != nullptr)
+		{
+			pListener->detach(pBufferControl);
+		}
 		mEndDrawPoint = pt;
-		Control * pControl = nullptr;
-		//pControl = MyFactory.create(WCharToAChar(COCAST(wchar_t *, mStateType.c_str())));;
-		//pListener->attach(pControl);
+
+		Control * pControl = MyFactory.create<Control>(WCharToAChar(COCAST(wchar_t *, mStateType.c_str())));
+		IS_RETURN_ERROR(!pControl,0,"LButtonUp:: MyFactory.create failed..");
+		pControl->AdjustRect(MyRect(mStartDrawPoint,mEndDrawPoint));
+		pControl->SetClassName(mStateType);
+		pControl->SetID(mSubID++);
+		mDrawSet.push_back(pControl);
+		pListener->attach(pControl);
+		mStateType.clear();
+		mStartDrawPoint = nullPoint;
+		pBufferControl = nullptr;
 		return 0;
 	}
 
 	void DrawAbleLabel::MouseMove(Listener * pListener, POINT pt)
 	{
-		if (mStateType.empty()) return;
+		static Point lastPt = pt;
+		if (mStateType.empty()||  nullPoint == mStartDrawPoint) return;
+		if (lastPt == pt) return;
+		if (pBufferControl != nullptr)
+		{
+			pListener->detach(pBufferControl);
+		}
+		pBufferControl = MyFactory.create<Control>(WCharToAChar(COCAST(wchar_t *, mStateType.c_str())));
+		IS_RETURN_ERROR(!pBufferControl, , "MouseMove:: MyFactory.create failed..");
+		pBufferControl->AdjustRect(MyRect(mStartDrawPoint, pt));
 		mEndDrawPoint = pt;
+		pListener->attach(pBufferControl);
+		lastPt = pt;
 	}
 
 	ForceLabel::ForceLabel() {}
