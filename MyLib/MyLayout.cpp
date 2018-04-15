@@ -117,15 +117,25 @@ namespace Layout
 		{
 			if(pContext[ipos] == L'\n') 
 			{
-				auto par = ParseLine(lineBuf);
-				Control * pControl = par.fit();
-				IS_RETURN_ERROR(!pListener,false,"LoadLayoutFile Listener null");
-				if(pControl) pListener->attach(pControl); //Ìí¼Ó
-				memset(lineBuf, 0, MAX_BUF_LENGTH);
-				linesize = 0;
-				ipos++;
+				do 
+				{
+					//ºöÂÔ×¢ÊÍÐÐ
+					if (wcslen(lineBuf) >= 2 && lineBuf[0] == '/'&& lineBuf[1] == '/') {
+						memset(lineBuf, 0, MAX_BUF_LENGTH);	
+						linesize = 0; 
+						ipos++; 
+						break; 
+					}
+					auto par = ParseLine(lineBuf);
+					Control * pControl = par.fit();
+					IS_RETURN_ERROR(!pListener, false, "LoadLayoutFile Listener null");
+					if (pControl) pListener->attach(pControl); //Ìí¼Ó
+					memset(lineBuf, 0, MAX_BUF_LENGTH);
+					linesize = 0;
+					ipos++;
+				} while (0);
 			}
-			
+
 			//last row
 			if(ipos == wcslen(pContext)-1)
 			{

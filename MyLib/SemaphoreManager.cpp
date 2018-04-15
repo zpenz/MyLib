@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SemaphoreManager.h"
 
+
 namespace MY_LIB
 {
 	bool Semaphore::Add(UINT increase)

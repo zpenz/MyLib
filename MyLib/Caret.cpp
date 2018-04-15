@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "Caret.h"
-
+#define DEFAULT_CARET_START 3
+using namespace Conver;
 
 bool MyCaret::attrach(HWND hWnd)
 {
 	IS_RETURN_ERROR(!hWnd,false,"attrached window null")
 	mAttachWindow = hWnd;
-	isTrial = isHead = false;
 	return true;
 }
 
@@ -106,9 +106,9 @@ bool MyCaret::InitCaret()
 	mHide = true;
 	mSubThreadAlreayRun = false;
 	mBlinkTime = 4;
-	mCaretColor = RGB(199,199,199);
+	mCaretColor = RGB(0,0,0);
 	mInsertPos = 0;
-
+	isTrial = isHead = false;
 	DrawCaret();
 	return true;
 }
@@ -171,7 +171,12 @@ void MyCaret::ChangeCaretSize(UINT width, UINT height)
 
 void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoint,bool SkipThis)
 {
-	using namespace Conver;
+	if (pTestMatric == nullptr)//默认光标位置在左边
+	{
+		CaretManager.ChangeCaretPos(Point(layoutBox.left+ DEFAULT_CARET_START,layoutBox.bottom));
+		return;
+	}
+
 	auto tempPoint = TestPoint;
 	if (TestPoint == nullptr) tempPoint = &mCaretPos;
 
@@ -179,31 +184,35 @@ void MyCaret::AdjustPos(RECT layoutBox, TextLayout * pTestMatric,POINT * TestPoi
 	BOOL isTrail, inside;
 	x = STCAST(float,tempPoint->x - LeftTopPoint(layoutBox).x);
 	y = STCAST(float,tempPoint->y - LeftTopPoint(layoutBox).y);
-	HitTestMatric * pMatrics = new HitTestMatric(); //must create 
-	auto ret = pTestMatric->HitTestPoint(x, y, &isTrail, &inside, pMatrics);
+	HitTestMatric Matrics;
+	auto ret = pTestMatric->HitTestPoint(x, y, &isTrail, &inside, &Matrics);
 	IS_RETURN_ERROR(FAILED(ret), , "Caret HitTestPoint error!");
-	int hitTextPos = pMatrics->textPosition;
+	int hitTextPos = Matrics.textPosition;
 	if (hitTextPos == -1) isHead = true;
 	
 	if (isTrail || SkipThis)
 	{
-		x = pMatrics->left + pMatrics->width;
+		x = Matrics.left + Matrics.width;
 	}
 	else
 	{
-		x = pMatrics->left;
+		x = Matrics.left;
 		hitTextPos--;
 	}
 
-	y = pMatrics->top + height();
+	y = Matrics.top + height();
 	CaretManager.setIndex(hitTextPos);
 	CaretManager.ChangeCaretPos(Point(STCAST(int,x),STCAST(int,y)) + LeftTopPoint(layoutBox));
-	SAFE_DELETE(pMatrics);
 }
 
 POINT MyCaret::SetCaretPosEx(RECT layoutBox, TextLayout * pTestMatric, int index, bool isTrailingHit)
 {
-	using namespace Conver;
+	if (pTestMatric == nullptr || index == 0)
+	{
+		CaretManager.ChangeCaretPos(Point(layoutBox.left + DEFAULT_CARET_START, layoutBox.bottom));
+		return Point(layoutBox.left + DEFAULT_CARET_START, layoutBox.bottom);
+	}
+
 	HitTestMatric Matrics;
 	float x, y;
 	pTestMatric->HitTestTextPosition(index, isTrailingHit,&x ,&y, &Matrics);

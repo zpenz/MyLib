@@ -5,6 +5,8 @@
 
 #define ALIGN_LEFTDISTANCE 4
 
+
+
 class MyCaret
 {
 

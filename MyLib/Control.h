@@ -7,6 +7,9 @@
 #include "Caret.h"
 #include "reflect.h"
 
+
+
+
 namespace LIB_CONTROL
 {
 	using namespace std;
@@ -376,8 +379,6 @@ namespace LIB_CONTROL
 	class TitleBar : public Control
 		,public REFLECT<TitleBar>
 	{
-		Sprite::Sprite mIconSprite[2];
-
 	public:
 		void Draw(Listener * pListener) override;
 
@@ -426,6 +427,12 @@ namespace LIB_CONTROL
 		ReadOnlyEditBox();
 	};
 
+	class NoCaretEditBox :public EditBoxInterface,
+		public REFLECT<NoCaretEditBox> {
+	public:
+		NoCaretEditBox();
+	};
+
 	///<LabelBoxInterface>±êÇ©½Ó¿Ú</LabelBoxInterface>
 	class LabelBoxInterface :public Control
 	{
@@ -435,7 +442,15 @@ namespace LIB_CONTROL
 		void Draw(Listener * pListener) override;
 
 		UINT HitTest(Listener * pListener, POINT pt) override;
+	};
 
+	class StaticLabel : public LabelBoxInterface,
+		public REFLECT<StaticLabel> 
+	{
+	public:
+		StaticLabel();
+
+		void Draw(Listener * pListener) override;
 	};
 
 	class LabelBox : public LabelBoxInterface,
@@ -501,6 +516,28 @@ namespace LIB_CONTROL
 		virtual UINT HitTest(POINT pt);
 
 		virtual void Hover(POINT pt);
+	};
+
+	template<class CellType>
+	class Cell
+	{
+	protected:
+		CellType mCellHeight;
+	public:
+		Cell() :mCellHeight((CellType)10) {}
+		CellType getCellHeight() { return mCellHeight; }
+		void setCellHeight(CellType ht) { mCellHeight = ht; }
+	};
+
+	class ListInterface:Control,
+		public Cell<int>
+	{
+	protected:
+		map<string, string> mValueMap;
+	public:
+		ListInterface();
+
+		void Draw(Listener * pListener) override;
 	};
 }
 

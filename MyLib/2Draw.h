@@ -20,6 +20,7 @@ using namespace Macros2D;
 #define TextLayout IDWriteTextLayout
 #define HitTestMatric DWRITE_HIT_TEST_METRICS
 
+
 class My2DDraw
 {
 	SINGLE_INSTANCE(My2DDraw)

@@ -1,4 +1,5 @@
 # pragma once
+
 #include "MyLayout.h"
 
 namespace LIB_WINDOW
@@ -78,7 +79,7 @@ public:
 
 	void ReDraw(bool bReDraw); 	//WM_PAINT
 
-	bool Show();
+	HANDLE Show();
 
 	void SetCallBackFunc(pCallBackFunc mFunc);
 

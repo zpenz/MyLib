@@ -3,6 +3,8 @@
 #include <wincodec.h>
 #include <memory>
 
+
+
 using namespace Conver;
 
 bool My2DDraw::ReSize(UINT uWidth, UINT uHeight)
@@ -30,14 +32,13 @@ bool My2DDraw::SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect)
 	IS_RETURN_ERROR(!mFactory, false, "mFactory null");
 	if (mRenderTarget != nullptr) SAFE_RELEASE(mRenderTarget); //clean
 
-	auto tempRect = pRect;
-	if (tempRect == NULL)
+	RECT tempRect;
+	if (pRect == NULL)
 	{
-		tempRect = new RECT();
-		GetWindowRect(hTargetWindowHwnd, tempRect);
+		GetWindowRect(hTargetWindowHwnd, &tempRect);
 	}
-	auto width = tempRect->right - tempRect->left;
-	auto height = tempRect->bottom - tempRect->top;
+	auto width = tempRect.right - tempRect.left;
+	auto height = tempRect.bottom - tempRect.top;
 
 	auto tp = D2D1::RenderTargetProperties();
 	auto hr = mFactory->CreateHwndRenderTarget(
@@ -73,7 +74,6 @@ bool My2DDraw::SetCurrentRenderTarget(ID2D1RenderTarget * thisRenderTarget)
 {
 	if (!thisRenderTarget) return false;
 	mRenderTarget = thisRenderTarget; 
-	if (!mRenderTarget) return false;
 	return true;
 }
 
@@ -199,7 +199,8 @@ bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle,
 	else
 		mRenderTarget->FillRectangle(desRect, tempSolidBrush);
 	auto hr = mRenderTarget->EndDraw();
-	auto error = GetLastError();
+
+	SAFE_RELEASE(tempSolidBrush);
 	return SUCCEEDED(hr);
 }
 
@@ -230,6 +231,7 @@ IDWriteTextLayout * My2DDraw::CreateTextLayoutW(std::wstring text, float fSize)
 	hr = mWriteFactory->CreateTextLayout(text.c_str(), text.length(), tempTextFormat, 100.0f, 0.0f,
 		&tempTextLayout);
 	IS_ERROR_EXIT(FAILED(hr), "CreateTextLayoutWÊ§°Ü!");
+	SAFE_RELEASE(tempTextFormat);
 	return tempTextLayout;
 }
 
@@ -241,6 +243,7 @@ bool My2DDraw::DrawRectWithText(RECT Rect, std::string text,MyColor RectColor, M
 
 bool My2DDraw::DrawRectWithTextW(RECT Rect, std::wstring text, MyColor RectColor, MyColor TextColor, TextLayout ** pLayout, bool isFillRectangle, ALIGN_TEXT_TYPE textAlignType, ALIGN_PARAGRAPH_TYPE paragraphAlignType)
 {
+	if (*pLayout != nullptr) (*pLayout)->Release();
 	if (!DrawRectangle(Rect, RectColor, isFillRectangle)) return false;
 	if (text.empty()) return true;
 
@@ -257,9 +260,12 @@ bool My2DDraw::DrawRectWithTextW(RECT Rect, std::wstring text, MyColor RectColor
 
 	*pLayout = tempTextLayout;
 
+	auto tempBrush = CreateBrush(TextColor);
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)), tempTextLayout, CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_CLIP);
+	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(Rect)), tempTextLayout, tempBrush, D2D1_DRAW_TEXT_OPTIONS_CLIP);
 	auto ret = mRenderTarget->EndDraw();
+
+	SAFE_RELEASE(tempBrush);
 	return true;
 }
 
@@ -271,6 +277,7 @@ bool My2DDraw::DrawText(std::string text, RECT layoutBox, MyColor TextColor, flo
 
 bool My2DDraw::DrawTextW(std::wstring text, RECT layoutBox, MyColor TextColor, float fontSize, TextLayout ** pLayout, ALIGN_TEXT_TYPE textAlignType, ALIGN_PARAGRAPH_TYPE paragraphAlignType)
 {
+	if (*pLayout != nullptr) (*pLayout)->Release();
 	if (text.empty()) return true;
 	IDWriteTextLayout * tempTextLayout = CreateTextLayoutW(text);
 
@@ -283,10 +290,13 @@ bool My2DDraw::DrawTextW(std::wstring text, RECT layoutBox, MyColor TextColor, f
 	tempTextLayout->SetFontSize(fontSize, textRange);
 	*pLayout = tempTextLayout;
 
+	auto tempBrush = CreateBrush(TextColor);
 	mRenderTarget->BeginDraw();
-	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(layoutBox)), tempTextLayout, CreateBrush(TextColor), D2D1_DRAW_TEXT_OPTIONS_CLIP);
+	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(layoutBox)), tempTextLayout, tempBrush, D2D1_DRAW_TEXT_OPTIONS_CLIP);
 	auto ret = mRenderTarget->EndDraw();
 	IS_RETURN_ERROR(FAILED(ret),false,"DrawTextW failed!");
+
+	SAFE_RELEASE(tempBrush);
 	return true;
 }
 
@@ -313,8 +323,10 @@ bool My2DDraw::DrawEllipse(POINT centerPoint, float r1, float r2, MyColor Ellips
 	else
 		mRenderTarget->FillEllipse(D2D1::Ellipse(PointToD2DPointF(centerPoint), r1, r2), tempSolidBrush);
 	auto hr = mRenderTarget->EndDraw();
+
+	SAFE_RELEASE(tempSolidBrush);
 	return SUCCEEDED(hr);
-	return false;
+
 }
 
 bool My2DDraw::DrawLine(POINT src, POINT des, MyColor lineColor)
@@ -329,6 +341,8 @@ bool My2DDraw::DrawLine(POINT src, POINT des, MyColor lineColor, float LineWidth
 	mRenderTarget->BeginDraw();
 	mRenderTarget->DrawLine(PointToD2DPointF(src), PointToD2DPointF(des), tempSolidBrush,LineWidth);
 	auto hr = mRenderTarget->EndDraw();
+
+	SAFE_RELEASE(tempSolidBrush);
 	return SUCCEEDED(hr);
 }
 
@@ -339,6 +353,8 @@ bool My2DDraw::DrawPicture(ID2D1Bitmap * pBitmap, RECT decRect)
 	mRenderTarget->BeginDraw();
 	mRenderTarget->DrawBitmap(pBitmap, RectToD2DRectF(decRect));
 	auto hr = mRenderTarget->EndDraw();
+	
+	//SAFE_RELEASE(pBitmap);
 	return SUCCEEDED(hr);
 }
 

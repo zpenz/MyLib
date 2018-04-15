@@ -16,21 +16,19 @@ HCURSOR ArrowShape::SHAPE_CROSS = LoadCursor(NULL, IDC_CROSS);
 namespace Conver
 {
 
-	D2D1_POINT_2F & PointToD2DPointF(POINT & pt)
+	D2D1_POINT_2F  PointToD2DPointF(POINT & pt)
 	{
-		D2D1_POINT_2F *pPointF = new D2D1_POINT_2F(
-			D2D1::Point2F(STCAST(float,pt.x),STCAST(float,pt.y)));
-		return *pPointF;
+		return D2D1_POINT_2F(
+			D2D1::Point2F(STCAST(float, pt.x), STCAST(float, pt.y)));
 	}
 
-	D2D1_RECT_F & RectToD2DRectF(RECT & rc)
+	D2D1_RECT_F  RectToD2DRectF(RECT & rc)
 	{
-		D2D1_RECT_F * pNeedRect = new D2D1_RECT_F(
-			D2D1::RectF(STCAST(float,rc.left),
+		return D2D1_RECT_F(
+			D2D1::RectF(STCAST(float, rc.left),
 				STCAST(float, rc.top),
 				STCAST(float, rc.right),
 				STCAST(float, rc.bottom)));
-		return *pNeedRect;
 	}
 
 	bool PointInRect(int x, int y,RECT rc)
@@ -63,9 +61,7 @@ namespace Conver
 
 	RECT ClipRectBoard(RECT srcRect, LONG dx, LONG dy)
 	{
-		RECT tempRC = {srcRect.left+dx,srcRect.top+dy,srcRect.right-dx,srcRect.bottom-dy};
-		//if (!RectInRect(tempRC, srcRect)) { LOG_WARNING("ºÙ«–æÿ–Œ ß∞‹!");  return srcRect; }
-		return tempRC;
+		return MyRect(srcRect.left + dx, srcRect.top + dy, srcRect.right - dx, srcRect.bottom - dy);
 	}
 
 	RECT SubRect(RECT srcRect, RECT desRect)
@@ -152,21 +148,21 @@ namespace Conver
 
 	POINT LeftTopPoint(RECT rc)
 	{
-		POINT pt = {rc.left,rc.top};
-		return pt;
+		return Point(rc.left,rc.top);
 	}
 
 	POINT TopCenterPoint(RECT rc)
 	{
-		POINT pt = { rc.left + (rc.right - rc.left) / 2,rc.top };
-		return pt;
+		return Point(rc.left + (rc.right - rc.left) / 2, rc.top);
 	}
 
-	POINT BottomCenterPoint(RECT rc)
+	POINT BottomCenterPoint(RECT rc,int height)
 	{
-		POINT pt = { rc.left + (rc.right - rc.left) / 2,rc.bottom };
-		return pt;
+		if (height == -1) height = rc.bottom;
+		return Point(rc.left + (rc.right - rc.left) / 2, height);
 	}
+
+
 
 	POINT LeftCenterPoint(RECT rc)
 	{
@@ -259,7 +255,7 @@ namespace Conver
 		return mRect;
 	}
 
-	MyRect::operator D2D1_RECT_F&()
+	MyRect::operator D2D1_RECT_F()
 	{
 		return RectToD2DRectF(*this);
 	}

@@ -1,5 +1,6 @@
 #include "Control.h"
 
+
 namespace LIB_CONTROL
 {
 	using namespace Conver;
@@ -219,7 +220,6 @@ namespace LIB_CONTROL
 		if (!mFocusCaret) return 0;
 		CaretManager.ChangeCaretSize(0, height());
 		CaretManager.ShowCaret();
-		IS_RETURN_ERROR(!mpTextpLayout,0,"Control::LButtonDown mpTextLayout null...");
 		CaretManager.AdjustPos(mRect,mpTextpLayout,&pt);
 		return 0; 
 	}
@@ -247,7 +247,6 @@ namespace LIB_CONTROL
 		//输入字符事件处理
 		if (!mOwnCaret) return;
 		if (mReadOnly) return; //只读
-		if (!mpTextpLayout) return;
 		if (!mFocusCaret) return;
 
 		auto index = CaretManager.getIndex();
@@ -509,16 +508,14 @@ namespace LIB_CONTROL
 	{
 		if (!mMouseInternal)
 		{
-			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor),&mpTextpLayout,true);
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), &mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw TitleBar failed!");
 		}
 		else
 		{
-			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor),&mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
 			IS_ERROR_EXIT(!ret, "Draw  honvered TitleBar failed!");
 		}
-		mIconSprite[0].Render();
-		mIconSprite[1].Render();
 	}
 
 
@@ -536,14 +533,6 @@ namespace LIB_CONTROL
 	TitleBar::TitleBar()
 	{
 		SetID(CONTROL_TYPE_TITLEBAR);
-		//test sprite
-		mIconSprite[0].LoadEx(L"effect/hit/*.png");
-		mIconSprite[0].ChangeRect(MyRect(0,300,256,556));
-		mIconSprite[0].SetSpeed(20);
-
-		mIconSprite[1].LoadEx(L"effect/hit2/*.png");
-		mIconSprite[1].ChangeRect(MyRect(556, 300, 812, 556));
-		mIconSprite[1].SetSpeed(20);
 	}
 
 	TitleBar::TitleBar(wstring text,RECT rc):Control(text,rc)
@@ -632,8 +621,8 @@ namespace LIB_CONTROL
 		if (!mMouseInternal)
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
-			DrawManager.DrawLine(LeftTopPoint(drawRect),RightBottomPoint(drawRect), COLOREX(mForceColor));
-			DrawManager.DrawLine(LeftBottomPoint(drawRect),RightTopPoint(drawRect), COLOREX(mForceColor));
+			DrawManager.DrawLine(LeftTopPoint(drawRect), RightBottomPoint(drawRect), COLOREX(mForceColor));
+			DrawManager.DrawLine(LeftBottomPoint(drawRect), RightTopPoint(drawRect), COLOREX(mForceColor));
 			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
 		}
 		else
@@ -689,7 +678,6 @@ namespace LIB_CONTROL
 			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
 		}
 	}
-
 
 	UINT MiniButton::LButtonUp(Listener * pListener,POINT pt)
 	{
@@ -791,26 +779,11 @@ namespace LIB_CONTROL
 		AdjustRect(MyRect(RECTWIDTH(newRect) - 2*btnHeight, 0, RECTWIDTH(newRect) - btnHeight, btnHeight));
 	}
 
-	void ImageButton::Draw(Listener * pListener)
-	{
-		if (!pImage) if(!mText.empty()) LoadFromFile(mText); //如果文字非空，那么就加载文字路径下的图
-		IS_RETURN_ERROR(!pImage,,"ImageButton 图像为空");
-		if (pHonverImage == nullptr) pHonverImage = pImage;
-		if (ZeroRect(mImgRec)) mImgRec = mRect;
-		if (!mMouseInternal)
-		{
-			DrawManager.DrawRectangle(mRect,mBackColor,true);
-			DrawManager.DrawPicture(pImage, mImgRec);
-		}
-		else
-		{
-			DrawManager.DrawRectangle(mRect, mHonverBackColor, true);
-			DrawManager.DrawPicture(pHonverImage, mImgRec);
-		}
-	}
-
 	ImageButton::ImageButton()
 	{
+		pHonverImage = nullptr;
+		mBackColor = RGB(0,0,0);
+		mHonverBackColor = RGB(0,0,0);
 	}
 
 	ImageButton::ImageButton(wstring picLoc, RECT rImgRect)
@@ -828,6 +801,23 @@ namespace LIB_CONTROL
 	ImageButton::~ImageButton()
 	{
 		SAFE_RELEASE(pHonverImage);
+	}
+
+
+	void ImageButton::Draw(Listener * pListener)
+	{
+		if (!pImage) if (!mText.empty()) LoadFromFile(mText); //如果文字非空，那么就加载文字路径下的图
+		if (pHonverImage == nullptr) pHonverImage = pImage;
+		if (ZeroRect(mImgRec)) mImgRec = mRect;
+		if (!mMouseInternal)
+		{
+			DrawManager.DrawRectangle(mRect, mBackColor, true);
+		}
+		else
+		{
+			DrawManager.DrawRectangle(mRect, mHonverBackColor, true);
+		}
+		if (pImage) DrawManager.DrawPicture(pImage, mImgRec);
 	}
 
 	////////////////////////////////////////////////////////////////////////// EditBox
@@ -940,6 +930,11 @@ namespace LIB_CONTROL
 		mReadOnly = false;
 	}
 
+	NoCaretEditBox::NoCaretEditBox()
+	{
+		mOwnCaret = false;
+	}
+
 	LabelBox::LabelBox(){}
 
 	DrawAbleLabel::DrawAbleLabel()
@@ -981,6 +976,8 @@ namespace LIB_CONTROL
 		pControl->AdjustRect(MyRect(mStartDrawPoint,mEndDrawPoint));
 		pControl->SetClassName(mStateType);
 		pControl->SetID(mSubID++);
+		//全部可以移动
+		pControl->SetDrag(true);
 		mDrawSet.push_back(pControl);
 		pListener->attach(pControl);
 		mStateType.clear();
@@ -1020,5 +1017,20 @@ namespace LIB_CONTROL
 		}
 	}
 
+	StaticLabel::StaticLabel()
+	{
+	}
+
+	void StaticLabel::Draw(Listener * pListener)
+	{
+		DrawManager.DrawRectWithTextW(mRect, mText, mBackColor, mForceColor, &mpTextpLayout, true, ALIGN_TEXT_LEFT);
+	}
+
+	ListInterface::ListInterface(){}
+
+	void ListInterface::Draw(Listener * pListener)
+	{
+		
+	}
 
 }

@@ -4,13 +4,6 @@
 #include <string>
 #include <map>
 #include <d2d1.h>
-# ifdef INCLUDE_MY_DX9
-# include "libD3D.h"
-# endif
-
-# ifdef INCLUDE_MY_DX11
-# include "libd11.h"
-# endif
 
 #define DEFAULT_CONTROL_ID 678
 #define SCREEN_WIDTH  GetDeviceCaps(GetDC(NULL),HORZRES)
@@ -192,7 +185,7 @@ namespace Conver
 
 	POINT TopCenterPoint(RECT rc);
 
-	POINT BottomCenterPoint(RECT rc);
+	POINT BottomCenterPoint(RECT rc,int height = -1);
 
 	POINT LeftCenterPoint(RECT rc);
 
@@ -218,9 +211,9 @@ namespace Conver
 	float utof(wchar_t * Wchar);
 
 	///<d2dConver>some d2d conver</d2dConver>
-	D2D1_POINT_2F & PointToD2DPointF(POINT & pt);
+	D2D1_POINT_2F  PointToD2DPointF(POINT & pt);
 
-	D2D1_RECT_F & RectToD2DRectF(RECT & rc);
+	D2D1_RECT_F  RectToD2DRectF(RECT & rc);
 
 	bool PointInRect(int x, int y,RECT rc);
 
@@ -257,7 +250,7 @@ namespace Conver
 
 		operator RECT &();
 
-		operator D2D1_RECT_F&();
+		operator D2D1_RECT_F();
 
 	};
 

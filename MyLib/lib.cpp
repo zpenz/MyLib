@@ -122,7 +122,7 @@ void BaseWindow::UpdatePosition(WPARAM wParam, LPARAM lParam)
 	mLeftTop.y = (int)(short)HIWORD(lParam);
 }
 
-bool BaseWindow::Show()
+HANDLE BaseWindow::Show()
 {
 	auto proc = [](LPVOID lpParameter)-> DWORD 
 	{
@@ -135,9 +135,7 @@ bool BaseWindow::Show()
 	auto hThread = CreateThread(NULL, 0, proc, this, 0, &hThreadId); 
 	if (!hThread) return false;
 	auto error = GetLastError();
-
-	CloseHandle(hThread);
-	return true;
+	return hThread;
 }
 
 void BaseWindow::SetCallBackFunc(pCallBackFunc mFunc)
@@ -360,12 +358,6 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			window->UpdatePosition(wParam,lParam);
 			break;
 		case WM_COMMAND:
-			auto ControlId = LOWORD(wParam);
-			switch(ControlId)
-			{
-			case 9999:
-				break;
-			}
 			break;
 	}
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
@@ -406,7 +398,7 @@ void BaseWindow::Destory()
 
 	 CaretManager.attrach(mBaseHwnd);
 	 CaretManager.InitCaret();
-	 CaretManager.Color(RGB(216,120,17));
+	 CaretManager.Color(RGB(0,0,0));
 
 	 //窗口完全矩形..
 	 //auto Rgn = CreateRectRgn(0,0,mWidth,mHeight);
@@ -421,25 +413,19 @@ void BaseWindow::Destory()
  void BaseWindow::OnDraw()
  {
 	 DrawManager.Clear(MyColor::Black);
-
 	 mListener.Draw();
-
 	 RECT windowRect;
 	 GetWindowRect(mBaseHwnd, &windowRect);
 	 Conver::ScreenToClientRc(mBaseHwnd, windowRect);
-	 DrawManager.DrawRectangle(windowRect, COLOREX(RGB(57,130,255)), false);
-
+	 DrawManager.DrawRectangle(windowRect, COLOREX(RGB(57, 130, 255)), false);
 	 DrawManager.Present(&windowRect);
-
  }
 
  void BaseWindow::Update(float delta)
  {
 	 POINT pt; GetCursorPos(&pt);
-
 	 ScreenToClient(mBaseHwnd, &pt);
 	 mListener.Hover(pt); 	 //hover
-
 	 ReDraw(true);
  }
 
@@ -477,7 +463,6 @@ void BaseWindow::Destory()
  {
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
 	 ScreenToClient(mBaseHwnd, &pt);
-
 	 return mListener.HitTest(pt);
  }
 
@@ -527,9 +512,6 @@ void BaseWindow::Destory()
 	 mMouse.x = mousePt.x; mMouse.y = mousePt.y;
 	 mListener.MouseMove(Conver::Point(mousePt.x,mousePt.y));
  }
-
-
-
 
  namespace MOUSE
  {

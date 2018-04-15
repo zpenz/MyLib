@@ -66,15 +66,6 @@
     <ClInclude Include="lib.h">
       <Filter>Window</Filter>
     </ClInclude>
-    <ClInclude Include="lib2d.h">
-      <Filter>Window</Filter>
-    </ClInclude>
-    <ClInclude Include="libD3D.h">
-      <Filter>Window</Filter>
-    </ClInclude>
-    <ClInclude Include="libd11.h">
-      <Filter>Window</Filter>
-    </ClInclude>
     <ClInclude Include="MyLayout.h">
       <Filter>File</Filter>
     </ClInclude>
@@ -105,15 +96,6 @@
       <Filter>Draw</Filter>
     </ClCompile>
     <ClCompile Include="lib.cpp">
-      <Filter>Window</Filter>
-    </ClCompile>
-    <ClCompile Include="lib2d.cpp">
-      <Filter>Window</Filter>
-    </ClCompile>
-    <ClCompile Include="libD3D.cpp">
-      <Filter>Window</Filter>
-    </ClCompile>
-    <ClCompile Include="libd11.cpp">
       <Filter>Window</Filter>
     </ClCompile>
     <ClCompile Include="MyLayout.cpp">
