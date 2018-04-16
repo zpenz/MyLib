@@ -38,7 +38,8 @@ int main()
 		//SAVE
 		bs.mListener.AddClickFuncByID(120, [&]() {
 			printf("开始保存...\n");
-			Layout::ControlLayout.SaveLayoutFile("D:\\window.layout", &bs.mListener);
+			//Layout::ControlLayout.SaveLayoutFile("D:\\window.layout", &bs.mListener);
+			Layout::ControlLayout.SaveLayoutFile("D:\\window.layout",DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->StretchSetRect(1024, 768));
 			printf("保存完毕...\n");
 		});
 
@@ -72,25 +73,37 @@ int main()
 			printf("选择StaticLabel\n");
 		});
 
-		while (1)
-		{
+		//DrawAbleLabel
+		bs.mListener.AddClickFuncByID(125, [&]() {
 			using namespace Conver;
 			auto pControl = DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->pForcedControl;
 			if (pControl == nullptr)
 			{
 				bs.mListener.SetRangeIDValue(141, 151, L"null");
-				Sleep(200);
-				continue;
 			}
+			else
+			{
+				COLORREF tempColor = pControl->BackColor();
+				bs.mListener.SetValueByID(142, wFormat(L"%d", pControl->width()));
+				bs.mListener.SetValueByID(143, wFormat(L"%d", pControl->height()));
+				bs.mListener.SetValueByID(145, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				tempColor = pControl->ForceColor();
+				bs.mListener.SetValueByID(146, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				tempColor = pControl->HoverBackColor();
+				bs.mListener.SetValueByID(147, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				tempColor = pControl->HoverForceColor();
+				bs.mListener.SetValueByID(148, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				bs.mListener.SetValueByID(149, wFormat(L"%f", pControl->getBoardSize()));
+				tempColor = pControl->getBoardColor();
+				bs.mListener.SetValueByID(150, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				bs.mListener.SetValueByID(151, wFormat(L"%d", pControl->CanDrag()));
+				bs.mListener.SetValueByID(141, pControl->Text());
+			}
+		});
 
-			bs.mListener.SetValueByID(142,wFormat(L"%d",pControl->width()));
-			bs.mListener.SetValueByID(143,wFormat(L"%d", pControl->height()));
-			bs.mListener.SetValueByID(145, wFormat(L"%d", pControl->BackColor()));
-		}
 
 		WaitForSingleObject(ThreadHandle, INFINITE);
 		CloseHandle(ThreadHandle);
-
     return 0;
 }
 

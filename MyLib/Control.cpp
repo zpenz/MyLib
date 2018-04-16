@@ -970,6 +970,7 @@ namespace LIB_CONTROL
 	{
 		UINT sacleX = uWindowWidth/width();
 		UINT sacleY = uWindowHeight/height();
+		list<Control*> ControlSet;
 		for_each(mDrawSet.begin(), mDrawSet.end(), [&](Control * pControl) {
 			auto internalRect = pControl->getRect();
 			pControl->AdjustRect(
@@ -977,8 +978,9 @@ namespace LIB_CONTROL
 				internalRect.top-mRect.top,
 				(internalRect.left - mRect.left+pControl->width())*sacleX,
 				(internalRect.top - mRect.top + pControl->height())*sacleY));
+			ControlSet.push_back(pControl);
 		});
-		return list<Control*>();
+		return std::move(ControlSet);
 	}
 
 	void DrawAbleLabel::Draw(Listener * pListener)

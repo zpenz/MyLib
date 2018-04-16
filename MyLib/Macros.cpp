@@ -2,6 +2,7 @@
 #include "Macros.h"
 #include <d2d1.h>
 #include <utility> //pair
+#include <memory>
 
 void ErrorMessage(const char * _error)
 {
@@ -128,13 +129,12 @@ namespace Conver
 		return tempRect;
 	}
 	
-
 	string Format(char * format, ...)
 	{
 		va_list va;
 		va_start(va, format);
 		char buf[256];
-		sprintf_s(buf,format,va_arg(va, char *));
+		vsprintf_s(buf,format,va);
 		va_end(va);
 		return buf;
 	}
@@ -144,7 +144,7 @@ namespace Conver
 		va_list va;
 		va_start(va, format);
 		wchar_t buf[256];
-		swprintf_s(buf, format, va_arg(va, char *));
+		vswprintf_s(buf,256,format,va);
 		va_end(va);
 		return buf;
 	}
@@ -171,7 +171,6 @@ namespace Conver
 		if (height == -1) height = rc.bottom;
 		return Point(rc.left + (rc.right - rc.left) / 2, height);
 	}
-
 
 
 	POINT LeftCenterPoint(RECT rc)
@@ -210,8 +209,7 @@ namespace Conver
 		auto TheCoveredString = new char[size]();
 		auto ret  = WideCharToMultiByte(codePage, 0, Wchar, -1, TheCoveredString, size, NULL, NULL);
 		if (!ret) { SAFE_DELETE(TheCoveredString); return nullptr; }
-		//TheCoveredString[size] = '\0';
-		return TheCoveredString;
+		return std::move(TheCoveredString);
 	}
 
 	wchar_t * ACharToWChar(char * Achar, UINT codePage)

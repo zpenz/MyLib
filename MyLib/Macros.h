@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <string>
 #include <map>
+#include <functional>
 #include <d2d1.h>
 
 #define DEFAULT_CONTROL_ID 678
@@ -173,7 +174,6 @@ void ErrorMessage(const char * _error);
 	
 namespace Conver
 {
-
 
 	using namespace std;
 
