@@ -2,9 +2,7 @@
 
 #define _CRTDBG_MAP_ALLOC 
 #include<stdlib.h>
-
 #include<crtdbg.h>
-
 #include "../MyLib/lib.h"
 #include "../MyLib/2Draw.h"
 #include "../MyLib/Macros.h"
@@ -12,8 +10,6 @@
 #pragma comment(lib,"../Debug/lib.lib")
 #include <iostream>
 using namespace std;
-
-
 
 inline void EnableMemLeakCheck()
 {

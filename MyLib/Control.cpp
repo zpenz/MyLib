@@ -991,24 +991,14 @@ namespace LIB_CONTROL
 
 	UINT DrawAbleLabel::LButtonDown(Listener * pListener, POINT pt)
 	{
-		if (mStateType.empty())
-		{
-			auto forcedIt = find_if(mDrawSet.rbegin(), mDrawSet.rend(), [&](Control * pControl)
-			{
-				if (PointInRect(pt.x, pt.y, pControl->getRect())) return true;
-				return false;
-			});
-			if (forcedIt == mDrawSet.rend()) { pForcedControl = nullptr; return 0; }
-			pForcedControl = *forcedIt;
-			return 0;
-		}
+		IS_RETURN(mStateType.empty(),0);
 		mStartDrawPoint = pt;
 		return 0;
 	}
 
 	UINT DrawAbleLabel::LButtonUp(Listener * pListener, POINT pt)
 	{
-		if (mStateType.empty()) return 0;
+		IS_RETURN(mStateType.empty(), 0);
 		if (pBufferControl != nullptr)
 		{
 			pListener->detach(pBufferControl);
@@ -1032,6 +1022,18 @@ namespace LIB_CONTROL
 
 	void DrawAbleLabel::MouseMove(Listener * pListener, POINT pt)
 	{
+		if (mStateType.empty())
+		{
+			auto forcedIt = find_if(mDrawSet.rbegin(), mDrawSet.rend(), [&](Control * pControl)
+			{
+				if (PointInRect(pt.x, pt.y, pControl->getRect())) return true;
+				return false;
+			});
+			if (forcedIt == mDrawSet.rend()) { pForcedControl = nullptr; return ; }
+			pForcedControl = *forcedIt;
+			return ;
+		}
+
 		static Point lastPt = pt;
 		if (mStateType.empty()||  nullPoint == mStartDrawPoint) return;
 		if (lastPt == pt) return;

@@ -407,7 +407,7 @@ void BaseWindow::Destory()
 
 	 mListener.attachWindow(mBaseHwnd);
 	 //加载所有控件
-	 Layout::ControlLayout.LoadLayoutFile("window.layout",&mListener);
+	 IS_ERROR_EXIT(!Layout::ControlLayout.LoadLayoutFile("window.layout",&mListener),"加载布局文件失败...");
  }
 
  void BaseWindow::OnDraw()
