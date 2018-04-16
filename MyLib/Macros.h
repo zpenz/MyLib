@@ -179,6 +179,8 @@ namespace Conver
 
 	string Format(char * format,...);
 
+	wstring wFormat(wchar_t * format, ...);
+
 	POINT  CenterPoint(RECT rc, int offsetX = 0,int offsetY = 0);
 
 	POINT LeftTopPoint(RECT rc);
@@ -247,6 +249,8 @@ namespace Conver
 		MyRect(POINT pointLeftTop, POINT pointRightBottom);
 
 		RECT Rect() const;
+
+		MyRect operator-(MyRect & rect);
 
 		operator RECT &();
 

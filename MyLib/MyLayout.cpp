@@ -154,17 +154,21 @@ namespace Layout
 
 	bool MyLayout::SaveLayoutFile(string outFileName, Listener * pListener)
 	{
-		IS_RETURN_ERROR(outFileName.empty() || !pListener, false, "输出的layout文件名或者Listener为空");
+		return SaveLayoutFile(outFileName, pListener->Obj());
+	}
+
+	bool MyLayout::SaveLayoutFile(string outFileName, list<Control*> ControlSet)
+	{
+		IS_RETURN_ERROR(outFileName.empty() || ControlSet.empty(), false, "输出的layout文件名或者ControlSet为空");
 		FILE * pfile = nullptr;
-		_wfopen_s(&pfile, ACharToWChar(COCAST(char *,outFileName.c_str())), L"w+");
-		IS_RETURN_ERROR(!pfile,false,"file open error");
+		_wfopen_s(&pfile, ACharToWChar(COCAST(char *, outFileName.c_str())), L"w+");
+		IS_RETURN_ERROR(!pfile, false, "file open error");
 
 		shared_ptr<void> pExit(NULL, [&](void*) {
 			if (pfile) fclose(pfile);
 		});
 
-		auto ListenerList = pListener->Obj();
-		for_each(ListenerList.begin(), ListenerList.end(), [&](Control * pControl)
+		for_each(ControlSet.begin(), ControlSet.end(), [&](Control * pControl)
 		{
 			SaveObject(pfile, pControl);
 		});

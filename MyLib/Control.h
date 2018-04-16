@@ -236,6 +236,10 @@ namespace LIB_CONTROL
 
 		bool AddClickFuncByID(UINT id,function<void(void)> pFunc,bool rewrite = false);
 
+		bool SetValueByID(UINT id,wstring stringValue);
+
+		void SetRangeIDValue(UINT startId,UINT endId,wstring stringValue);
+
 		bool attachWindow(HWND hWnd);
 
 		bool attach(Control * pControl);
@@ -463,6 +467,8 @@ namespace LIB_CONTROL
 		public REFLECT<DrawAbleLabel>
 	{
 		int mSubID;
+
+		Control * pBufferControl;
 	public:
 		DrawAbleLabel();
 
@@ -476,7 +482,9 @@ namespace LIB_CONTROL
 
 		list<Control *> mDrawSet;
 
-		Control * pBufferControl;
+		list<Control *> StretchSetRect(UINT uWindowWidth,UINT uWindowHeight);
+
+		Control * pForcedControl;
 
 		void Draw(Listener * pListener) override;
 

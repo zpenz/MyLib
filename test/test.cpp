@@ -72,6 +72,21 @@ int main()
 			printf("Ñ¡ÔñStaticLabel\n");
 		});
 
+		while (1)
+		{
+			using namespace Conver;
+			auto pControl = DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->pForcedControl;
+			if (pControl == nullptr)
+			{
+				bs.mListener.SetRangeIDValue(141, 151, L"null");
+				Sleep(200);
+				continue;
+			}
+
+			bs.mListener.SetValueByID(142,wFormat(L"%d",pControl->width()));
+			bs.mListener.SetValueByID(143,wFormat(L"%d", pControl->height()));
+			bs.mListener.SetValueByID(145, wFormat(L"%d", pControl->BackColor()));
+		}
 
 		WaitForSingleObject(ThreadHandle, INFINITE);
 		CloseHandle(ThreadHandle);

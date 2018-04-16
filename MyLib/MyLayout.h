@@ -64,6 +64,8 @@ namespace Layout
 
 		bool SaveLayoutFile(string outFileName,Listener * pListener);
 
+		bool SaveLayoutFile(string outFileName, list<Control *> ControlSet);
+
 		bool SaveObject(FILE  * pfile,Control * pControl);
 
 		bool WriteDataWithChar(FILE * pFile, void * data, wchar_t append = L' ');

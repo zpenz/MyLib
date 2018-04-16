@@ -42,10 +42,27 @@ namespace LIB_CONTROL
 	bool Listener::AddClickFuncByID(UINT id,function<void(void)> pFunc,bool rewrite)
 	{
 		auto pControl = findElementByID(id);
-		IS_RETURN_ERROR(!pControl,false,"找不到指定的控件");
+		IS_RETURN_ERROR(!pControl,false,"AddClickFuncByID找不到指定的控件");
 		IS_RETURN(!rewrite && pControl->mClickFunc != nullptr, false);
 		pControl->mClickFunc = pFunc;
 		return true;
+	}
+
+	bool Listener::SetValueByID(UINT id, wstring stringValue)
+	{
+		auto pControl = findElementByID(id);
+		IS_RETURN_ERROR(!pControl, false, "SetValueByID找不到指定的控件");
+		pControl->SetText(stringValue);
+		return true;
+	}
+
+	void Listener::SetRangeIDValue(UINT startId, UINT endId, wstring stringValue)
+	{
+		if (endId < startId) return;
+		for (auto id = startId; id != endId; id++)
+		{
+			SetValueByID(id,stringValue);
+		}
 	}
 
 	bool Listener::attachWindow(HWND hWnd)
@@ -939,7 +956,7 @@ namespace LIB_CONTROL
 
 	DrawAbleLabel::DrawAbleLabel()
 	{
-		pBufferControl = nullptr;
+		pBufferControl = pForcedControl =  nullptr;
 		mStartDrawPoint = nullPoint;
 		mSubID = DEFAULT_CONTROL_ID;
 	}
@@ -947,6 +964,21 @@ namespace LIB_CONTROL
 	DrawAbleLabel::~DrawAbleLabel()
 	{
 		SAFE_DELETE_ALL(mDrawSet);
+	}
+
+	list<Control*> DrawAbleLabel::StretchSetRect(UINT uWindowWidth, UINT uWindowHeight)
+	{
+		UINT sacleX = uWindowWidth/width();
+		UINT sacleY = uWindowHeight/height();
+		for_each(mDrawSet.begin(), mDrawSet.end(), [&](Control * pControl) {
+			auto internalRect = pControl->getRect();
+			pControl->AdjustRect(
+				MyRect(internalRect.left-mRect.left,
+				internalRect.top-mRect.top,
+				(internalRect.left - mRect.left+pControl->width())*sacleX,
+				(internalRect.top - mRect.top + pControl->height())*sacleY));
+		});
+		return list<Control*>();
 	}
 
 	void DrawAbleLabel::Draw(Listener * pListener)
@@ -957,7 +989,17 @@ namespace LIB_CONTROL
 
 	UINT DrawAbleLabel::LButtonDown(Listener * pListener, POINT pt)
 	{
-		if (mStateType.empty()) return 0;
+		if (mStateType.empty())
+		{
+			auto forcedIt = find_if(mDrawSet.rbegin(), mDrawSet.rend(), [&](Control * pControl)
+			{
+				if (PointInRect(pt.x, pt.y, pControl->getRect())) return true;
+				return false;
+			});
+			if (forcedIt == mDrawSet.rend()) { pForcedControl = nullptr; return 0; }
+			pForcedControl = *forcedIt;
+			return 0;
+		}
 		mStartDrawPoint = pt;
 		return 0;
 	}

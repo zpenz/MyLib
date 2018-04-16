@@ -139,6 +139,16 @@ namespace Conver
 		return buf;
 	}
 
+	wstring wFormat(wchar_t * format, ...)
+	{
+		va_list va;
+		va_start(va, format);
+		wchar_t buf[256];
+		swprintf_s(buf, format, va_arg(va, char *));
+		va_end(va);
+		return buf;
+	}
+
 	POINT  CenterPoint(RECT rc,int offsetX,int offsetY)
 	{
 		POINT pt = {rc.left + (rc.right - rc.left)/2 - offsetX/2,
@@ -248,6 +258,12 @@ namespace Conver
 	RECT MyRect::Rect() const
 	{
 		return mRect;
+	}
+
+	MyRect  MyRect::operator-(MyRect & rect)
+	{
+		return MyRect(mLeft-rect.mLeft,mTop-rect.mTop,
+			mRight - rect.mRight, mBottom - rect.mBottom);
 	}
 
 	MyRect::operator RECT&()
