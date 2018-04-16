@@ -30,71 +30,109 @@ int main()
 		COLORREF color = GetPixel(GetDC(NULL), pPoint->x, pPoint->y);
 		cout << (UINT)GetRValue(color) << (UINT)GetGValue(color) << (UINT)GetBValue(color) << endl;
 
-
+		auto liser = bs.mListener;
+		auto drawable = DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125));
 		//SAVE
-		bs.mListener.AddClickFuncByID(120, [&]() {
+		liser.AddClickFuncByID(120, [&]() {
 			printf("开始保存...\n");
 			//Layout::ControlLayout.SaveLayoutFile("D:\\window.layout", &bs.mListener);
-			Layout::ControlLayout.SaveLayoutFile("D:\\window.layout",DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->StretchSetRect(1024, 768));
+			Layout::ControlLayout.SaveLayoutFile("D:\\window.layout",DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->mSaveSet);
 			printf("保存完毕...\n");
 		});
 
 		//LabelBox
-		bs.mListener.AddClickFuncByID(126, [&]() {
-			DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->mStateType = L"LabelBox";
+		liser.AddClickFuncByID(126, [&]() {
+			drawable->mStateType = L"LabelBox";
 			printf("选择LabelBox\n");
 		});
 
 		//Force
-		bs.mListener.AddClickFuncByID(127, [&]() {
-			DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->mStateType = L"ForceLabel";
+		liser.AddClickFuncByID(127, [&]() {
+			drawable->mStateType = L"ForceLabel";
 			printf("选择ForceLabel\n");
 		});
 
 		//EditBox
-		bs.mListener.AddClickFuncByID(128, [&]() {
-			DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->mStateType = L"NoCaretEditBox";
+		liser.AddClickFuncByID(128, [&]() {
+			drawable->mStateType = L"NoCaretEditBox";
 			printf("选择NoCaretEditBox\n");
 		});
 
 		//ImgButton
-		bs.mListener.AddClickFuncByID(129, [&]() {
-			DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->mStateType = L"ImageButton";
+		liser.AddClickFuncByID(129, [&]() {
+			drawable->mStateType = L"ImageButton";
 			printf("选择ImageButton\n");
 		});
 
 		//StaticLabel
-		bs.mListener.AddClickFuncByID(130, [&]() {
-			DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->mStateType = L"StaticLabel";
+		liser.AddClickFuncByID(130, [&]() {
+			drawable->mStateType = L"StaticLabel";
 			printf("选择StaticLabel\n");
 		});
 
+		//关闭
+		liser.AddClickFuncByID(152, [&]() {
+			drawable->mStateType = L"CloseButton";
+			printf("选择CloseButton\n");
+		});
+
+		//最小
+		liser.AddClickFuncByID(153, [&]() {
+			drawable->mStateType = L"MiniButton";
+			printf("选择MiniButton\n");
+		});
+
+		//最大
+		liser.AddClickFuncByID(154, [&]() {
+			drawable->mStateType = L"MaxButton";
+			printf("选择MaxButton\n");
+		});
+
 		//DrawAbleLabel
-		bs.mListener.AddClickFuncByID(125, [&]() {
+		liser.AddClickFuncByID(125, [&]() {
 			using namespace Conver;
-			auto pControl = DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->pForcedControl;
+			auto pControl = drawable->pForcedControl;
 			if (pControl == nullptr)
 			{
-				bs.mListener.SetRangeIDValue(141, 151, L"null");
+				liser.SetRangeIDValue(141, 151, L"null");
 			}
 			else
 			{
 				COLORREF tempColor = pControl->BackColor();
-				bs.mListener.SetValueByID(142, wFormat(L"%d", pControl->width()));
-				bs.mListener.SetValueByID(143, wFormat(L"%d", pControl->height()));
-				bs.mListener.SetValueByID(145, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				liser.SetValueByID(142, wFormat(L"%d", pControl->width()));
+				liser.SetValueByID(143, wFormat(L"%d", pControl->height()));
+				liser.SetValueByID(145, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
 				tempColor = pControl->ForceColor();
-				bs.mListener.SetValueByID(146, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				liser.SetValueByID(146, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
 				tempColor = pControl->HoverBackColor();
-				bs.mListener.SetValueByID(147, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				liser.SetValueByID(147, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
 				tempColor = pControl->HoverForceColor();
-				bs.mListener.SetValueByID(148, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
-				bs.mListener.SetValueByID(149, wFormat(L"%f", pControl->getBoardSize()));
+				liser.SetValueByID(148, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				liser.SetValueByID(149, wFormat(L"%f", pControl->getBoardSize()));
 				tempColor = pControl->getBoardColor();
-				bs.mListener.SetValueByID(150, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
-				bs.mListener.SetValueByID(151, wFormat(L"%d", pControl->CanDrag()));
-				bs.mListener.SetValueByID(141, pControl->Text());
+				liser.SetValueByID(150, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				liser.SetValueByID(151, wFormat(L"%d", pControl->CanDrag()));
+				liser.SetValueByID(141, pControl->Text());
 			}
+		});
+
+		//更新属性
+		liser.AddClickFuncByID(155, [&]() {
+			using namespace Conver;
+			auto pControl = drawable->pForcedControl;
+			IS_RETURN(!pControl,);
+			printf("开始更新...\n");
+			auto id = pControl->getID();
+			auto findControl = find_if(drawable->mSaveSet.begin(), drawable->mSaveSet.end(), [&id](Control * pControl) {
+				if (pControl->getID() == id) return true;
+				return false;
+			});
+			if (findControl == drawable->mSaveSet.end()) return;
+
+			//更新
+			(*findControl)->SetWidth(utoi(liser.getValueByID(142)));
+			(*findControl)->SetWidth(utoi(liser.getValueByID(142)));
+			printf("更新完成...\n");
 		});
 
 

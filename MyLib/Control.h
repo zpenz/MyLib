@@ -86,7 +86,6 @@ namespace LIB_CONTROL
 	class Control: public ImageAdapter,public DragAdapter,
 		public ReadAble,public IDAdapter<UINT>,public BoardAdapter<float>
 	{
-
 	protected:
 
 		RECT mRect;
@@ -195,7 +194,11 @@ namespace LIB_CONTROL
 
 		LONG width() const;
 
+		void SetWidth(UINT width);
+
 		LONG height() const;
+
+		void SetHeight(UINT height);
 
 		Control();
 
@@ -232,11 +235,17 @@ namespace LIB_CONTROL
 
 	public:
 
+		UINT ListenedWidth();
+
+		UINT ListenedHeight();
+
 		Control * findElementByID(UINT id);
 
 		bool AddClickFuncByID(UINT id,function<void(void)> pFunc,bool rewrite = false);
 
 		bool SetValueByID(UINT id,wstring stringValue);
+
+		wstring getValueByID(UINT id);
 
 		void SetRangeIDValue(UINT startId,UINT endId,wstring stringValue);
 
@@ -482,7 +491,11 @@ namespace LIB_CONTROL
 
 		list<Control *> mDrawSet;
 
-		list<Control *> StretchSetRect(UINT uWindowWidth,UINT uWindowHeight);
+		list<Control *> mSaveSet;
+
+		bool SaveControl(float widthSacle,float heightSacle,Control * pControl);
+
+		bool UpdateRectByID(UINT id,int iWidht,int iHeight);
 
 		Control * pForcedControl;
 

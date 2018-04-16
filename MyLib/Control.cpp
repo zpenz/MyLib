@@ -28,6 +28,22 @@ namespace LIB_CONTROL
 	{
 	}
 
+	UINT Listener::ListenedWidth()
+	{
+		IS_RETURN(!mListenedWindow,0);
+		RECT rc;
+		GetWindowRect(mListenedWindow, &rc);
+		return RECTWIDTH(rc);
+	}
+
+	UINT Listener::ListenedHeight()
+	{
+		IS_RETURN(!mListenedWindow, 0);
+		RECT rc;
+		GetWindowRect(mListenedWindow, &rc);
+		return RECTHEIGHT(rc);
+	}
+
 	Control * Listener::findElementByID(UINT id)
 	{
 		 auto tempControl = find_if(mpControl.begin(), mpControl.end(), [&id](Control * pControl)->bool
@@ -56,10 +72,17 @@ namespace LIB_CONTROL
 		return true;
 	}
 
+	wstring Listener::getValueByID(UINT id)
+	{
+		auto pControl = findElementByID(id);
+		IS_RETURN_ERROR(!pControl, false, "getValueByID找不到指定的控件");
+		return pControl->Text();
+	}
+
 	void Listener::SetRangeIDValue(UINT startId, UINT endId, wstring stringValue)
 	{
 		if (endId < startId) return;
-		for (auto id = startId; id != endId; id++)
+		for (auto id = startId; id <= endId; id++)
 		{
 			SetValueByID(id,stringValue);
 		}
@@ -237,6 +260,7 @@ namespace LIB_CONTROL
 		if (!mFocusCaret) return 0;
 		CaretManager.ChangeCaretSize(0, height());
 		CaretManager.ShowCaret();
+		if (mText.empty()) SAFE_RELEASE(mpTextpLayout);
 		CaretManager.AdjustPos(mRect,mpTextpLayout,&pt);
 		return 0; 
 	}
@@ -466,9 +490,19 @@ namespace LIB_CONTROL
 		return mRect.right - mRect.left;
 	}
 
+	void Control::SetWidth(UINT uWidth)
+	{
+		mRect.right = mRect.left+ uWidth;
+	}
+
 	LONG Control::height() const
 	{
 		return mRect.bottom - mRect.top;
+	}
+
+	void Control::SetHeight(UINT uHeight)
+	{
+		mRect.bottom = mRect.top + uHeight;
 	}
 
 	Control::Control(wstring text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
@@ -964,23 +998,25 @@ namespace LIB_CONTROL
 	DrawAbleLabel::~DrawAbleLabel()
 	{
 		SAFE_DELETE_ALL(mDrawSet);
+		SAFE_DELETE_ALL(mSaveSet);
 	}
 
-	list<Control*> DrawAbleLabel::StretchSetRect(UINT uWindowWidth, UINT uWindowHeight)
+	bool DrawAbleLabel::SaveControl(float widthSacle, float heightSacle,Control * pControl)
 	{
-		UINT sacleX = uWindowWidth/width();
-		UINT sacleY = uWindowHeight/height();
-		list<Control*> ControlSet;
-		for_each(mDrawSet.begin(), mDrawSet.end(), [&](Control * pControl) {
-			auto internalRect = pControl->getRect();
-			pControl->AdjustRect(
-				MyRect(internalRect.left-mRect.left,
-				internalRect.top-mRect.top,
-				(internalRect.left - mRect.left+pControl->width())*sacleX,
-				(internalRect.top - mRect.top + pControl->height())*sacleY));
-			ControlSet.push_back(pControl);
-		});
-		return std::move(ControlSet);
+		IS_RETURN(!pControl,false);
+		auto internalRect = pControl->getRect();
+		auto newControl = new Control(*pControl);
+		newControl->AdjustRect(
+			MyRect(internalRect.left - mRect.left,
+				internalRect.top - mRect.top,
+				(internalRect.left - mRect.left + pControl->width())*widthSacle,
+				(internalRect.top - mRect.top + pControl->height())*heightSacle));
+		mSaveSet.push_back(newControl);
+		return true;
+	}
+
+	bool DrawAbleLabel::UpdateRectByID(UINT id, int iWidht, int iHeight)
+	{ 
 	}
 
 	void DrawAbleLabel::Draw(Listener * pListener)
@@ -1014,6 +1050,10 @@ namespace LIB_CONTROL
 		pControl->SetDrag(true);
 		mDrawSet.push_back(pControl);
 		pListener->attach(pControl);
+		//保存另一份
+		auto scaleX = pListener->ListenedWidth()*1.0f/width();
+		auto scaleY = pListener->ListenedHeight()*1.0f / height();
+		SaveControl(scaleX, scaleY, pControl);
 		mStateType.clear();
 		mStartDrawPoint = nullPoint;
 		pBufferControl = nullptr;

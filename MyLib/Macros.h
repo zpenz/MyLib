@@ -209,8 +209,16 @@ namespace Conver
 	wchar_t * ACharToWChar(char * Achar,UINT codePage = CP_UTF8);
 
 	int utoi(wchar_t * Wchar);
+	int utoi(const wchar_t * WChar);
+	int utoi(wstring wStr);
+
 	bool utob(wchar_t * Wchar);
+	bool utob(const wchar_t * WChar);
+	bool utob(wstring wStr);
+
 	float utof(wchar_t * Wchar);
+	float utof(const wchar_t * WChar);
+	float utof(wstring wStr);
 
 	///<d2dConver>some d2d conver</d2dConver>
 	D2D1_POINT_2F  PointToD2DPointF(POINT & pt);

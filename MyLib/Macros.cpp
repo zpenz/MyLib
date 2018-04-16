@@ -227,15 +227,45 @@ namespace Conver
 		return atoi(WCharToAChar(Wchar));
 	}
 
+	int utoi(const wchar_t * WChar)
+	{
+		return utoi(COCAST(wchar_t*,WChar));
+	}
+
+	int utoi(wstring wStr)
+	{
+		return utoi(wStr.c_str());
+	}
+
 	bool utob(wchar_t * Wchar)
 	{
 		if (atoi(WCharToAChar(Wchar)) == 0) return false;
 		return true;
 	}
 
+	bool utob(const wchar_t * WChar)
+	{
+		return utob(COCAST(wchar_t*, WChar));
+	}
+
+	bool utob(wstring wStr)
+	{
+		return utob(wStr.c_str());
+	}
+
 	float utof(wchar_t * Wchar)
 	{
 		return STCAST(float,atof(WCharToAChar(Wchar)));
+	}
+
+	float utof(const wchar_t * WChar)
+	{
+		return utof(COCAST(wchar_t*, WChar));;
+	}
+
+	float utof(wstring wStr)
+	{
+		return utof(wStr.c_str());
 	}
 
 	MyRect::MyRect(INT left, INT top, INT right, INT bottom):mLeft(left),mRight(right),
