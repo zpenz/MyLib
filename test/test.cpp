@@ -7,6 +7,7 @@
 #include "../MyLib/2Draw.h"
 #include "../MyLib/Macros.h"
 #include "../MyLib/Control.h"
+#include "../MyLib/CommonDialog.h"
 #pragma comment(lib,"../Debug/lib.lib")
 #include <iostream>
 using namespace std;
@@ -18,6 +19,9 @@ inline void EnableMemLeakCheck()
 
 int main()
 {
+	using namespace CommonItem;
+
+	
 
 	BaseWindow bs;
 	auto ThreadHandle = bs.Show();
@@ -35,7 +39,8 @@ int main()
 		//SAVE
 		liser.AddClickFuncByID(120, [&]() {
 			printf("开始保存...\n");
-			//Layout::ControlLayout.SaveLayoutFile("D:\\window.layout", &bs.mListener);
+			auto path = DlgManager.ShowSaveFileDialog();
+
 			Layout::ControlLayout.SaveLayoutFile("D:\\window.layout",DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->mSaveSet);
 			printf("保存完毕...\n");
 		});

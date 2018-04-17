@@ -72,6 +72,9 @@
     <ClInclude Include="reflect.h">
       <Filter>Simple Reflection</Filter>
     </ClInclude>
+    <ClInclude Include="CommonDialog.h">
+      <Filter>File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -103,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="reflect.cpp">
       <Filter>Simple Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonDialog.cpp">
+      <Filter>File</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
