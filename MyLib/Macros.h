@@ -83,14 +83,12 @@ namespace LIB_WINDOW
 	}
 }
 
-
 struct ArrowShape
 {
 	static HCURSOR SHAPE_ARROW;
 	static HCURSOR SHAPE_I;
 	static HCURSOR SHAPE_CROSS;
 };
-
 
 typedef struct ColorStruct
 {
@@ -205,8 +203,10 @@ namespace Conver
 
 	///宽字节和ASCI互相转换
 	char * WCharToAChar(wchar_t * Wchar,UINT codePage = CP_UTF8);
+	string WCharToAChar(wstring Wchar, UINT codePage = CP_UTF8);
 
 	wchar_t * ACharToWChar(char * Achar,UINT codePage = CP_UTF8);
+	wstring ACharToWChar(string Achar, UINT codePage = CP_UTF8);
 
 	int utoi(wchar_t * Wchar);
 	int utoi(const wchar_t * WChar);

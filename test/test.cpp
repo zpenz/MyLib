@@ -21,8 +21,6 @@ int main()
 {
 	using namespace CommonItem;
 
-	
-
 	BaseWindow bs;
 	auto ThreadHandle = bs.Show();
 
@@ -36,13 +34,22 @@ int main()
 
 		auto liser = bs.mListener;
 		auto drawable = DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125));
+
 		//SAVE
 		liser.AddClickFuncByID(120, [&]() {
 			printf("开始保存...\n");
 			auto path = DlgManager.ShowSaveFileDialog();
-
-			Layout::ControlLayout.SaveLayoutFile("D:\\window.layout",DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->mSaveSet);
+			if (path.find(L".layout") == wstring::npos) path = path + L".layout";
+			Layout::ControlLayout.SaveLayoutFile(Conver::WCharToAChar(path), drawable->mSaveSet);
 			printf("保存完毕...\n");
+		});
+
+		//Load
+		liser.AddClickFuncByID(158, [&]() {
+			printf("载入中...\n");
+			auto path = DlgManager.ShowOpenFileDialog();
+			Layout::ControlLayout.LoadLayoutFile(Conver::WCharToAChar(path),&liser);
+			printf("载入完毕...\n");
 		});
 
 		//LabelBox

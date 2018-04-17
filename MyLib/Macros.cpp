@@ -212,6 +212,11 @@ namespace Conver
 		return std::move(TheCoveredString);
 	}
 
+	string WCharToAChar(wstring Wchar, UINT codePage)
+	{
+		return WCharToAChar(COCAST(wchar_t *,Wchar.c_str()),codePage);
+	}
+
 	wchar_t * ACharToWChar(char * Achar, UINT codePage)
 	{
 		auto size = MultiByteToWideChar(codePage, 0, Achar, -1, NULL, 0);
@@ -220,6 +225,11 @@ namespace Conver
 		if (!ret) { SAFE_DELETE(TheCoveredString); return nullptr; }
 		TheCoveredString[size] = '\0';
 		return TheCoveredString;
+	}
+
+	wstring ACharToWChar(string Achar, UINT codePage)
+	{
+		return ACharToWChar(COCAST(char *, Achar.c_str()), codePage);
 	}
 
 	int utoi(wchar_t * Wchar)

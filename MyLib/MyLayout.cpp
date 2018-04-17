@@ -118,6 +118,13 @@ namespace Layout
 
 	bool MyLayout::LoadLayoutFile(string filename, Listener * pListener)
 	{
+		//清空已有内容
+		if (!pListener->Obj().empty())
+		{
+			SAFE_DELETE_ALL(pListener->Obj());
+			pListener->Obj().clear();
+		}
+
 		wchar_t * pContext = nullptr;
 		IS_RETURN_ERROR(!LoadFile(filename, &pContext,CP_UTF8),false,"LoadLayoutFile Failed!");
 		wchar_t lineBuf[MAX_BUF_LENGTH]; int linesize = 0;
