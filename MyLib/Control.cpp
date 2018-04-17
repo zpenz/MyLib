@@ -376,7 +376,7 @@ namespace LIB_CONTROL
 	void Control::DrawBoard(Listener * pListener)
 	{
 		if (!mHaveBoard) return;
-		DrawManager.DrawRectangle(mRect,mBoardColor,false,mBoardSize);
+		DrawManager.DrawRectangle(mRect,COLOREX(mBoardColor),false,mBoardSize);
 	}
 
 	bool Control::HaveCaret()
@@ -953,7 +953,7 @@ namespace LIB_CONTROL
 	void LabelBoxInterface::Draw(Listener * pListener)
 	{
 		Control::Draw(pListener);
-		DrawManager.DrawTextW(mText, mRect, mForceColor, STCAST(float,RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE),&mpTextpLayout);
+		DrawManager.DrawTextW(mText, mRect, COLOREX(mForceColor), STCAST(float,RECTHEIGHT(mRect)-ALIGN_UPDPWNDISTANCE),&mpTextpLayout);
 	}
 
 	UINT LabelBoxInterface::HitTest(Listener * pListener, POINT pt)
@@ -1119,7 +1119,15 @@ namespace LIB_CONTROL
 
 	void StaticLabel::Draw(Listener * pListener)
 	{
-		DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor),COLOREX(mBackColor),&mpTextpLayout, true, ALIGN_TEXT_LEFT);
+		if (IsMouseInteral())
+		{
+			DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true, ALIGN_TEXT_LEFT);
+		}
+		else
+		{
+			DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), &mpTextpLayout, true, ALIGN_TEXT_LEFT);
+		}
+		
 	}
 
 	ListInterface::ListInterface(){}
