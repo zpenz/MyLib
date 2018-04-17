@@ -75,7 +75,7 @@ namespace LIB_CONTROL
 	wstring Listener::getValueByID(UINT id)
 	{
 		auto pControl = findElementByID(id);
-		IS_RETURN_ERROR(!pControl, false, "getValueByID找不到指定的控件");
+		IS_RETURN_ERROR(!pControl, L"", "getValueByID找不到指定的控件");
 		return pControl->Text();
 	}
 
@@ -299,6 +299,7 @@ namespace LIB_CONTROL
 		if ( index!= 0 &&index > STCAST(int,mText.size() - 1)) index = mText.size() - 1;
 		if (cUnicode == '\b') 
 		{
+			if (index == 0 && mText.empty()) return;
 			mText.erase(index,1); 	
 			CaretManager.SetCaretPosEx(mRect, mpTextpLayout, index, false);
 			CaretManager.DecIndex();
@@ -1005,18 +1006,27 @@ namespace LIB_CONTROL
 	{
 		IS_RETURN(!pControl,false);
 		auto internalRect = pControl->getRect();
-		auto newControl = new Control(*pControl);
+		auto itControl = 
+		find_if(mSaveSet.begin(), mSaveSet.end(), [&pControl](Control * pSaveContorl) {
+			if (pSaveContorl->getID() == pControl->getID())	return true;
+			return false;
+		});
+		Control * newControl = (itControl == mSaveSet.end())?new Control(*pControl):*itControl;
+
 		newControl->AdjustRect(
 			MyRect(internalRect.left - mRect.left,
 				internalRect.top - mRect.top,
 				(internalRect.left - mRect.left + pControl->width())*widthSacle,
 				(internalRect.top - mRect.top + pControl->height())*heightSacle));
+		
+		if(itControl == mSaveSet.end())
 		mSaveSet.push_back(newControl);
 		return true;
 	}
 
 	bool DrawAbleLabel::UpdateRectByID(UINT id, int iWidht, int iHeight)
-	{ 
+	{
+		return true;
 	}
 
 	void DrawAbleLabel::Draw(Listener * pListener)
@@ -1069,7 +1079,7 @@ namespace LIB_CONTROL
 				if (PointInRect(pt.x, pt.y, pControl->getRect())) return true;
 				return false;
 			});
-			if (forcedIt == mDrawSet.rend()) { pForcedControl = nullptr; return ; }
+			if (forcedIt == mDrawSet.rend()) { return ; }
 			pForcedControl = *forcedIt;
 			return ;
 		}

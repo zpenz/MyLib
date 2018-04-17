@@ -277,7 +277,7 @@ bool My2DDraw::DrawText(std::string text, RECT layoutBox, MyColor TextColor, flo
 
 bool My2DDraw::DrawTextW(std::wstring text, RECT layoutBox, MyColor TextColor, float fontSize, TextLayout ** pLayout, ALIGN_TEXT_TYPE textAlignType, ALIGN_PARAGRAPH_TYPE paragraphAlignType)
 {
-	if (*pLayout != nullptr) (*pLayout)->Release();
+	SAFE_RELEASE((*pLayout));
 	if (text.empty()) return true;
 	IDWriteTextLayout * tempTextLayout = CreateTextLayoutW(text);
 

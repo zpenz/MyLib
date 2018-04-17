@@ -8,8 +8,6 @@
 #include "reflect.h"
 
 
-
-
 namespace LIB_CONTROL
 {
 	using namespace std;
@@ -501,7 +499,7 @@ namespace LIB_CONTROL
 
 		void Draw(Listener * pListener) override;
 
-		UINT LButtonDown(Listener * pListener, POINT pt) override;
+		virtual UINT LButtonDown(Listener * pListener, POINT pt)  override;
 
 		UINT LButtonUp(Listener * pListener, POINT pt) override;
 
@@ -560,6 +558,7 @@ namespace LIB_CONTROL
 
 		void Draw(Listener * pListener) override;
 	};
+
 }
 
 

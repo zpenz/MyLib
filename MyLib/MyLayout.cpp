@@ -40,7 +40,7 @@ namespace Layout
 
 	vector<wstring> MyLayout::sSkipTokens =
 	{
-		L"RECT",L"RGB",L"Rect"
+		L"RECT",L"RGB",L"Rect",L" "
 	};
 	
 	LayoutParameter MyLayout::ParseLine(wchar_t * lineBuf)
@@ -93,7 +93,7 @@ namespace Layout
 		memset(buf,0,MAX_BUF_LENGTH);
 		for (int chPos = 0; chPos < STCAST(int,wcslen(startPos)); chPos++)
 		{
-			if (startPos[chPos] == L' ' ) break;
+			if (startPos[chPos] == L' ') break;
 			if (startPos[chPos] == '(' || startPos[chPos] == '('|| startPos[chPos] == ')') { size++; break;}
 			buf[size++] = startPos[chPos];
 		}
@@ -104,6 +104,16 @@ namespace Layout
 		pos = size - 1;
 
 		return ret;
+	}
+
+	COLORREF MyLayout::getColor(wstring strBuf)
+	{
+		wchar_t * pBuf = COCAST(wchar_t *,strBuf.c_str());
+		int pos = 0;
+		auto r = utoi(getNextToken(pBuf,pos));
+		auto g = utoi(getNextToken(&pBuf[pos+1],pos));
+		auto b = utoi(getNextToken(&pBuf[pos+1],pos));
+		return RGB(r,g,b);
 	}
 
 	bool MyLayout::LoadLayoutFile(string filename, Listener * pListener)

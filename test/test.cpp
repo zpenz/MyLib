@@ -118,8 +118,23 @@ int main()
 
 		//更新属性
 		liser.AddClickFuncByID(155, [&]() {
+			using namespace Layout;
 			using namespace Conver;
-			auto pControl = drawable->pForcedControl;
+			auto UpdateData = [&](Control * pControl) {
+				//更新
+				pControl->SetWidth(utoi(liser.getValueByID(142)));
+				pControl->SetWidth(utoi(liser.getValueByID(143)));
+				pControl->SetBackColor(ControlLayout.getColor(liser.getValueByID(145)));
+				pControl->SetForceColor(ControlLayout.getColor(liser.getValueByID(146)));
+				pControl->SetHoverBackColor(ControlLayout.getColor(liser.getValueByID(147)));
+				pControl->SetHoverForceColor(ControlLayout.getColor(liser.getValueByID(148)));
+				pControl->setBoardSize(utof(liser.getValueByID(149)));
+				pControl->setBoardColor(ControlLayout.getColor(liser.getValueByID(150)));
+				pControl->SetDrag(utob(liser.getValueByID(151)));
+				pControl->SetText(liser.getValueByID(141));
+			};
+
+			auto pControl = DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->pForcedControl;
 			IS_RETURN(!pControl,);
 			printf("开始更新...\n");
 			auto id = pControl->getID();
@@ -129,9 +144,10 @@ int main()
 			});
 			if (findControl == drawable->mSaveSet.end()) return;
 
-			//更新
-			(*findControl)->SetWidth(utoi(liser.getValueByID(142)));
-			(*findControl)->SetWidth(utoi(liser.getValueByID(142)));
+			UpdateData(*findControl);
+			UpdateData(pControl);
+			
+			drawable->SaveControl(1024.0/drawable->width(),768.0/drawable->height(),pControl);
 			printf("更新完成...\n");
 		});
 

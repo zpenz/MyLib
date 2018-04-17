@@ -60,6 +60,8 @@ namespace Layout
 
 		wchar_t * getNextToken(wchar_t * startPos, int & pos);
 
+		COLORREF getColor(wstring strBuf);
+
 		bool LoadLayoutFile(string filename, Listener * pListener);
 
 		bool SaveLayoutFile(string outFileName,Listener * pListener);
