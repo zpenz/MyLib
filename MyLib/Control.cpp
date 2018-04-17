@@ -432,7 +432,7 @@ namespace LIB_CONTROL
 
 	void Control::SetBackColor(COLORREF color)
 	{
-		mBackColor = color;
+		mBackColor = std::move(color);
 	}
 
 	COLORREF & Control::HoverBackColor() 

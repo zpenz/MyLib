@@ -204,6 +204,18 @@ bool My2DDraw::DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle,
 	return SUCCEEDED(hr);
 }
 
+bool My2DDraw::DrawTextW(std::string text,IDWriteTextLayout * pTextLayout, MyColor TextColor, RECT layoutBox)
+{
+	if (text.empty()) return true;
+	auto tempBrush = CreateBrush(TextColor);
+	mRenderTarget->BeginDraw();
+	mRenderTarget->DrawTextLayout(PointToD2DPointF(LeftTopPoint(layoutBox)), pTextLayout, tempBrush, D2D1_DRAW_TEXT_OPTIONS_CLIP);
+	auto ret = mRenderTarget->EndDraw();
+	IS_RETURN_ERROR(FAILED(ret), false, "DrawTextW failed!");
+	SAFE_RELEASE(tempBrush);
+	return true;
+}
+
 IDWriteTextLayout * My2DDraw::CreateTextLayout(std::string text)
 {
 	return CreateTextLayout(text,18.0f);
@@ -224,7 +236,7 @@ IDWriteTextLayout * My2DDraw::CreateTextLayoutW(std::wstring text, float fSize)
 {
 	if (text.empty()) return nullptr;
 	IDWriteTextFormat * tempTextFormat = NULL;
-	auto hr = mWriteFactory->CreateTextFormat(L"ÐÂËÎÌå", NULL, DWRITE_FONT_WEIGHT_REGULAR,
+	auto hr = mWriteFactory->CreateTextFormat(L"¿¬Ìå", NULL, DWRITE_FONT_WEIGHT_REGULAR,
 		DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, fSize, L"en-us", &tempTextFormat);
 
 	IDWriteTextLayout * tempTextLayout = NULL;

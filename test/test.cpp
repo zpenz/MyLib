@@ -101,18 +101,19 @@ int main()
 				COLORREF tempColor = pControl->BackColor();
 				liser.SetValueByID(142, wFormat(L"%d", pControl->width()));
 				liser.SetValueByID(143, wFormat(L"%d", pControl->height()));
-				liser.SetValueByID(145, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				liser.SetValueByID(145, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
 				tempColor = pControl->ForceColor();
-				liser.SetValueByID(146, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				liser.SetValueByID(146, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
 				tempColor = pControl->HoverBackColor();
-				liser.SetValueByID(147, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				liser.SetValueByID(147, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
 				tempColor = pControl->HoverForceColor();
-				liser.SetValueByID(148, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				liser.SetValueByID(148, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
 				liser.SetValueByID(149, wFormat(L"%f", pControl->getBoardSize()));
 				tempColor = pControl->getBoardColor();
-				liser.SetValueByID(150, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor), (UINT)GetRValue(tempColor)));
+				liser.SetValueByID(150, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
 				liser.SetValueByID(151, wFormat(L"%d", pControl->CanDrag()));
 				liser.SetValueByID(141, pControl->Text());
+				liser.SetValueByID(157, wFormat(L"%d", pControl->HaveBoard()));
 			}
 		});
 
@@ -123,7 +124,7 @@ int main()
 			auto UpdateData = [&](Control * pControl) {
 				//更新
 				pControl->SetWidth(utoi(liser.getValueByID(142)));
-				pControl->SetWidth(utoi(liser.getValueByID(143)));
+				pControl->SetHeight(utoi(liser.getValueByID(143)));
 				pControl->SetBackColor(ControlLayout.getColor(liser.getValueByID(145)));
 				pControl->SetForceColor(ControlLayout.getColor(liser.getValueByID(146)));
 				pControl->SetHoverBackColor(ControlLayout.getColor(liser.getValueByID(147)));
@@ -132,6 +133,7 @@ int main()
 				pControl->setBoardColor(ControlLayout.getColor(liser.getValueByID(150)));
 				pControl->SetDrag(utob(liser.getValueByID(151)));
 				pControl->SetText(liser.getValueByID(141));
+				pControl->SetBoard(utob(liser.getValueByID(157)));		    
 			};
 
 			auto pControl = DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125))->pForcedControl;
@@ -147,7 +149,7 @@ int main()
 			UpdateData(*findControl);
 			UpdateData(pControl);
 			
-			drawable->SaveControl(1024.0/drawable->width(),768.0/drawable->height(),pControl);
+			drawable->SaveControl(1024.0f/drawable->width(),768.0f/drawable->height(),pControl);
 			printf("更新完成...\n");
 		});
 

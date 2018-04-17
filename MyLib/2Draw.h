@@ -48,6 +48,8 @@ public:
 
 	bool DrawRectangle(RECT Rect, MyColor RectColor, bool isFillRectangle = false,float boardSize = 1.0);
 
+	bool DrawTextW(std::string text, IDWriteTextLayout * pTextLayout, MyColor TextColor,RECT layoutBox);
+
 	bool DrawText(std::string text, RECT layoutBox,MyColor TextColor,float fontSize,_Out_ TextLayout ** pLayout, ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
 
 	bool DrawTextW(std::wstring text, RECT layoutBox, MyColor TextColor, float fontSize, _Out_ TextLayout ** pLayout, ALIGN_TEXT_TYPE textAlignType = ALIGN_TEXT_CENTER, ALIGN_PARAGRAPH_TYPE paragraphAlignType = ALIGN_PARAGRAPH_CENTER);
