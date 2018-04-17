@@ -432,7 +432,7 @@ namespace LIB_CONTROL
 
 	void Control::SetBackColor(COLORREF color)
 	{
-		mBackColor = std::move(color);
+		mBackColor = color;
 	}
 
 	COLORREF & Control::HoverBackColor() 
@@ -863,11 +863,11 @@ namespace LIB_CONTROL
 		if (ZeroRect(mImgRec)) mImgRec = mRect;
 		if (!mMouseInternal)
 		{
-			DrawManager.DrawRectangle(mRect, mBackColor, true);
+			DrawManager.DrawRectangle(mRect,COLOREX(mBackColor), true); 
 		}
 		else
 		{
-			DrawManager.DrawRectangle(mRect, mHonverBackColor, true);
+			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
 		}
 		if (pImage) DrawManager.DrawPicture(pImage, mImgRec);
 	}
@@ -1105,11 +1105,11 @@ namespace LIB_CONTROL
 	{
 		if (!mFocusCaret)
 		{
-			DrawManager.DrawRectWithTextW(mRect,mText,mBackColor,mForceColor,&mpTextpLayout,true,ALIGN_TEXT_LEFT);
+			DrawManager.DrawRectWithTextW(mRect,mText, COLOREX(mBackColor), COLOREX(mForceColor),&mpTextpLayout,true,ALIGN_TEXT_LEFT);
 		}
 		else
 		{
-			DrawManager.DrawRectWithTextW(mRect, mText,mHonverBackColor, mHoverForceColor, &mpTextpLayout,true, ALIGN_TEXT_LEFT);
+			DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout,true, ALIGN_TEXT_LEFT);
 		}
 	}
 
@@ -1119,7 +1119,7 @@ namespace LIB_CONTROL
 
 	void StaticLabel::Draw(Listener * pListener)
 	{
-		DrawManager.DrawRectWithTextW(mRect, mText, mBackColor, mForceColor, &mpTextpLayout, true, ALIGN_TEXT_LEFT);
+		DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor),COLOREX(mBackColor),&mpTextpLayout, true, ALIGN_TEXT_LEFT);
 	}
 
 	ListInterface::ListInterface(){}

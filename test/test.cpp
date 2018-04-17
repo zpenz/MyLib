@@ -20,7 +20,7 @@ inline void EnableMemLeakCheck()
 int main()
 {
 	using namespace CommonItem;
-
+	 
 	BaseWindow bs;
 	auto ThreadHandle = bs.Show();
 
@@ -39,6 +39,7 @@ int main()
 		liser.AddClickFuncByID(120, [&]() {
 			printf("开始保存...\n");
 			auto path = DlgManager.ShowSaveFileDialog();
+			if (path.empty()) return;
 			if (path.find(L".layout") == wstring::npos) path = path + L".layout";
 			Layout::ControlLayout.SaveLayoutFile(Conver::WCharToAChar(path), drawable->mSaveSet);
 			printf("保存完毕...\n");
@@ -98,6 +99,12 @@ int main()
 		liser.AddClickFuncByID(154, [&]() {
 			drawable->mStateType = L"MaxButton";
 			printf("选择MaxButton\n");
+		});
+
+		//TitleBar
+		liser.AddClickFuncByID(159, [&]() {
+			drawable->mStateType = L"TitleBar";
+			printf("选择TitleBar\n");
 		});
 
 		//DrawAbleLabel

@@ -109,11 +109,17 @@ namespace Layout
 	COLORREF MyLayout::getColor(wstring strBuf)
 	{
 		wchar_t * pBuf = COCAST(wchar_t *,strBuf.c_str());
-		int pos = 0;
-		auto r = utoi(getNextToken(pBuf,pos));
-		auto g = utoi(getNextToken(&pBuf[pos+1],pos));
-		auto b = utoi(getNextToken(&pBuf[pos+1],pos));
-		return RGB(r,g,b);
+		int index = 0,pos = 0;
+		vector<int> vColor;
+		for (; index < wcslen(pBuf); index++)
+		{
+			auto color = utoi(getNextToken(&pBuf[index],pos));
+			vColor.push_back(color);
+
+			index += pos;
+		}
+		if (vColor.size() < 3) return RGB(0,0,0);
+		return RGB(vColor[0], vColor[1], vColor[2]);
 	}
 
 	bool MyLayout::LoadLayoutFile(string filename, Listener * pListener)
