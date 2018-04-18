@@ -126,14 +126,11 @@ namespace Layout
 	bool MyLayout::LoadLayoutFile(string filename, Listener * pListener)
 	{
 		//清空已有内容
-		//std::mutex mut;
-		//mut.lock();
 		//if (!pListener->Obj().empty())
 		//{
 		//	SAFE_DELETE_ALL(pListener->Obj());
 		//	pListener->Obj().clear();
 		//}
-		//mut.unlock();
 
 		wchar_t * pContext = nullptr;
 		IS_RETURN_ERROR(!LoadFile(filename, &pContext,CP_UTF8),false,"LoadLayoutFile Failed!");

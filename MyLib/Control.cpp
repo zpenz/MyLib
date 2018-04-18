@@ -5,6 +5,8 @@ namespace LIB_CONTROL
 {
 	using namespace Conver;
 
+	using namespace MutexLock;
+
 	bool DragAdapter::CanDrag()
 	{
 		return mCanDrag;
@@ -154,17 +156,24 @@ namespace LIB_CONTROL
 	UINT Listener::LButtonDown(POINT pt)
 	{
 		UINT ret = SHOULD_DO_NOTHING;
+		function<void(void)> Func = nullptr;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->KillFocus(this);  //KillFocus
 			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
-				if (pControl->mClickFunc) pControl->mClickFunc(); //调用点击事件
-				pControl->Focus(this); //SetFocus
 				ret = pControl->LButtonDown(this, pt);
+				if (pControl->mClickFunc) Func = pControl->mClickFunc;  
+				pControl->Focus(this); //SetFocus
 				if (pControl->IsDisable()) ret = SHOULD_DO_NOTHING;
 			}
 			return ret;
 		});
+
+		//调用点击事件
+		if (Func) { 
+			Func(); 
+			Func = nullptr; 
+		}
 		return ret;
 	}
 
@@ -1022,6 +1031,7 @@ namespace LIB_CONTROL
 				((internalRect.top - mRect.top)/heightSacle + pControl->height()*heightSacle)));
 
 		newControl->Enable();
+		newControl->SetDrag(false);
 		
 		if(itControl == mSaveSet.end())
 		mSaveSet.push_back(newControl);

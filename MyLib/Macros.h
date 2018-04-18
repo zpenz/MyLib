@@ -5,6 +5,7 @@
 #include <map>
 #include <functional>
 #include <d2d1.h>
+#include <mutex>
 
 #define DEFAULT_CONTROL_ID 678
 #define SCREEN_WIDTH  GetDeviceCaps(GetDC(NULL),HORZRES)
@@ -169,6 +170,12 @@ void ErrorMessage(const char * _error);
 #define RECTHEIGHT(rc) rc.bottom - rc.top
 #define nullRect MyRect{0,0,0,0}
 #define nullPoint Point{-1,-1}
+
+namespace  MutexLock
+{
+	using namespace std;
+	extern mutex ReadWriteLock;
+}
 	
 namespace Conver
 {

@@ -2,6 +2,7 @@
 
 namespace LIB_WINDOW
 {
+	using namespace MutexLock;
 
 	RECT BaseWindow::Rect() const
 	{
@@ -478,7 +479,6 @@ void BaseWindow::Destory()
  {
 	 static RECT RestoreRect; //保存当前区域
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
-
 	 auto ret = mListener.LButtonUp(pt);
 	 if (ret == SHOULD_CLOSE_WINDOW) SendMessage(mBaseHwnd,WM_CLOSE,0,0);
 	 if (ret == SHOULD_MINI_WINDOW)  ShowWindow(mBaseHwnd, SW_MINIMIZE);
@@ -495,7 +495,6 @@ void BaseWindow::Destory()
 		 SetRect(RestoreRect);
 		 DrawManager.ReSize(RECTWIDTH(RestoreRect), RECTHEIGHT(RestoreRect));
 	 }
-
  }
 
  UINT BaseWindow::OnUnicodeChar(WPARAM wParam, LPARAM lParam)

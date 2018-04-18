@@ -19,11 +19,12 @@ using namespace std;
 int main()
 {
 	using namespace CommonItem;
+	using namespace MutexLock;
 	 
 	BaseWindow bs;
 	auto ThreadHandle = bs.Show();
 
-		Sleep(2000);
+		Sleep(500);
 
 #ifdef _DEBUG
 		_CrtDumpMemoryLeaks();
@@ -51,7 +52,9 @@ int main()
 		liser.AddClickFuncByID(158, [&]() {
 			printf("载入中...\n");
 			auto path = DlgManager.ShowOpenFileDialog();
+			ReadWriteLock.lock();
 			Layout::ControlLayout.LoadLayoutFile(Conver::WCharToAChar(path),&liser);
+			ReadWriteLock.unlock();
 			printf("载入完毕...\n");
 		});
 
