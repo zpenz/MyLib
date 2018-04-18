@@ -1,12 +1,10 @@
 #pragma once
-#include <map>
-#include <string>
 #include "Macros.h"
 
 namespace MY_LIB
 {
 	using namespace std;
-	//waring: 同名对象
+
 	class Semaphore
 	{
 	private:
@@ -15,8 +13,7 @@ namespace MY_LIB
 		long mCout;
 		HANDLE mHandle;
 
-	public: // if private will cause a problem with map<Semaphore,int >
-		//错误	C2280	“void *std::pair<const _Kty, _Ty>::__delDtor(unsigned int)”: 尝试引用已删除的函数
+	public: 
 		bool Add(UINT increase = 1);
 		bool Reduce(UINT reduce = 1);
 		static HANDLE GetSemphore(string SemaphoreName);

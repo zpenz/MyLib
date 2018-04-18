@@ -81,7 +81,18 @@ namespace LIB_CONTROL
 		BoardAdapter():mHaveBoard(false),mBoardSize(1.0),mBoardColor(RGB(255,255,255)) {}
 	};
 
-	class Control: public ImageAdapter,public DragAdapter,
+	class DisableAdapter
+	{
+	protected:
+		bool mDisable;
+	public:
+		bool IsDisable();
+		DisableAdapter();
+		void Disable();
+		void Enable();
+	};
+
+	class Control: public ImageAdapter,public DragAdapter,public DisableAdapter,
 		public ReadAble,public IDAdapter<UINT>,public BoardAdapter<float>
 	{
 	protected:
@@ -535,28 +546,6 @@ namespace LIB_CONTROL
 		virtual UINT HitTest(POINT pt);
 
 		virtual void Hover(POINT pt);
-	};
-
-	template<class CellType>
-	class Cell
-	{
-	protected:
-		CellType mCellHeight;
-	public:
-		Cell() :mCellHeight((CellType)10) {}
-		CellType getCellHeight() { return mCellHeight; }
-		void setCellHeight(CellType ht) { mCellHeight = ht; }
-	};
-
-	class ListInterface:Control,
-		public Cell<int>
-	{
-	protected:
-		map<string, string> mValueMap;
-	public:
-		ListInterface();
-
-		void Draw(Listener * pListener) override;
 	};
 
 }

@@ -1,6 +1,6 @@
-#include "stdafx.h"
 #include "MyLayout.h"
 #include <memory>
+#include <mutex>
 #include <iostream>
 
 namespace Layout
@@ -109,12 +109,13 @@ namespace Layout
 	COLORREF MyLayout::getColor(wstring strBuf)
 	{
 		wchar_t * pBuf = COCAST(wchar_t *,strBuf.c_str());
-		int index = 0,pos = 0;
+		UINT index = 0;
+		int pos = 0;
 		vector<int> vColor;
 		for (; index < wcslen(pBuf); index++)
 		{
 			auto color = utoi(getNextToken(&pBuf[index],pos));
-			vColor.push_back(color);
+			vColor.push_back(color);							   
 
 			index += pos;
 		}
@@ -125,11 +126,14 @@ namespace Layout
 	bool MyLayout::LoadLayoutFile(string filename, Listener * pListener)
 	{
 		//清空已有内容
-		if (!pListener->Obj().empty())
-		{
-			SAFE_DELETE_ALL(pListener->Obj());
-			pListener->Obj().clear();
-		}
+		//std::mutex mut;
+		//mut.lock();
+		//if (!pListener->Obj().empty())
+		//{
+		//	SAFE_DELETE_ALL(pListener->Obj());
+		//	pListener->Obj().clear();
+		//}
+		//mut.unlock();
 
 		wchar_t * pContext = nullptr;
 		IS_RETURN_ERROR(!LoadFile(filename, &pContext,CP_UTF8),false,"LoadLayoutFile Failed!");

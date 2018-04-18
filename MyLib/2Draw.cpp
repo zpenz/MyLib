@@ -3,8 +3,6 @@
 #include <wincodec.h>
 #include <memory>
 
-
-
 using namespace Conver;
 
 bool My2DDraw::ReSize(UINT uWidth, UINT uHeight)

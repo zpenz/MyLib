@@ -160,7 +160,8 @@ namespace LIB_CONTROL
 			{
 				if (pControl->mClickFunc) pControl->mClickFunc(); //调用点击事件
 				pControl->Focus(this); //SetFocus
-				if (pControl->LButtonDown(this, pt) != SHOULD_DO_NOTHING) return ret;
+				ret = pControl->LButtonDown(this, pt);
+				if (pControl->IsDisable()) ret = SHOULD_DO_NOTHING;
 			}
 			return ret;
 		});
@@ -173,9 +174,11 @@ namespace LIB_CONTROL
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->Stop();//Drag End
 			if (PointInRect(pt.x, pt.y, pControl->getRect()))
-				ret = pControl->LButtonUp(this,pt);
-				if (ret != SHOULD_DO_NOTHING) return ret; 
-				return ret;
+			{
+				ret = pControl->LButtonUp(this, pt);
+				if (pControl->IsDisable()) { ret = SHOULD_DO_NOTHING; }
+			}
+			return ret;
 		});
 		return ret;
 	}
@@ -189,7 +192,6 @@ namespace LIB_CONTROL
 		return;
 	}
 
-
 	UINT Listener::HitTest( POINT pt)
 	{
 		Control * pTempControl = NULL;
@@ -199,7 +201,7 @@ namespace LIB_CONTROL
 				pTempControl = pControl;
 			}
 		});
-		if(!pTempControl)  return HTCLIENT;
+		if(!pTempControl || pTempControl->IsDisable())  return HTCLIENT;
 		return pTempControl->HitTest(this, pt);
 	}
 
@@ -999,7 +1001,7 @@ namespace LIB_CONTROL
 	DrawAbleLabel::~DrawAbleLabel()
 	{
 		SAFE_DELETE_ALL(mDrawSet);
-		SAFE_DELETE_ALL(mSaveSet);
+		SAFE_DELETE_ALL(mSaveSet);																	 
 	}
 
 	bool DrawAbleLabel::SaveControl(float widthSacle, float heightSacle,Control * pControl)
@@ -1014,10 +1016,12 @@ namespace LIB_CONTROL
 		Control * newControl = (itControl == mSaveSet.end())?new Control(*pControl):*itControl;
 
 		newControl->AdjustRect(
-			MyRect(internalRect.left - mRect.left,
-				internalRect.top - mRect.top,
-				(internalRect.left - mRect.left + pControl->width())*widthSacle,
-				(internalRect.top - mRect.top + pControl->height())*heightSacle));
+			MyRect((internalRect.left - mRect.left)*widthSacle,
+				(internalRect.top - mRect.top)/heightSacle,
+				((internalRect.left - mRect.left)*widthSacle + pControl->width()*widthSacle),
+				((internalRect.top - mRect.top)/heightSacle + pControl->height()*heightSacle)));
+
+		newControl->Enable();
 		
 		if(itControl == mSaveSet.end())
 		mSaveSet.push_back(newControl);
@@ -1058,6 +1062,7 @@ namespace LIB_CONTROL
 		pControl->SetID(mSubID++);
 		//全部可以移动
 		pControl->SetDrag(true);
+		pControl->Disable();
 		mDrawSet.push_back(pControl);
 		pListener->attach(pControl);
 		//保存另一份
@@ -1130,11 +1135,21 @@ namespace LIB_CONTROL
 		
 	}
 
-	ListInterface::ListInterface(){}
-
-	void ListInterface::Draw(Listener * pListener)
+	bool DisableAdapter::IsDisable()
 	{
-		
+		return mDisable;
+	}
+
+	DisableAdapter::DisableAdapter():mDisable(false){}
+
+	void DisableAdapter::Disable()
+	{
+		mDisable = true;
+	}
+
+	void DisableAdapter::Enable()
+	{
+		mDisable = false;
 	}
 
 }

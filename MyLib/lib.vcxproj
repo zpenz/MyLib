@@ -95,19 +95,19 @@
     <ClInclude Include="Macros.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="2Draw.cpp" />
+    <ClCompile Include="2Draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Caret.cpp" />
     <ClCompile Include="CommonDialog.cpp" />
-    <ClCompile Include="Control.cpp" />
+    <ClCompile Include="Control.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="MyLayout.cpp" />
     <ClCompile Include="Macros.cpp" />
     <ClCompile Include="reflect.cpp" />
     <ClCompile Include="SemaphoreManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="lib.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

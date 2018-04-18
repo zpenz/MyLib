@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "CommonDialog.h"
 #include <Shobjidl.h>
 

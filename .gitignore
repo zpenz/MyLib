@@ -11,3 +11,6 @@
 /lib.VC.db
 *.sdf
 *.log
+*.ipdb
+*.iobj
+*.ipch

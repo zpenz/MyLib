@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Macros.h"
 #include <d2d1.h>
 #include <utility> //pair

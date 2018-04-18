@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#define _CRTDBG_MAP_ALLOC 
+//#define _CRTDBG_MAP_ALLOC 
 #include<stdlib.h>
 #include<crtdbg.h>
 #include "../MyLib/lib.h"
@@ -8,14 +8,13 @@
 #include "../MyLib/Macros.h"
 #include "../MyLib/Control.h"
 #include "../MyLib/CommonDialog.h"
+#ifdef _DEBUG
 #pragma comment(lib,"../Debug/lib.lib")
+#else
+#pragma comment(lib,"../Release/lib.lib")
+#endif
 #include <iostream>
 using namespace std;
-
-inline void EnableMemLeakCheck()
-{
-	_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
-}
 
 int main()
 {
@@ -26,7 +25,10 @@ int main()
 
 		Sleep(2000);
 
+#ifdef _DEBUG
 		_CrtDumpMemoryLeaks();
+#endif
+
 		POINT  * pPoint = new POINT();
 		GetCursorPos(pPoint);
 		COLORREF color = GetPixel(GetDC(NULL), pPoint->x, pPoint->y);

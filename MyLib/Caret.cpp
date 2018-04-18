@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Caret.h"
 #define DEFAULT_CARET_START 3
 using namespace Conver;

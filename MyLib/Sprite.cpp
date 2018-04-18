@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Sprite.h"
 #include <algorithm>
 #include <io.h>
