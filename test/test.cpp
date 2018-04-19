@@ -26,6 +26,14 @@ int main()
 
 		Sleep(500);
 
+		auto liser = bs.mListener;
+		auto drawable = DYCAST(DrawAbleLabel *, liser.findElementByID(125));
+
+		auto Log = [&](wstring info) {
+			//状态..
+			liser.findElementByID(123)->SetText(info);
+		};
+
 #ifdef _DEBUG
 		_CrtDumpMemoryLeaks();
 #endif
@@ -35,17 +43,14 @@ int main()
 		COLORREF color = GetPixel(GetDC(NULL), pPoint->x, pPoint->y);
 		cout << (UINT)GetRValue(color) << (UINT)GetGValue(color) << (UINT)GetBValue(color) << endl;
 
-		auto liser = bs.mListener;
-		auto drawable = DYCAST(DrawAbleLabel *, bs.mListener.findElementByID(125));
-
 		//SAVE
 		liser.AddClickFuncByID(120, [&]() {
-			printf("开始保存...\n");
+			Log(L"开始保存...");
 			auto path = DlgManager.ShowSaveFileDialog();
 			if (path.empty()) return;
 			if (path.find(L".layout") == wstring::npos) path = path + L".layout";
 			Layout::ControlLayout.SaveLayoutFile(Conver::WCharToAChar(path), drawable->mSaveSet);
-			printf("保存完毕...\n");
+			Log(L"保存完毕...");
 		});
 
 		//Load
@@ -58,58 +63,60 @@ int main()
 			printf("载入完毕...\n");
 		});
 
+		Log(L"装载函数...");
+
 		//LabelBox
 		liser.AddClickFuncByID(126, [&]() {
 			drawable->mStateType = L"LabelBox";
-			printf("选择LabelBox\n");
+			Log(L"选择LabelBox");
 		});
 
 		//Force
 		liser.AddClickFuncByID(127, [&]() {
 			drawable->mStateType = L"ForceLabel";
-			printf("选择ForceLabel\n");
+			Log(L"选择ForceLabel");
 		});
 
 		//EditBox
 		liser.AddClickFuncByID(128, [&]() {
-			drawable->mStateType = L"NoCaretEditBox";
-			printf("选择NoCaretEditBox\n");
+			drawable->mStateType = L"EditBox";
+			Log(L"选择EditBox");
 		});
 
 		//ImgButton
 		liser.AddClickFuncByID(129, [&]() {
 			drawable->mStateType = L"ImageButton";
-			printf("选择ImageButton\n");
+			Log(L"选择ImageButton");
 		});
 
 		//StaticLabel
 		liser.AddClickFuncByID(130, [&]() {
 			drawable->mStateType = L"StaticLabel";
-			printf("选择StaticLabel\n");
+			Log(L"选择StaticLabel");
 		});
 
 		//关闭
 		liser.AddClickFuncByID(152, [&]() {
 			drawable->mStateType = L"CloseButton";
-			printf("选择CloseButton\n");
+			Log(L"选择CloseButton");
 		});
 
 		//最小
 		liser.AddClickFuncByID(153, [&]() {
 			drawable->mStateType = L"MiniButton";
-			printf("选择MiniButton\n");
+			Log(L"选择MiniButton");
 		});
 
 		//最大
 		liser.AddClickFuncByID(154, [&]() {
 			drawable->mStateType = L"MaxButton";
-			printf("选择MaxButton\n");
+			Log(L"选择MaxButton");
 		});
 
 		//TitleBar
 		liser.AddClickFuncByID(159, [&]() {
 			drawable->mStateType = L"TitleBar";
-			printf("选择TitleBar\n");
+			Log(L"选择TitleBar");
 		});
 
 		//DrawAbleLabel
@@ -176,7 +183,7 @@ int main()
 			drawable->SaveControl(1024.0f/drawable->width(),768.0f/drawable->height(),pControl);
 			printf("更新完成...\n");
 		});
-
+		Log(L"就绪");
 
 		WaitForSingleObject(ThreadHandle, INFINITE);
 		CloseHandle(ThreadHandle);

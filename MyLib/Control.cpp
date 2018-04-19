@@ -156,24 +156,18 @@ namespace LIB_CONTROL
 	UINT Listener::LButtonDown(POINT pt)
 	{
 		UINT ret = SHOULD_DO_NOTHING;
-		function<void(void)> Func = nullptr;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->KillFocus(this);  //KillFocus
 			if (PointInRect(pt.x, pt.y, pControl->getRect()))
 			{
-				ret = pControl->LButtonDown(this, pt);
-				if (pControl->mClickFunc) Func = pControl->mClickFunc;  
+				if (pControl->mClickFunc) pControl->mClickFunc(); //调用点击事件
 				pControl->Focus(this); //SetFocus
+				ret = pControl->LButtonDown(this, pt);
 				if (pControl->IsDisable()) ret = SHOULD_DO_NOTHING;
 			}
 			return ret;
 		});
 
-		//调用点击事件
-		if (Func) { 
-			Func(); 
-			Func = nullptr; 
-		}
 		return ret;
 	}
 

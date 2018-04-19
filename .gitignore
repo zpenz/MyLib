@@ -14,3 +14,10 @@
 *.ipdb
 *.iobj
 *.ipch
+*.tlog
+*.pdb
+*.bsc
+*.lib
+*.exe
+*.obj
+*.sbr
