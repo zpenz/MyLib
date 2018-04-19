@@ -24,13 +24,17 @@ int main()
 	BaseWindow bs;
 	auto ThreadHandle = bs.Show();
 
-		Sleep(500);
+		Sleep(2000);
 
 		auto liser = bs.mListener;
 		auto drawable = DYCAST(DrawAbleLabel *, liser.findElementByID(125));
 
+		auto CheckExist = [&](UINT id) {
+		};
+
 		auto Log = [&](wstring info) {
 			//״̬..
+			IS_RETURN(!liser.findElementByID(123),false);
 			liser.findElementByID(123)->SetText(info);
 		};
 

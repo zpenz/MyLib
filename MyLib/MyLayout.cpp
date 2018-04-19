@@ -261,7 +261,7 @@ namespace Layout
 		auto fileSize = FileLength(pFile);
 		char * buf = new char[fileSize * sizeof(char)]();
 		auto readFlag = fread(buf, sizeof(char), fileSize, pFile);
-		memset(buf, 0, fileSize + 1); //fileSize + 1
+		memset(buf, 0, fileSize); //fileSize + 1
 		
 		rewind(pFile);
 		fread(buf, sizeof(char), readFlag, pFile);
