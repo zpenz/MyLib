@@ -397,7 +397,6 @@ void BaseWindow::Destory()
 	 DrawManager.UseTempRenderTarget();
 
 	 CaretManager.attrach(mBaseHwnd);
-	 CaretManager.InitCaret();
 	 CaretManager.Color(RGB(0,0,0));
 
 	 //窗口完全矩形..
@@ -408,6 +407,10 @@ void BaseWindow::Destory()
 	 mListener.attachWindow(mBaseHwnd);
 	 //加载所有控件
 	 IS_ERROR_EXIT(!Layout::ControlLayout.LoadLayoutFile("window.layout",&mListener),"加载布局文件失败...");
+	 auto background = mListener.findElementByID(0);
+	 IS_ERROR_EXIT(!background, "没有找到背景控件!");
+	 SetWidth(background->width());
+	 SetHeight(background->height());
  }
 
  void BaseWindow::OnDraw()

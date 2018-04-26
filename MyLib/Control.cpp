@@ -1000,7 +1000,7 @@ namespace LIB_CONTROL
 		pBufferControl = pForcedControl =  nullptr;
 		mStartDrawPoint = nullPoint;
 		mSubID = DEFAULT_CONTROL_ID;
-		mSaveSet.push_back(this);
+
 	}
 
 	DrawAbleLabel::~DrawAbleLabel()
@@ -1031,6 +1031,20 @@ namespace LIB_CONTROL
 		
 		if(itControl == mSaveSet.end())
 		mSaveSet.push_back(newControl);
+
+		if (find_if(mSaveSet.begin(), mSaveSet.end(), [&pControl](Control * pSaveContorl) {
+			if (pSaveContorl->getID() == 0)	return true;
+			return false;
+		}) == mSaveSet.end())
+		{
+			//±³¾°
+			BackGround * pForm = new BackGround();
+			pForm->AdjustRect(MyRect(0, 0, RECTWIDTH(mRect), RECTHEIGHT(mRect)));
+			pForm->SetClassName(L"BackGround");
+			pForm->SetBackColor(mBackColor);
+			mSaveSet.push_front(pForm);
+		}
+
 		return true;
 	}
 
@@ -1072,9 +1086,7 @@ namespace LIB_CONTROL
 		mDrawSet.push_back(pControl);
 		pListener->attach(pControl);
 		//±£´æÁíÒ»·Ý
-		auto scaleX = pListener->ListenedWidth()*1.0f/width();
-		auto scaleY = pListener->ListenedHeight()*1.0f / height();
-		SaveControl(scaleX, scaleY, pControl);
+		SaveControl(1, 1, pControl);
 		mStateType.clear();
 		mStartDrawPoint = nullPoint;
 		pBufferControl = nullptr;
@@ -1156,6 +1168,16 @@ namespace LIB_CONTROL
 	void DisableAdapter::Enable()
 	{
 		mDisable = false;
+	}
+
+	BackGround::BackGround()
+	{
+		SetID(0);
+	}
+
+	void BackGround::Draw(Listener * pListener)
+	{
+		DrawManager.DrawRectangle(mRect, COLOREX(mBackColor),true);
 	}
 
 }

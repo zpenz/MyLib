@@ -36,6 +36,7 @@ int main()
 			//״̬..
 			IS_RETURN(!liser.findElementByID(123),false);
 			liser.findElementByID(123)->SetText(info);
+			return true;
 		};
 
 #ifdef _DEBUG

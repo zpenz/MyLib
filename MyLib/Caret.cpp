@@ -6,6 +6,7 @@ bool MyCaret::attrach(HWND hWnd)
 {
 	IS_RETURN_ERROR(!hWnd,false,"attrached window null")
 	mAttachWindow = hWnd;
+	InitCaret();
 	return true;
 }
 

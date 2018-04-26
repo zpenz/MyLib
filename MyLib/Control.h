@@ -548,6 +548,15 @@ namespace LIB_CONTROL
 		virtual void Hover(POINT pt);
 	};
 
+	class BackGround:public Control,
+		public REFLECT<BackGround>
+	{
+	public:
+		BackGround();
+
+		void Draw(Listener * pListener) override;
+	};
+
 }
 
 
