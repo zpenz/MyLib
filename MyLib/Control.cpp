@@ -863,6 +863,7 @@ namespace LIB_CONTROL
 
 	void ImageButton::Draw(Listener * pListener)
 	{
+		static RECT oldRect = mRect;
 		if (!pImage) if (!mText.empty()) LoadFromFile(mText); //如果文字非空，那么就加载文字路径下的图
 		if (pHonverImage == nullptr) pHonverImage = pImage;
 		if (ZeroRect(mImgRec)) mImgRec = mRect;
@@ -874,7 +875,7 @@ namespace LIB_CONTROL
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
 		}
-		if (pImage) DrawManager.DrawPicture(pImage, mImgRec);
+		if (pImage) DrawManager.DrawPicture(pImage, mRect);
 	}
 
 	////////////////////////////////////////////////////////////////////////// EditBox
@@ -999,6 +1000,7 @@ namespace LIB_CONTROL
 		pBufferControl = pForcedControl =  nullptr;
 		mStartDrawPoint = nullPoint;
 		mSubID = DEFAULT_CONTROL_ID;
+		mSaveSet.push_back(this);
 	}
 
 	DrawAbleLabel::~DrawAbleLabel()
