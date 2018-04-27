@@ -106,8 +106,9 @@ bool BaseWindow::ShowThisWindow()
 
 void BaseWindow::UpdateSize() const
 {
-	if(mBaseHwnd)
-	::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, false);
+	if (mBaseHwnd)
+		//::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, false);
+		::SetWindowPos(mBaseHwnd,NULL,mLeftTop.x,mLeftTop.y,mWidth,mHeight, SWP_NOZORDER);
 }
 
 void BaseWindow::UpdateCache(bool topMost)
@@ -411,6 +412,7 @@ void BaseWindow::Destory()
 	 IS_ERROR_EXIT(!background, "没有找到背景控件!");
 	 SetWidth(background->width());
 	 SetHeight(background->height());
+	 DrawManager.ReSize(background->width(),background->height());
  }
 
  void BaseWindow::OnDraw()

@@ -493,7 +493,7 @@ namespace LIB_CONTROL
 
 	LONG Control::width() const
 	{
-		return mRect.right - mRect.left;
+		return RECTWIDTH(mRect);
 	}
 
 	void Control::SetWidth(UINT uWidth)
@@ -503,7 +503,7 @@ namespace LIB_CONTROL
 
 	LONG Control::height() const
 	{
-		return mRect.bottom - mRect.top;
+		return RECTHEIGHT(mRect);
 	}
 
 	void Control::SetHeight(UINT uHeight)
