@@ -43,9 +43,9 @@ namespace LIB_WINDOW
  {
  }
 
- BaseWindow::BaseWindow():mWidth(1024),mHeight(768),mBaseHwnd(NULL),
-		mClassname(L"LIB"),mWindowname(L"LIB"),mWindowStyle(WS_OVERLAPPEDWINDOW),
-	mWindowStyleEx(WS_EX_APPWINDOW)
+ BaseWindow::BaseWindow(string layoutFileName) : mWidth(1024), mHeight(768), mBaseHwnd(NULL),
+	 mClassname(L"LIB"), mWindowname(L"LIB"), mWindowStyle(WS_OVERLAPPEDWINDOW),
+	 mWindowStyleEx(WS_EX_APPWINDOW), mLayoutFileName(layoutFileName)
 {
 
 }
@@ -108,7 +108,7 @@ void BaseWindow::UpdateSize() const
 {
 	if (mBaseHwnd)
 		//::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, false);
-		::SetWindowPos(mBaseHwnd,NULL,mLeftTop.x,mLeftTop.y,mWidth,mHeight, SWP_NOZORDER);
+		::SetWindowPos(mBaseHwnd,NULL,mLeftTop.x,mLeftTop.y,mWidth,mHeight, SWP_NOMOVE);
 }
 
 void BaseWindow::UpdateCache(bool topMost)
@@ -137,6 +137,13 @@ HANDLE BaseWindow::Show()
 	if (!hThread) return false;
 	auto error = GetLastError();
 	return hThread;
+}
+
+bool BaseWindow::Close()
+{
+	IS_RETURN(!mBaseHwnd,false);
+	SendMessage(mBaseHwnd, WM_CLOSE, 0, 0);;
+	return true;
 }
 
 void BaseWindow::SetCallBackFunc(pCallBackFunc mFunc)
@@ -407,7 +414,7 @@ void BaseWindow::Destory()
 
 	 mListener.attachWindow(mBaseHwnd);
 	 //加载所有控件
-	 IS_ERROR_EXIT(!Layout::ControlLayout.LoadLayoutFile("window.layout",&mListener),"加载布局文件失败...");
+	 IS_ERROR_EXIT(!Layout::ControlLayout.LoadLayoutFile(mLayoutFileName.empty()?DEFAULT_LAYOUT: mLayoutFileName.c_str(),&mListener),"加载布局文件失败...");
 	 auto background = mListener.findElementByID(0);
 	 IS_ERROR_EXIT(!background, "没有找到背景控件!");
 	 SetWidth(background->width());
@@ -474,7 +481,9 @@ void BaseWindow::Destory()
  void BaseWindow::OnLButtonDown(WPARAM wParam, LPARAM lParam)
  {
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
+	 ReadWriteLock.lock();
 	 auto ret = mListener.LButtonDown(pt);
+	 ReadWriteLock.unlock();
 	 mMouse.x = pt.x;
 	 mMouse.y = pt.y;
 	 mMouse.mMouseState = MOUSE_STATE_LEFTBUTTONDOWN;
@@ -524,9 +533,6 @@ void BaseWindow::Destory()
 		 mMouseState = MOUSE_STATE_IDLE;
 	 }
  }
-
-
-
 
  }
 

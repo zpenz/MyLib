@@ -49,6 +49,8 @@ protected:
 
 	HWND mBaseHwnd; 
 
+	string mLayoutFileName;
+
 	pCallBackFunc mCallBackFunc;
 
 private:
@@ -70,7 +72,7 @@ private:
 public:
 	Listener mListener;
 
-	BaseWindow();
+	BaseWindow(string layoutFileName);
 
 	BaseWindow(int width, int height,const wstring windowname, const wstring classname, 
 		DWORD WindowStyleEx, DWORD WindowStyle, POINT leftUpper);
@@ -80,6 +82,8 @@ public:
 	void ReDraw(bool bReDraw); 	//WM_PAINT
 
 	HANDLE Show();
+
+	bool Close();
 
 	void SetCallBackFunc(pCallBackFunc mFunc);
 

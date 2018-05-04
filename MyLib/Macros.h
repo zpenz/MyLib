@@ -23,6 +23,8 @@
 #define RPCAST(type,des) reinterpret_cast<type>(des)
 #define DYCAST(type,des) dynamic_cast<type>(des)
 
+#define DEFAULT_LAYOUT "window.layout"
+
 namespace Macros2D
 {
 

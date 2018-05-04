@@ -16,12 +16,15 @@
 #include <iostream>
 using namespace std;
 
-int main()
+int CALLBACK WinMain(HINSTANCE hInstance,
+	 HINSTANCE hPrevInstance,
+	 LPSTR lpCmdLine,
+	int nShowCmd)
 {
 	using namespace CommonItem;
 	using namespace MutexLock;
 	 
-	BaseWindow bs;
+	BaseWindow bs("");
 	auto ThreadHandle = bs.Show();
 
 		Sleep(2000);
@@ -62,9 +65,14 @@ int main()
 		liser.AddClickFuncByID(158, [&]() {
 			printf("载入中...\n");
 			auto path = DlgManager.ShowOpenFileDialog();
-			ReadWriteLock.lock();
-			Layout::ControlLayout.LoadLayoutFile(Conver::WCharToAChar(path),&liser);
-			ReadWriteLock.unlock();
+			bs.Close();
+			CloseHandle(ThreadHandle);
+
+			BaseWindow bsNew(Conver::WCharToAChar(path));
+			auto newHandle = bsNew.Show();
+			ThreadHandle = newHandle;
+
+			WaitForSingleObject(newHandle,INFINITE);
 			printf("载入完毕...\n");
 		});
 
