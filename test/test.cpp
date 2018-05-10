@@ -66,7 +66,7 @@ int CALLBACK WinMain(HINSTANCE hInstance,
 			printf("‘ÿ»Î÷–...\n");
 			auto path = DlgManager.ShowOpenFileDialog();
 			bs.Close();
-			CloseHandle(ThreadHandle);
+			CloseHandle(ThreadHandle);   
 
 			BaseWindow bsNew(Conver::WCharToAChar(path));
 			auto newHandle = bsNew.Show();
