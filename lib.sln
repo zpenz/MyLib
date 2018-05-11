@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LIB3D", "LIB3D\LIB3D.vcxproj", "{70C5AB76-F6F6-4481-AE65-63BC81F981E6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test3D", "test3D\test3D.vcxproj", "{060AA4E0-CB8B-42C3-9A76-AC436D9AF641}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -39,6 +41,14 @@ Global
 		{70C5AB76-F6F6-4481-AE65-63BC81F981E6}.Release|Win32.Build.0 = Release|Win32
 		{70C5AB76-F6F6-4481-AE65-63BC81F981E6}.Release|x64.ActiveCfg = Release|x64
 		{70C5AB76-F6F6-4481-AE65-63BC81F981E6}.Release|x64.Build.0 = Release|x64
+		{060AA4E0-CB8B-42C3-9A76-AC436D9AF641}.Debug|Win32.ActiveCfg = Debug|Win32
+		{060AA4E0-CB8B-42C3-9A76-AC436D9AF641}.Debug|Win32.Build.0 = Debug|Win32
+		{060AA4E0-CB8B-42C3-9A76-AC436D9AF641}.Debug|x64.ActiveCfg = Debug|x64
+		{060AA4E0-CB8B-42C3-9A76-AC436D9AF641}.Debug|x64.Build.0 = Debug|x64
+		{060AA4E0-CB8B-42C3-9A76-AC436D9AF641}.Release|Win32.ActiveCfg = Release|Win32
+		{060AA4E0-CB8B-42C3-9A76-AC436D9AF641}.Release|Win32.Build.0 = Release|Win32
+		{060AA4E0-CB8B-42C3-9A76-AC436D9AF641}.Release|x64.ActiveCfg = Release|x64
+		{060AA4E0-CB8B-42C3-9A76-AC436D9AF641}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

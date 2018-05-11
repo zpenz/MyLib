@@ -213,7 +213,8 @@ namespace Conver
 		auto TheCoveredString = new char[size]();
 		auto ret  = WideCharToMultiByte(codePage, 0, Wchar, -1, TheCoveredString, size, NULL, NULL);
 		if (!ret) { SAFE_DELETE(TheCoveredString); return nullptr; }
-		return std::move(TheCoveredString);
+		TheCoveredString[size] = '\0';
+		return TheCoveredString;
 	}
 
 	string WCharToAChar(wstring Wchar, UINT codePage)

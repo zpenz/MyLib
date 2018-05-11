@@ -1,145 +1,48 @@
 #include "3D.h"
 
-#define SCREEN_WIDTH   1920
-#define SCREEN_HEIGHT  1080
-
-// global declarations
-IDXGISwapChain *swapchain;             // the pointer to the swap chain interface
-ID3D11Device *dev;                     // the pointer to our Direct3D device interface
-ID3D11DeviceContext *devcon;           // the pointer to our Direct3D device context
-ID3D11RenderTargetView * buffer;       // the pointer to our buffer
-ID3D11InputLayout * pLayout;          //  the pointer to input layout
-									  /*ID3D11VertexShader * VS;
-									  ID3D11PixelShader  * PS;*/
-ID3D11VertexShader *pVS;               // the pointer to the vertex shader
-ID3D11PixelShader *pPS;                // the pointer to the pixel shader
-ID3D11Buffer *pVBuffer;                // the pointer to the vertex buffer
-ID3D11Buffer *pIBuffer;                // the pointer to the index buffer
-ID3D11Buffer       * vertexBuffer;
-//定义顶点 包含位置和顶点
-struct VERTEX
+class TheWindow :public BaseWindow
 {
-	//position
-	FLOAT X, Y, Z;
-	//color
-	D3DXCOLOR Color;
+public:
+
+	void AfterCreate() override
+	{
+		GraphicsManager.InitD3D(GetHwnd());
+	}
+
+	void Update(float delta) override
+	{
+		GraphicsManager.Draw();
+	}
+
+	void OnDraw() override
+	{
+
+	}
+
+	void  Destory() override
+	{
+		GraphicsManager.CleanUp();
+	}
+
 };
 
-// function prototypes
-void InitD3D(HWND hWnd);    // sets up and initializes Direct3D
-void CleanD3D(void);        // closes Direct3D and releases memory
-void draw();                // draw frame 
-							//void initGriaphs();
-void InitPipeline();
-void InitGraphics();
-
-// the WindowProc function prototype
-LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-
-
-// the entry point for any Windows program
-int WINAPI WinMain(HINSTANCE hInstance,
-	HINSTANCE hPrevInstance,
-	LPSTR lpCmdLine,
-	int nCmdShow)
+VERTEX OurVertices[] =
 {
-	HWND hWnd;
-	WNDCLASSEX wc;
+	{ -0.5f, 0.5f, 0.0f,  D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f) },  //左上  0
+	{ 0.5f, -0.5, 0.0f,   D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f) },  //右下  1
+	{ -0.5f, -0.5f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f) },  //左下  2
+	{ 0.5f, 0.5f, 0.0f, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f) }     //右上  3
+};
 
-	ZeroMemory(&wc, sizeof(WNDCLASSEX));
-
-	wc.cbSize = sizeof(WNDCLASSEX);
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WindowProc;
-	wc.hInstance = hInstance;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	//wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-	wc.lpszClassName = L"WindowClass";
-
-	RegisterClassEx(&wc);
-
-	RECT wr = { 0, 0, 800, 600 };
-	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
-
-	hWnd = CreateWindowEx(NULL,
-		L"WindowClass",
-		L"Our First Direct3D Program",
-		WS_OVERLAPPEDWINDOW,
-		300,
-		300,
-		wr.right - wr.left,
-		wr.bottom - wr.top,
-		NULL,
-		NULL,
-		hInstance,
-		NULL);
-
-	ShowWindow(hWnd, nCmdShow);
-
-	// set up and initialize Direct3D
-	InitD3D(hWnd);
-
-	// enter the main loop:
-
-	MSG msg;
-
-	while (TRUE)
-	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-
-			if (msg.message == WM_QUIT)
-				break;
-		}
-		else
-		{
-			// Run game code here
-			// ...
-			// ...
-			draw();
-		}
-	}
-
-	// clean up DirectX and COM
-	CleanD3D();
-
-	return msg.wParam;
+bool DoSomething()
+{
+	TheWindow win;
+	auto ThreadID = win.Show();
+	WaitForSingleObject(ThreadID, INFINITE);
+	return true;
 }
 
-
-// this is the main message handler for the program
-LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	switch (message)
-	{
-	case WM_DESTROY:
-	{
-		PostQuitMessage(0);
-		return 0;
-	} break;
-	}
-
-	return DefWindowProc(hWnd, message, wParam, lParam);
-}
-
-
-//setviewport
-void SetViewPort()
-{
-	D3D11_VIEWPORT viewport;
-	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.Width = SCREEN_WIDTH;
-	viewport.Height = SCREEN_HEIGHT;
-
-	devcon->RSSetViewports(1, &viewport);
-}
-
-// this function initializes and prepares Direct3D for use
-void InitD3D(HWND hWnd)
+bool MyGraphics::InitD3D(HWND hWnd)
 {
 	// create a struct to hold information about the swap chain
 	DXGI_SWAP_CHAIN_DESC scd;
@@ -168,80 +71,32 @@ void InitD3D(HWND hWnd)
 		NULL,
 		D3D11_SDK_VERSION,
 		&scd,
-		&swapchain,
-		&dev,
+		&mSwapChain,
+		&mDevice,
 		NULL,
-		&devcon);
+		&mDeviceContext);
 
 	//init RenderTargetView
 	ID3D11Texture2D * pBackBuffer;
 	//getbuffer
-	swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pBackBuffer);
+	mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pBackBuffer);
 	// 使用back buffer地址 创建RenderTarget
-	dev->CreateRenderTargetView(pBackBuffer, NULL, &buffer);
+	mDevice->CreateRenderTargetView(pBackBuffer, NULL, &mpRenderTargetView);
 	//release
 	pBackBuffer->Release();
 	//setRenderTargets
-	devcon->OMSetRenderTargets(1, &buffer, NULL);
-
+	mDeviceContext->OMSetRenderTargets(1, &mpRenderTargetView, NULL);
 
 	//setviewport
 	SetViewPort();
 
-	//------------------------------------------------------
 	InitPipeline();
 	InitGraphics();
 
+	return true;
 }
 
-
-void CleanD3D(void)
-{
-	swapchain->SetFullscreenState(FALSE, NULL);
-	pLayout->Release();
-	pVS->Release();
-	pPS->Release();
-	if (pVBuffer)
-		pVBuffer->Release();
-	pIBuffer->Release();
-	swapchain->Release();
-	buffer->Release();
-	dev->Release();
-	devcon->Release();
-}
-
-void draw()
-{
-
-	// clear the back buffer to a deep blue
-	devcon->ClearRenderTargetView(buffer, D3DXCOLOR(0.0f, 0.2f, 0.4f, 1.0f));
-
-	// select which vertex buffer to display
-	UINT stride = sizeof(VERTEX);
-	UINT offset = 0;
-	devcon->IASetVertexBuffers(0, 1, &pVBuffer, &stride, &offset);
-	devcon->IASetIndexBuffer(pIBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	// select which primtive type we are using
-	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-	devcon->DrawIndexed(6, 0, 0);
-
-	// switch the back buffer and the front buffer
-	swapchain->Present(0, 0);
-}
-
-VERTEX OurVertices[] =
-{
-
-	{ -0.5f, 0.5f, 0.0f,  D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f) },  //左上 0
-	{ 0.5f, -0.5, 0.0f,   D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f) }, //右下 1
-	{ -0.5f, -0.5f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f) },  // 左下 2
-	{ 0.5f, 0.5f, 0.0f, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f) }     //右上 3
-};
-// this is the function that creates the shape to render
-void InitGraphics()
+bool MyGraphics::InitGraphics()
 {
 	// create a triangle using the VERTEX struct
 	HRESULT result;
@@ -263,12 +118,8 @@ void InitGraphics()
 	D3D11_SUBRESOURCE_DATA ibdata;
 	ZeroMemory(&ibdata, sizeof(ibdata));
 	ibdata.pSysMem = index;
-	result = dev->CreateBuffer(&ib, &ibdata, &pIBuffer);
-	if (FAILED(result))
-	{
-		MessageBoxA(NULL, "can not Create Index Buffer", "error", MB_OK);
-	}
-
+	result = mDevice->CreateBuffer(&ib, &ibdata, &mpIndexBuffer);
+	IS_ERROR_EXIT(FAILED(result), "创建indexBuffer失败");
 
 	// create the vertex buffer
 	D3D11_BUFFER_DESC bd;
@@ -279,17 +130,16 @@ void InitGraphics()
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	dev->CreateBuffer(&bd, NULL, &pVBuffer);
+	mDevice->CreateBuffer(&bd, NULL, &mpVertexBuffer);
 
 	D3D11_MAPPED_SUBRESOURCE ms;
-	devcon->Map(pVBuffer, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);    // map the buffer
+	mDeviceContext->Map(mpVertexBuffer, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);    // map the buffer
 	memcpy(ms.pData, OurVertices, sizeof(OurVertices));                 // copy the data
-	devcon->Unmap(pVBuffer, NULL);
+	mDeviceContext->Unmap(mpVertexBuffer, NULL);
+	return true;
 }
 
-
-// this function loads and prepares the shaders
-void InitPipeline()
+bool MyGraphics::InitPipeline()
 {
 	// load and compile the two shaders
 	ID3D10Blob *VS, *PS;
@@ -297,20 +147,68 @@ void InitPipeline()
 	D3DX11CompileFromFile(L"shaders.shader", 0, 0, "PShader", "ps_4_0", 0, 0, 0, &PS, 0, 0);
 
 	// encapsulate both shaders into shader objects
-	dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, &pVS);
-	dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, &pPS);
+	mDevice->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, &mpVertexShader);
+	mDevice->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, &mpPixelShader);
 
 	// set the shader objects
-	devcon->VSSetShader(pVS, 0, 0);
-	devcon->PSSetShader(pPS, 0, 0);
+	mDeviceContext->VSSetShader(mpVertexShader, 0, 0);
+	mDeviceContext->PSSetShader(mpPixelShader, 0, 0);
 
 	// create the input layout object
-	D3D11_INPUT_ELEMENT_DESC ied[] =
+	D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-	dev->CreateInputLayout(ied, 2, VS->GetBufferPointer(), VS->GetBufferSize(), &pLayout);
-	devcon->IASetInputLayout(pLayout);
+	mDevice->CreateInputLayout(inputElementDesc, 2, VS->GetBufferPointer(), VS->GetBufferSize(), &mpLayout);
+	mDeviceContext->IASetInputLayout(mpLayout);
+	
+	return true;
 }
+
+void MyGraphics::SetViewPort()
+{
+	D3D11_VIEWPORT viewPort;
+	ZeroMemory(&viewPort, sizeof(D3D11_VIEWPORT));
+	viewPort.TopLeftX = 0;
+	viewPort.TopLeftY = 0;
+	viewPort.Width = SCREEN_WIDTH;
+	viewPort.Height = SCREEN_HEIGHT;
+
+	mDeviceContext->RSSetViewports(1, &viewPort);
+}
+
+
+void MyGraphics::CleanUp()
+{
+	SAFE_RELEASE(mpLayout);
+	SAFE_RELEASE(mpVertexShader);
+	SAFE_RELEASE(mpPixelShader);
+	SAFE_RELEASE(mpVertexBuffer);
+	SAFE_RELEASE(mpIndexBuffer);
+	SAFE_RELEASE(mSwapChain);
+	SAFE_RELEASE(mpRenderTargetView);
+	SAFE_RELEASE(mDevice);
+	SAFE_RELEASE(mDeviceContext);
+}
+
+void MyGraphics::Draw()
+{
+	// clear the back buffer to a deep blue
+	mDeviceContext->ClearRenderTargetView(mpRenderTargetView, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+
+	// select which vertex buffer to display
+	UINT stride = sizeof(VERTEX);
+	UINT offset = 0;
+	mDeviceContext->IASetVertexBuffers(0, 1, &mpVertexBuffer, &stride, &offset);
+	mDeviceContext->IASetIndexBuffer(mpIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	// select which primtive type we are using
+	mDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	mDeviceContext->DrawIndexed(6, 0, 0);
+	// switch the back buffer and the front buffer
+	mSwapChain->Present(0, 0);
+}
+

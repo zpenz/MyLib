@@ -25,6 +25,7 @@ int CALLBACK WinMain(HINSTANCE hInstance,
 	using namespace MutexLock;
 	 
 	BaseWindow bs("");
+	bs.UseWrapper();
 	auto ThreadHandle = bs.Show();
 
 		Sleep(2000);

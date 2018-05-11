@@ -39,20 +39,24 @@ namespace LIB_WINDOW
  BaseWindow::BaseWindow(int width, int height,
 	 const wstring windowname, const wstring classname, DWORD WindowStyleEx, DWORD WindowStyle,POINT leftUpper)
 	 :mWidth(width), mHeight(height),mClassname(classname), mWindowname(windowname), mWindowStyle(WindowStyle),
-	 mWindowStyleEx(WindowStyleEx),mLeftTop(leftUpper)
+	 mWindowStyleEx(WindowStyleEx),mLeftTop(leftUpper),mDefaultWrapper(true)
  {
  }
 
  BaseWindow::BaseWindow(string layoutFileName) : mWidth(1024), mHeight(768), mBaseHwnd(NULL),
 	 mClassname(L"LIB"), mWindowname(L"LIB"), mWindowStyle(WS_OVERLAPPEDWINDOW),
-	 mWindowStyleEx(WS_EX_APPWINDOW), mLayoutFileName(layoutFileName)
+	 mWindowStyleEx(WS_EX_APPWINDOW), mLayoutFileName(layoutFileName),mDefaultWrapper(true)
 {
 
 }
 
+ BaseWindow::BaseWindow() :BaseWindow("") {}
+
+
 bool BaseWindow::ShowThisWindow()
 {
-	WNDCLASSEXW wndcls;
+	using namespace Conver;
+	WNDCLASSEX wndcls;
 	ZeroMemory(&wndcls,sizeof(wndcls));
 
 	wndcls.cbClsExtra = 0;
@@ -69,12 +73,12 @@ bool BaseWindow::ShowThisWindow()
 	if(!mCallBackFunc) 	wndcls.lpfnWndProc = WinProc;
 	else wndcls.lpfnWndProc = mCallBackFunc;
 
-	wndcls.lpszClassName = mClassname.c_str();
+	wndcls.lpszClassName = WCharToAChar(mClassname.c_str()).c_str();
 	wndcls.lpszMenuName = NULL;
 
 	wndcls.style = CS_HREDRAW | CS_VREDRAW;
 	
-	RegisterClassExW(&wndcls);
+	RegisterClassEx(&wndcls);
 
 	InitBeforeCreate();
 	MoveCenterWindow();
@@ -85,12 +89,13 @@ bool BaseWindow::ShowThisWindow()
 	mWindowStyle =  WS_CAPTION | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
 		WS_SYSMENU | WS_THICKFRAME| WS_OVERLAPPED | WS_MINIMIZEBOX |WS_MAXIMIZEBOX ;
 
-	mBaseHwnd = CreateWindowExW(mWindowStyleEx,mClassname.c_str(),mWindowname.c_str(),
+	mBaseHwnd = CreateWindowEx(mWindowStyleEx, WCharToAChar(mClassname.c_str()).c_str(), 
+		WCharToAChar(mWindowname.c_str()).c_str(),
 		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
 
 	if(!mBaseHwnd)
 	{
-		ErrorMessage("创建窗口失败");
+		ErrorMessage(Conver::Format("创建窗口失败.ErrorCode: %d", GetLastError()).c_str());
 		return false;
 	}
 
@@ -137,6 +142,16 @@ HANDLE BaseWindow::Show()
 	if (!hThread) return false;
 	auto error = GetLastError();
 	return hThread;
+}
+
+void BaseWindow::UseWrapper()
+{
+	mDefaultWrapper = false;
+}
+
+bool BaseWindow::IsDefaultWrapper()
+{
+	return mDefaultWrapper;
 }
 
 bool BaseWindow::Close()
@@ -318,16 +333,20 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			window = (BaseWindow*)(((CREATESTRUCT *)lParam)->lpCreateParams);
 			break;
 		case WM_NCPAINT:
+			if(window->IsDefaultWrapper()) break;
 			window->OnNcPaint((HRGN)wParam);
 			return 0;
 			break;
 		case WM_NCCALCSIZE:
+			if (window->IsDefaultWrapper()) break;
 			window->OnNcCalcSize(wParam,lParam);
 			if ((BOOL)wParam) return 0;
 			break;
 		case WM_NCHITTEST:
+			if (window->IsDefaultWrapper()) break;
 			return window->OnHitTest(lParam);
 		case WM_NCACTIVATE:
+			if (window->IsDefaultWrapper()) break;
 			return window->OnNcActive(wParam,lParam);
 			break;
 		case WM_ERASEBKGND: 
@@ -435,6 +454,7 @@ void BaseWindow::Destory()
 
  void BaseWindow::Update(float delta)
  {
+	 if (mListener.Obj().empty()) return;
 	 POINT pt; GetCursorPos(&pt);
 	 ScreenToClient(mBaseHwnd, &pt);
 	 mListener.Hover(pt); 	 //hover
@@ -458,6 +478,7 @@ void BaseWindow::Destory()
 
  UINT BaseWindow::OnSize(WPARAM wParam, LPARAM lParam)
  {
+	 if (mListener.Obj().empty()) return 0;
 	 auto newWidth  =  LOWORD(lParam);
 	 auto newHeight =  HIWORD(lParam);
 	 mListener.ChangeSize(Conver::MyRect(mLeftTop.x,mLeftTop.y,mLeftTop.x+newWidth,mLeftTop.y+newHeight));
@@ -466,6 +487,7 @@ void BaseWindow::Destory()
 
  bool BaseWindow::OnSizing(WPARAM wParam, LPARAM lParam)
  {
+	 if (mListener.Obj().empty()) return true;
 	 RECT * pNewRect = reinterpret_cast<RECT *>(lParam);
 	 mListener.ChangeSize(*pNewRect);
 	 return true;
@@ -473,6 +495,7 @@ void BaseWindow::Destory()
 
  UINT BaseWindow::OnHitTest(LPARAM lParam)
  {
+	 if (mListener.Obj().empty()) return 0;
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
 	 ScreenToClient(mBaseHwnd, &pt);
 	 return mListener.HitTest(pt);
@@ -480,10 +503,9 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnLButtonDown(WPARAM wParam, LPARAM lParam)
  {
+	 if (mListener.Obj().empty()) return;
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
-	 ReadWriteLock.lock();
-	 auto ret = mListener.LButtonDown(pt);
-	 ReadWriteLock.unlock();
+	 mListener.LButtonDown(pt);
 	 mMouse.x = pt.x;
 	 mMouse.y = pt.y;
 	 mMouse.mMouseState = MOUSE_STATE_LEFTBUTTONDOWN;
@@ -491,6 +513,7 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnLButtonUp(WPARAM wParam, LPARAM lParam)
  {
+	 if (mListener.Obj().empty()) return;
 	 static RECT RestoreRect; //保存当前区域
 	 POINT pt = { MAKEPOINTS(lParam).x,MAKEPOINTS(lParam).y };
 	 auto ret = mListener.LButtonUp(pt);
@@ -513,6 +536,7 @@ void BaseWindow::Destory()
 
  UINT BaseWindow::OnUnicodeChar(WPARAM wParam, LPARAM lParam)
  {
+	 if (mListener.Obj().empty()) return 0;
 	 auto pressChar = (wchar_t)wParam;
 	 mListener.InputChar(pressChar);
 	 return 0;
@@ -520,6 +544,7 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnMouseMove(WPARAM wParam, LPARAM lParam)
  {
+	 if (mListener.Obj().empty()) return;
 	 auto mousePt =  MAKEPOINTS(lParam);
 	 mMouse.x = mousePt.x; mMouse.y = mousePt.y;
 	 mListener.MouseMove(Conver::Point(mousePt.x,mousePt.y));

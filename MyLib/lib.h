@@ -29,9 +29,11 @@ protected:
 
 	bool mIsfullscreen;
 
+	bool mDefaultWrapper;
+
 	RECT mWindowRect; ///<包括标题栏和边框>
 
-	const wstring mClassname; 
+	wstring mClassname; 
 
 	wstring mWindowname;
 
@@ -53,7 +55,7 @@ protected:
 
 	pCallBackFunc mCallBackFunc;
 
-private:
+protected:
 	 
 	RECT Rect() const;
 
@@ -72,6 +74,8 @@ private:
 public:
 	Listener mListener;
 
+	BaseWindow();
+
 	BaseWindow(string layoutFileName);
 
 	BaseWindow(int width, int height,const wstring windowname, const wstring classname, 
@@ -82,6 +86,10 @@ public:
 	void ReDraw(bool bReDraw); 	//WM_PAINT
 
 	HANDLE Show();
+
+	void UseWrapper();
+
+	bool IsDefaultWrapper();
 
 	bool Close();
 
