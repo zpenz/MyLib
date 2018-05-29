@@ -186,7 +186,7 @@ namespace Conver
 
 	string Format(char * format,...);
 
-	wstring wFormat(wchar_t * format, ...);
+	wstring Format(wchar_t * format, ...);
 
 	POINT  CenterPoint(RECT rc, int offsetX = 0,int offsetY = 0);
 
@@ -212,9 +212,11 @@ namespace Conver
 
 	///宽字节和ASCI互相转换
 	char * WCharToAChar(wchar_t * Wchar,UINT codePage = CP_UTF8);
+	char * WCharToAChar(const wchar_t * Wchar, UINT codePage = CP_UTF8);
 	string WCharToAChar(wstring Wchar, UINT codePage = CP_UTF8);
 
 	wchar_t * ACharToWChar(char * Achar,UINT codePage = CP_UTF8);
+	wchar_t * ACharToWChar(const char * Achar, UINT codePage = CP_UTF8);
 	wstring ACharToWChar(string Achar, UINT codePage = CP_UTF8);
 
 	int utoi(wchar_t * Wchar);

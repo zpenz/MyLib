@@ -202,7 +202,7 @@ void MyGraphics::Draw()
 	UINT stride = sizeof(VERTEX);
 	UINT offset = 0;
 	mDeviceContext->IASetVertexBuffers(0, 1, &mpVertexBuffer, &stride, &offset);
-	mDeviceContext->IASetIndexBuffer(mpIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	mDeviceContext->IASetIndexBuffer(mpIndexBuffer, DXGI_FORMAT_R32_UINT, 0);                                       
 
 	// select which primtive type we are using
 	mDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -212,3 +212,4 @@ void MyGraphics::Draw()
 	mSwapChain->Present(0, 0);
 }
 
+    

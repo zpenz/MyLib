@@ -144,21 +144,21 @@ int CALLBACK WinMain(HINSTANCE hInstance,
 			else
 			{
 				COLORREF tempColor = pControl->BackColor();
-				liser.SetValueByID(142, wFormat(L"%d", pControl->width()));
-				liser.SetValueByID(143, wFormat(L"%d", pControl->height()));
-				liser.SetValueByID(145, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
+				liser.SetValueByID(142, Format(L"%d", pControl->width()));
+				liser.SetValueByID(143, Format(L"%d", pControl->height()));
+				liser.SetValueByID(145, Format(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
 				tempColor = pControl->ForceColor();
-				liser.SetValueByID(146, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
+				liser.SetValueByID(146, Format(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
 				tempColor = pControl->HoverBackColor();
-				liser.SetValueByID(147, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
+				liser.SetValueByID(147, Format(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
 				tempColor = pControl->HoverForceColor();
-				liser.SetValueByID(148, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
-				liser.SetValueByID(149, wFormat(L"%f", pControl->getBoardSize()));
+				liser.SetValueByID(148, Format(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
+				liser.SetValueByID(149, Format(L"%f", pControl->getBoardSize()));
 				tempColor = pControl->getBoardColor();
-				liser.SetValueByID(150, wFormat(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
-				liser.SetValueByID(151, wFormat(L"%d", pControl->CanDrag()));
+				liser.SetValueByID(150, Format(L"%d %d %d", (UINT)GetRValue(tempColor), (UINT)GetGValue(tempColor), (UINT)GetBValue(tempColor)));
+				liser.SetValueByID(151, Format(L"%d", pControl->CanDrag()));
 				liser.SetValueByID(141, pControl->Text());
-				liser.SetValueByID(157, wFormat(L"%d", pControl->HaveBoard()));
+				liser.SetValueByID(157, Format(L"%d", pControl->HaveBoard()));
 			}
 		});
 

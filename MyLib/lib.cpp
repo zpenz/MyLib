@@ -73,7 +73,7 @@ bool BaseWindow::ShowThisWindow()
 	if(!mCallBackFunc) 	wndcls.lpfnWndProc = WinProc;
 	else wndcls.lpfnWndProc = mCallBackFunc;
 
-	wndcls.lpszClassName = WCharToAChar(mClassname.c_str()).c_str();
+	wndcls.lpszClassName = WCharToAChar(mClassname.c_str());
 	wndcls.lpszMenuName = NULL;
 
 	wndcls.style = CS_HREDRAW | CS_VREDRAW;
@@ -89,8 +89,8 @@ bool BaseWindow::ShowThisWindow()
 	mWindowStyle =  WS_CAPTION | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
 		WS_SYSMENU | WS_THICKFRAME| WS_OVERLAPPED | WS_MINIMIZEBOX |WS_MAXIMIZEBOX ;
 
-	mBaseHwnd = CreateWindowEx(mWindowStyleEx, WCharToAChar(mClassname.c_str()).c_str(), 
-		WCharToAChar(mWindowname.c_str()).c_str(),
+	mBaseHwnd = CreateWindowEx(mWindowStyleEx, WCharToAChar(mClassname.c_str()), 
+		WCharToAChar(mWindowname.c_str()),
 		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
 
 	if(!mBaseHwnd)
@@ -363,7 +363,8 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_IME_CHAR:
 			return window->OnUnicodeChar(wParam,lParam);
 		case WM_SETCURSOR:
-			return true; ///阻止window自动还原cursor shape
+			//return true; ///阻止window自动还原cursor shape
+			break;
 		case WM_MOUSEMOVE:
 			window->OnMouseMove(wParam,lParam);
 			break;

@@ -143,7 +143,7 @@ namespace Conver
 		return buf;
 	}
 
-	wstring wFormat(wchar_t * format, ...)
+	wstring Format(wchar_t * format, ...)
 	{
 		va_list va;
 		va_start(va, format);
@@ -222,6 +222,11 @@ namespace Conver
 		return WCharToAChar(COCAST(wchar_t *,Wchar.c_str()),codePage);
 	}
 
+	char * WCharToAChar(const wchar_t * Wchar, UINT codePage /*= CP_UTF8*/)
+	{
+		return WCharToAChar(COCAST(wchar_t *,Wchar),codePage);
+	}
+
 	wchar_t * ACharToWChar(char * Achar, UINT codePage)
 	{
 		auto size = MultiByteToWideChar(codePage, 0, Achar, -1, NULL, 0);
@@ -235,6 +240,11 @@ namespace Conver
 	wstring ACharToWChar(string Achar, UINT codePage)
 	{
 		return ACharToWChar(COCAST(char *, Achar.c_str()), codePage);
+	}
+
+	wchar_t * ACharToWChar(const char * Achar, UINT codePage /*= CP_UTF8*/)
+	{
+		return ACharToWChar(COCAST(char *, Achar), codePage);
 	}
 
 	int utoi(wchar_t * Wchar)
