@@ -8,7 +8,11 @@
 
 extern "C"
 {
-	bool SOFTAPI drawLine_soft(int x0, int y0, int xEnd, int yEnd);
+	void SOFTAPI test(void);
+
+	bool SOFTAPI drawLine_dda(int x0, int y0, int xEnd, int yEnd);
+
+	bool SOFTAPI drawline_bresenham(int x0, int y0, int xEnd, int yEnd);
 }
 
 

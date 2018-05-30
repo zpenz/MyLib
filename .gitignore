@@ -21,3 +21,7 @@
 *.exe
 *.obj
 *.sbr
+*.dll
+*.exp
+*.ilk
+*.idb
