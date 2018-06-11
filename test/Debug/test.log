@@ -1,2 +1,2 @@
-﻿  test.cpp
-LINK : fatal error LNK1104: 无法打开文件“../Debug/lib.lib”
+﻿  test.vcxproj -> D:\software\repository\MyLib\Debug\test.exe
+  test.vcxproj -> D:\software\repository\MyLib\Debug\test.pdb (Full PDB)
