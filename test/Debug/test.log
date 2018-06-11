@@ -1,2 +1,3 @@
-﻿  test.vcxproj -> D:\software\repository\MyLib\Debug\test.exe
+﻿  test.cpp
+  test.vcxproj -> D:\software\repository\MyLib\Debug\test.exe
   test.vcxproj -> D:\software\repository\MyLib\Debug\test.pdb (Full PDB)

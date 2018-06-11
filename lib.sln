@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test3D", "test3D\test3D.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tool", "Tool\Tool.vcxproj", "{8F69803E-7EAF-4ECD-810F-E9D31F54AA12}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UIAutomation", "UIAutomation\UIAutomation.vcxproj", "{A1C9C402-D1AE-4768-8347-66324A6D402C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -59,6 +61,14 @@ Global
 		{8F69803E-7EAF-4ECD-810F-E9D31F54AA12}.Release|Win32.Build.0 = Release|Win32
 		{8F69803E-7EAF-4ECD-810F-E9D31F54AA12}.Release|x64.ActiveCfg = Release|x64
 		{8F69803E-7EAF-4ECD-810F-E9D31F54AA12}.Release|x64.Build.0 = Release|x64
+		{A1C9C402-D1AE-4768-8347-66324A6D402C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A1C9C402-D1AE-4768-8347-66324A6D402C}.Debug|Win32.Build.0 = Debug|Win32
+		{A1C9C402-D1AE-4768-8347-66324A6D402C}.Debug|x64.ActiveCfg = Debug|x64
+		{A1C9C402-D1AE-4768-8347-66324A6D402C}.Debug|x64.Build.0 = Debug|x64
+		{A1C9C402-D1AE-4768-8347-66324A6D402C}.Release|Win32.ActiveCfg = Release|Win32
+		{A1C9C402-D1AE-4768-8347-66324A6D402C}.Release|Win32.Build.0 = Release|Win32
+		{A1C9C402-D1AE-4768-8347-66324A6D402C}.Release|x64.ActiveCfg = Release|x64
+		{A1C9C402-D1AE-4768-8347-66324A6D402C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
