@@ -569,12 +569,12 @@ namespace LIB_CONTROL
 	{
 		if (!mMouseInternal)
 		{
-			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), &mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), &mpTextpLayout, true,DWRITE_TEXT_ALIGNMENT_LEADING);
 			IS_ERROR_EXIT(!ret, "Draw TitleBar failed!");
 		}
 		else
 		{
-			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true);
+			auto ret = DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mHonverBackColor), COLOREX(mHoverForceColor), &mpTextpLayout, true, DWRITE_TEXT_ALIGNMENT_LEADING);
 			IS_ERROR_EXIT(!ret, "Draw  honvered TitleBar failed!");
 		}
 	}
