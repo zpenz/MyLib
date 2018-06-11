@@ -502,6 +502,36 @@ void BaseWindow::Destory()
 	 return mListener.HitTest(pt);
  }
 
+ void BaseWindow::AddClickFuncByID(UINT id, function<void(void)> pFunc, bool rewrite)
+ {
+	 IS_RETURN_ERROR(mListener.Obj().empty(),,"mListener为空");
+	 mListener.AddClickFuncByID(id,pFunc,rewrite);
+ }
+
+ Control * BaseWindow::findElementByID(UINT id)
+ {
+	 IS_RETURN_ERROR(mListener.Obj().empty(), nullptr, "mListener为空");
+	 return mListener.findElementByID(id);
+ }
+
+ bool BaseWindow::SetValueByID(UINT id, wstring stringValue)
+ {
+	 IS_RETURN_ERROR(mListener.Obj().empty(),false , "mListener为空");
+	 return mListener.SetValueByID(id, stringValue);
+ }
+
+ wstring BaseWindow::getValueByID(UINT id)
+ {
+	 IS_RETURN_ERROR(mListener.Obj().empty(),L"NULL" , "mListener为空");
+	 return mListener.getValueByID(id);
+ }
+
+ void BaseWindow::SetRangeIDValue(UINT startId, UINT endId, wstring stringValue)
+ {
+	 IS_RETURN_ERROR(mListener.Obj().empty(), , "mListener为空");
+	 mListener.SetRangeIDValue(startId, endId, stringValue);
+ }
+
  void BaseWindow::OnLButtonDown(WPARAM wParam, LPARAM lParam)
  {
 	 if (mListener.Obj().empty()) return;

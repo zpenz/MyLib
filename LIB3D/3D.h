@@ -1,5 +1,5 @@
 #pragma once
-
+#ifdef USE_3D
 #ifdef SONGAPI
 #define SONGAPI _declspec(dllimport)
 #else 
@@ -72,3 +72,5 @@ extern "C"
 
 #define GraphicsManager MyGraphics::getInstance()
 }
+
+#endif

@@ -165,7 +165,19 @@ public:
 
 	friend
 	LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
+
+	//Control Function
+	void AddClickFuncByID(UINT id, function<void(void)> pFunc, bool rewrite = false);
+
+	Control * findElementByID(UINT id);
+
+	bool SetValueByID(UINT id, wstring stringValue);
+
+	wstring getValueByID(UINT id);
+
+	void SetRangeIDValue(UINT startId, UINT endId, wstring stringValue);
 };
 }
+
 
 using namespace LIB_WINDOW;

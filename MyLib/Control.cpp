@@ -420,9 +420,10 @@ namespace LIB_CONTROL
 		if (!text.empty()) mText = text;
 	}
 
-	COLORREF & Control::ForceColor() 
+	ColorStruct Control::ForceColor()
 	{
-		return mForceColor;
+		 return ColorStruct(GetRValue(mForceColor),
+			GetGValue(mForceColor), GetBValue(mForceColor));
 	}
 
 	void Control::SetForceColor(COLORREF color)
@@ -430,9 +431,10 @@ namespace LIB_CONTROL
 		mForceColor = color;
 	}
 
-	COLORREF & Control::BackColor() 
+	ColorStruct Control::BackColor()
 	{
-		return mBackColor; 
+		return ColorStruct(GetRValue(mBackColor),
+			GetGValue(mBackColor), GetBValue(mBackColor));
 	}
 
 	void Control::SetBackColor(COLORREF color)
@@ -440,9 +442,10 @@ namespace LIB_CONTROL
 		mBackColor = color;
 	}
 
-	COLORREF & Control::HoverBackColor() 
+	ColorStruct Control::HoverBackColor()
 	{
-		return mHonverBackColor;
+		return ColorStruct(GetRValue(mHonverBackColor),
+			GetGValue(mHonverBackColor), GetBValue(mHonverBackColor));
 	}
 
 	void Control::SetHoverBackColor(COLORREF color)
@@ -450,9 +453,10 @@ namespace LIB_CONTROL
 		mHonverBackColor = color;
 	}
 
-	COLORREF & Control::HoverForceColor() 
+	ColorStruct Control::HoverForceColor()
 	{
-		return mHoverForceColor;
+		return ColorStruct(GetRValue(mHoverForceColor),
+			GetGValue(mHoverForceColor), GetBValue(mHoverForceColor));
 	}
 
 	void Control::SetHoverForceColor(COLORREF color)

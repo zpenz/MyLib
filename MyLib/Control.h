@@ -76,7 +76,9 @@ namespace LIB_CONTROL
 		void SetBoard(bool haveBoard) { mHaveBoard = haveBoard; }
 		void setBoardSize(BoardType boardSize) { mBoardSize = boardSize; }
 		BoardType & getBoardSize() { return mBoardSize; }
-		const COLORREF & getBoardColor() { return mBoardColor; }
+
+		ColorStruct getBoardColor() { return ColorStruct(GetRValue(mBoardColor),
+			GetGValue(mBoardColor),GetBValue(mBoardColor)); }
 		void setBoardColor(COLORREF boardColor) {mBoardColor = boardColor;}
 		BoardAdapter():mHaveBoard(false),mBoardSize(1.0),mBoardColor(RGB(255,255,255)) {}
 	};
@@ -173,19 +175,19 @@ namespace LIB_CONTROL
 
 		void SetText(wstring text);
 
-		COLORREF & ForceColor() ;
+		ColorStruct  ForceColor() ;
 
 		void SetForceColor(COLORREF color);
 
-		COLORREF & BackColor() ;
+		ColorStruct  BackColor() ;
 
 		void SetBackColor(COLORREF color);
 
-		COLORREF & HoverBackColor() ;
+		ColorStruct  HoverBackColor() ;
 
 		void SetHoverBackColor(COLORREF color);
 
-		COLORREF & HoverForceColor() ;
+		ColorStruct  HoverForceColor() ;
 
 		void SetHoverForceColor(COLORREF color);
 

@@ -1,3 +1,4 @@
+#ifdef USE_3D
 #include "3D.h"
 
 class TheWindow :public BaseWindow
@@ -211,5 +212,5 @@ void MyGraphics::Draw()
 	// switch the back buffer and the front buffer
 	mSwapChain->Present(0, 0);
 }
-
+#endif
     
