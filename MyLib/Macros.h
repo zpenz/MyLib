@@ -123,6 +123,9 @@ void ErrorMessage(const char * _error);
 		OutputDebugStringA("\n");\
 		return returnValue;}
 
+#define IS_FAILED_ERROR(condition,returnValue,error_message)\
+		IS_RETURN_ERROR(FAILED(condition),returnValue,error_message)
+
 #define IS_CONTINUE_ERROR(condition,error_message)\
 		if(condition)\
 		{\
@@ -139,6 +142,9 @@ void ErrorMessage(const char * _error);
 		{\
 			return returnValue;\
 		}
+
+#define IS_FAILED(condition,returnValue)\
+		IS_RETURN(FAILED(condition),returnValue)
 
 #define IS_RETURN_FUNC(condition,returnValue,FUNC)\
 		if(condition)\

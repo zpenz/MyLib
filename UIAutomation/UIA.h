@@ -9,32 +9,50 @@
 #define UIAE  IUIAutomationElement 
 #define UIAC  IUIAutomationCondition
 #define UIAIP IUIAutomationInvokePattern
-#define CALL_RESULT(hr) if(FAILED(hr)) {std::cout<<"an error happen"<<std::endl; system("pause");}else{std::cout<<"this step ok.."<<std::endl; }
 
 #pragma comment(lib, "comsuppw.lib") 
 
 class UIAManager
 {
 private:
+
 	IUIAutomation * m_pIUAutomation;
+
 	std::vector<IUIAutomationElement *> m_sElement;
+
 	static UIAManager * pInstance;
+
 	UIAE * m_pRoot;
+
 	UIAManager();
+
 	bool init();
 
 public:
 	void SetRoot(UIAE * pe) { m_pRoot = pe; }
+
 	static UIAManager* getInstance();
+
 	bool ClickElement(UIAE * pae);
+
 	bool SetForce(UIAE * pae);
+
 	UIAE  * GetElementByHwnd(HWND hwnd);
-	UIAE * GetElementByAIDEx(std::string strAid);
-	UIAIP * GetElementByAID(std::string strAid);
+
+	UIAE * GetElementByAID(std::string strAid);
+
 	UIAIP * GetElementByCondition(UIAC * uiac);
+
 	UIAE  * GetRoot() { return m_pRoot; }
+
 	UIAIP * ConvertoPattern(UIAE * pFound);
-	bool Invoke(UIAIP * pattern);
+
+	std::string GetElementName(UIAE * pAE);
+
+	bool SetValue(UIAE * pAE,std::string strValue);
+
+	bool Invoke(UIAE * pAE);
+
 	~UIAManager(void);
 };
 

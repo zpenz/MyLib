@@ -1,6 +1,7 @@
 #include "UIA.h"
 #include <memory>
 #include "../MyLib/Macros.h"
+#pragma comment(lib,"../debug/lib.lib")
 
 UIAManager * UIAManager::pInstance = NULL;
 
@@ -30,35 +31,25 @@ bool UIAManager::init()
 	return true;
 }
 
-UIAE * UIAManager::GetElementByAIDEx(std::string strAid)
+UIAE * UIAManager::GetElementByAID(std::string strAid)
 {
 	UIAC * pCondition = NULL;
 	VARIANT vt;
 	vt.vt = VT_BSTR;
 	vt.bstrVal = _com_util::ConvertStringToBSTR(strAid.c_str());
-	CALL_RESULT(m_pIUAutomation->CreatePropertyCondition(UIA_AutomationIdPropertyId, vt, &pCondition));
+	IS_FAILED_ERROR(m_pIUAutomation->CreatePropertyCondition(UIA_AutomationIdPropertyId, vt, &pCondition),nullptr,"创建UIA条件失败");
 	UIAE * pFound = NULL;
-	CALL_RESULT(GetRoot()->FindFirst(TreeScope_Subtree, pCondition, &pFound));
+	IS_FAILED(GetRoot()->FindFirst(TreeScope_Subtree, pCondition, &pFound),nullptr);
 
 	IS_RETURN_ERROR(!pFound, nullptr, "找不到UIAE元素");
 	return pFound;
-}
-
-UIAIP * UIAManager::GetElementByAID(std::string strAid)
-{
-	UIAC * pCondition = NULL;
-	VARIANT vt;
-	vt.vt = VT_BSTR;
-	vt.bstrVal = _com_util::ConvertStringToBSTR(strAid.c_str());
-	CALL_RESULT(m_pIUAutomation->CreatePropertyCondition(UIA_AutomationIdPropertyId, vt, &pCondition));
-	return GetElementByCondition(pCondition);
 }
 
 UIAIP * UIAManager::GetElementByCondition(UIAC * uiac)
 {
 
 	UIAE * pFound = NULL;
-	CALL_RESULT(GetRoot()->FindFirst(TreeScope_Subtree, uiac, &pFound));
+	IS_FAILED(GetRoot()->FindFirst(TreeScope_Subtree, uiac, &pFound),nullptr);
 	IS_RETURN_ERROR(!pFound, nullptr, "找不到UIAE元素");
 
 	UIAIP *  pPattern = ConvertoPattern(pFound);
@@ -68,8 +59,20 @@ UIAIP * UIAManager::GetElementByCondition(UIAC * uiac)
 UIAIP * UIAManager::ConvertoPattern(UIAE * pFound)
 {
 	UIAIP * pPattern = NULL;
-	CALL_RESULT(pFound->GetCurrentPatternAs(UIA_InvokePatternId, IID_PPV_ARGS(&pPattern)));
+	IS_FAILED(pFound->GetCurrentPatternAs(UIA_InvokePatternId, IID_PPV_ARGS(&pPattern)), nullptr);
 	return pPattern;
+}
+
+std::string UIAManager::GetElementName(UIAE * pAE)
+{
+	BSTR name;
+	pAE->get_CurrentName(&name);
+	return _com_util::ConvertBSTRToString(name);;
+}
+
+bool UIAManager::SetValue(UIAE * pAE,std::string strValue)
+{
+	return false;
 }
 
 UIAE * UIAManager::GetElementByHwnd(HWND hwnd)
@@ -80,25 +83,24 @@ UIAE * UIAManager::GetElementByHwnd(HWND hwnd)
 	return pe;
 }
 
-bool UIAManager::Invoke(UIAIP * pattern)
+bool UIAManager::Invoke(UIAE * pAE)
 {
-	if (pattern == NULL) return false;
-	pattern->Invoke();
+	IS_RETURN_ERROR(!pAE,false,"UIA元素为空");
+	ConvertoPattern(pAE)->Invoke();
 	return true;
 }
 
-bool UIAManager::SetForce(UIAE * pae)
+bool UIAManager::SetForce(UIAE * pAE)
 {
 	UIA_HWND hWnd;
-	pae->get_CurrentNativeWindowHandle(&hWnd);
-	if (hWnd)
-	{
-		::BringWindowToTop((HWND)hWnd);
-		::SetWindowPos((HWND)hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-		::SetFocus((HWND)hWnd);
-		return true;
-	}
-	return false;
+	pAE->get_CurrentNativeWindowHandle(&hWnd);
+	IS_RETURN(!hWnd, false);
+
+	::BringWindowToTop((HWND)hWnd);
+	::SetWindowPos((HWND)hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	::SetFocus((HWND)hWnd);
+
+	return true;
 }
 
 bool UIAManager::ClickElement(UIAE * pUIAE)
@@ -110,7 +112,24 @@ bool UIAManager::ClickElement(UIAE * pUIAE)
 	SetForce(pUIAE);
 
 	pUIAE->GetClickablePoint(&point, &bClickable);
-	IS_RETURN_ERROR(!bClickable, false, "该UIAE不可以点击!");
+	if (!bClickable)
+	{
+		RECT boundRectangle;
+		pUIAE->get_CurrentBoundingRectangle(&boundRectangle);
+		Conver::ClientToScreenRc((HWND)uHwnd,boundRectangle);
+		auto centerPoint = Conver::CenterPoint(boundRectangle);
+		INPUT input[3];
+		input[0].type = INPUT_MOUSE;
+		input[1].type = INPUT_MOUSE;
+		input[2].type = INPUT_MOUSE;
+		input[0].mi.dx = centerPoint.x;
+		input[0].mi.dy = centerPoint.y;
+		input[0].mi.dwFlags = MOUSEEVENTF_MOVE;
+		input[1].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+		input[2].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+		SendInput(3, input, sizeof(INPUT));
+		return true;
+	}
 	LPARAM lp = MAKELPARAM(point.x, point.y);
 	PostMessage((HWND)uHwnd, WM_LBUTTONDOWN, VK_LBUTTON, lp);
 	Sleep(50);
