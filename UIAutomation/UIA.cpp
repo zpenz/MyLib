@@ -1,6 +1,7 @@
 #include "UIA.h"
 #include <memory>
 #include "../MyLib/Macros.h"
+#include <comutil.h>
 
 #pragma comment(lib,"../debug/lib.lib")
 #pragma comment(lib, "comsuppw.lib") 
@@ -27,9 +28,6 @@ bool UIAManager::init()
 	hr = m_pIUAutomation->GetRootElement(&m_pRoot);
 	IS_RETURN_ERROR(FAILED(hr),false,"获取根元素失败!");
 	
-	std::shared_ptr<void> pExit(NULL, [](void *) {
-		CoUninitialize();
-	});
 	return true;
 }
 
@@ -81,10 +79,48 @@ UIAE * UIAManager::GetPreviousSiblingElement(UIAE * pAE)
 	return pRE;
 }
 
-UIAIP * UIAManager::ConvertoPattern(UIAE * pFound)
+UIAE * UIAManager::GetFirstChildElement(UIAE * pAE)
+{
+	UIATW * pTW = nullptr;
+	IS_RETURN_ERROR(!pAE, nullptr, "UIA元素为空");
+	UIAC * pAC = nullptr;
+	m_pIUAutomation->CreateTrueCondition(&pAC);
+	m_pIUAutomation->CreateTreeWalker(pAC, &pTW);
+	UIAE * pRE = nullptr;
+	pTW->GetFirstChildElement(pAE, &pRE);
+	return pRE;
+}
+
+UIAE * UIAManager::GetLastChildElement(UIAE * pAE)
+{
+	UIATW * pTW = nullptr;
+	IS_RETURN_ERROR(!pAE, nullptr, "UIA元素为空");
+	UIAC * pAC = nullptr;
+	m_pIUAutomation->CreateTrueCondition(&pAC);
+	m_pIUAutomation->CreateTreeWalker(pAC, &pTW);
+	UIAE * pRE = nullptr;
+	pTW->GetLastChildElement(pAE, &pRE);
+	return pRE;
+}
+
+UIAE * UIAManager::FindChildElementByAID(UIAE * pAE, std::string strAID)
+{
+	UIAC * pCondition = NULL;
+	VARIANT vt;
+	vt.vt = VT_BSTR;
+	vt.bstrVal = _com_util::ConvertStringToBSTR(strAID.c_str());
+	IS_FAILED_ERROR(m_pIUAutomation->CreatePropertyCondition(UIA_AutomationIdPropertyId, vt, &pCondition), nullptr, "创建UIA条件失败");
+	UIAE * pFound = NULL;
+	IS_FAILED(pAE->FindFirst(TreeScope_Subtree, pCondition, &pFound), nullptr);
+
+	IS_RETURN_ERROR(!pFound, nullptr, "找不到UIAE元素");
+	return pFound;
+}
+
+UIAIP * UIAManager::ConvertoPattern(UIAE * pAE)
 {
 	UIAIP * pPattern = NULL;
-	IS_FAILED(pFound->GetCurrentPatternAs(UIA_InvokePatternId, IID_PPV_ARGS(&pPattern)), nullptr);
+	IS_FAILED(pAE->GetCurrentPatternAs(UIA_InvokePatternId, IID_PPV_ARGS(&pPattern)), nullptr);
 	return pPattern;
 }
 
@@ -92,15 +128,18 @@ std::string UIAManager::GetElementName(UIAE * pAE)
 {
 	BSTR name;
 	pAE->get_CurrentName(&name);
-	return _com_util::ConvertBSTRToString(name);;
+	return _com_util::ConvertBSTRToString(name);
 }
 
 bool UIAManager::SetValue(UIAE * pAE,std::string strValue)
 {
+	UIAUP * pPattern = NULL;
+	IS_FAILED(pAE->GetCurrentPatternAs(UIA_ValuePatternId, IID_PPV_ARGS(&pPattern)), nullptr);
+	pPattern->SetValue(_com_util::ConvertStringToBSTR(strValue.c_str()));
 	return false;
 }
 
-UIAE * UIAManager::GetElementByHwnd(HWND hwnd)
+UIAE * UIAManager::ElementFromHwnd(HWND hwnd)
 {
 	UIAE * pe = NULL;
 	UIAC * pCondition = NULL;
@@ -170,7 +209,7 @@ UIAManager::UIAManager(void)
 
 UIAManager::~UIAManager(void)
 {
-	//CoUninitialize();
+	CoUninitialize();
 }
 
 

@@ -1,61 +1,75 @@
 #pragma once
 #include <UIAutomation.h>
-#include <vector>
-#include <iostream>
 #include <string>
-#include <comutil.h>
 
-#define UIA   UIAManager::getInstance()
+#ifdef UIAAPI
+#define UIAAPI _declspec(dllimport)
+#else 
+#define UIAAPI _declspec(dllexport)
+#endif 
+
 #define UIAE  IUIAutomationElement 
 #define UIAC  IUIAutomationCondition
 #define UIAIP IUIAutomationInvokePattern
+#define UIAUP IUIAutomationValuePattern
 #define UIATW IUIAutomationTreeWalker
 
-class UIAManager
+extern "C"
 {
-private:
+	class UIAAPI UIAManager
+	{
+	private:
 
-	IUIAutomation * m_pIUAutomation;
+		IUIAutomation * m_pIUAutomation;
 
-	std::vector<IUIAutomationElement *> m_sElement;
+		static UIAManager * pInstance;
 
-	static UIAManager * pInstance;
+		UIAE * m_pRoot;
 
-	UIAE * m_pRoot;
+		UIAManager();
 
-	UIAManager();
+		bool init();
 
-	bool init();
+	public:
+		void SetRoot(UIAE * pe) { m_pRoot = pe; }
 
-public:
-	void SetRoot(UIAE * pe) { m_pRoot = pe; }
+		static UIAManager* getInstance();
 
-	static UIAManager* getInstance();
+		bool ClickElement(UIAE * pae);
 
-	bool ClickElement(UIAE * pae);
+		bool SetForce(UIAE * pae);
 
-	bool SetForce(UIAE * pae);
+		UIAE  * ElementFromHwnd(HWND hwnd);
 
-	UIAE  * GetElementByHwnd(HWND hwnd);
+		UIAE * GetElementByAID(std::string strAid);
 
-	UIAE * GetElementByAID(std::string strAid);
+		UIAIP * GetElementByCondition(UIAC * uiac);
 
-	UIAIP * GetElementByCondition(UIAC * uiac);
+		UIAE  * GetRoot() { return m_pRoot; }
 
-	UIAE  * GetRoot() { return m_pRoot; }
+		UIAE * GetNextSliblingElement(UIAE * pAE);
 
-	UIAE * GetNextSliblingElement(UIAE * pAE);
+		UIAE * GetPreviousSiblingElement(UIAE * pAE);
 
-	UIAE * GetPreviousSiblingElement(UIAE * pAE);
+		UIAE * GetFirstChildElement(UIAE * pAE);
 
-	UIAIP * ConvertoPattern(UIAE * pFound);
+		UIAE * GetLastChildElement(UIAE * pAE);
 
-	std::string GetElementName(UIAE * pAE);
+		UIAE * FindChildElementByAID(UIAE * pAE,std::string strAID);
 
-	bool SetValue(UIAE * pAE,std::string strValue);
+		UIAIP * ConvertoPattern(UIAE * pFound);
 
-	bool Invoke(UIAE * pAE);
+		std::string GetElementName(UIAE * pAE);
 
-	~UIAManager(void);
-};
+		bool SetValue(UIAE * pAE, std::string strValue);
+
+		bool Invoke(UIAE * pAE);
+
+		~UIAManager(void);
+	};
+
+#define UIA (*UIAManager::getInstance())
+}
+
+
 
