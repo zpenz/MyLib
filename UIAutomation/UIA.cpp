@@ -1,7 +1,9 @@
 #include "UIA.h"
 #include <memory>
 #include "../MyLib/Macros.h"
+
 #pragma comment(lib,"../debug/lib.lib")
+#pragma comment(lib, "comsuppw.lib") 
 
 UIAManager * UIAManager::pInstance = NULL;
 
@@ -47,13 +49,36 @@ UIAE * UIAManager::GetElementByAID(std::string strAid)
 
 UIAIP * UIAManager::GetElementByCondition(UIAC * uiac)
 {
-
 	UIAE * pFound = NULL;
 	IS_FAILED(GetRoot()->FindFirst(TreeScope_Subtree, uiac, &pFound),nullptr);
 	IS_RETURN_ERROR(!pFound, nullptr, "找不到UIAE元素");
 
 	UIAIP *  pPattern = ConvertoPattern(pFound);
 	return pPattern;
+}
+
+UIAE * UIAManager::GetNextSliblingElement(UIAE * pAE)
+{
+	UIATW * pTW = nullptr;
+	IS_RETURN_ERROR(!pAE, nullptr, "UIA元素为空");
+	UIAC * pAC = nullptr;
+	m_pIUAutomation->CreateTrueCondition(&pAC);
+	m_pIUAutomation->CreateTreeWalker(pAC, &pTW);
+	UIAE * pRE = nullptr;
+	pTW->GetNextSiblingElement(pAE, &pRE);
+	return pRE;
+}
+
+UIAE * UIAManager::GetPreviousSiblingElement(UIAE * pAE)
+{
+	UIATW * pTW = nullptr;
+	IS_RETURN_ERROR(!pAE, nullptr, "UIA元素为空");
+	UIAC * pAC = nullptr;
+	m_pIUAutomation->CreateTrueCondition(&pAC);
+	m_pIUAutomation->CreateTreeWalker(pAC, &pTW);
+	UIAE * pRE = nullptr;
+	pTW->GetPreviousSiblingElement(pAE, &pRE);
+	return pRE;
 }
 
 UIAIP * UIAManager::ConvertoPattern(UIAE * pFound)

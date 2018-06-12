@@ -9,8 +9,7 @@
 #define UIAE  IUIAutomationElement 
 #define UIAC  IUIAutomationCondition
 #define UIAIP IUIAutomationInvokePattern
-
-#pragma comment(lib, "comsuppw.lib") 
+#define UIATW IUIAutomationTreeWalker
 
 class UIAManager
 {
@@ -44,6 +43,10 @@ public:
 	UIAIP * GetElementByCondition(UIAC * uiac);
 
 	UIAE  * GetRoot() { return m_pRoot; }
+
+	UIAE * GetNextSliblingElement(UIAE * pAE);
+
+	UIAE * GetPreviousSiblingElement(UIAE * pAE);
 
 	UIAIP * ConvertoPattern(UIAE * pFound);
 
