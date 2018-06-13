@@ -13,12 +13,16 @@ int main()
 	//auto library = LoadLibraryA("Tool.dll");
 	//doTest = RPCAST(test, GetProcAddress(library, "test"));
 	//doTest();
-	auto root = UIA.ElementFromHwnd((HWND)0x2072E);
+	auto hWnd = ::FindWindow(nullptr,L"ÔËÐÐ");
+	auto root = UIA.ElementFromHwnd(hWnd);
 	auto child = UIA.FindChildElementByAID(root,"12298");
-	UIA_HWND uHwnd;
-	child->get_CurrentNativeWindowHandle(&uHwnd);
+	auto Edit = UIA.FindChildElementByAID(child,"1001");
+	UIA.SetValue(Edit, "\\\\192.168.1.188");
+	auto strValue = UIA.GetValue(Edit);
+	auto RightButton = UIA.FindChildElementByAID(root, "1");
+	UIA.Invoke(RightButton);
+	auto CancelButton = UIA.FindChildElementByAID(root, "2");
 	auto name = UIA.GetElementName(child); 
-	UIA.SetValue(child, "\\192.168");
     return 0;
 }
 

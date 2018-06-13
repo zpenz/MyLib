@@ -61,6 +61,10 @@ extern "C"
 
 		std::string GetElementName(UIAE * pAE);
 
+		std::string GetValue(UIAE * pAE);
+
+		bool CopyValueToElement(UIAE * pAE,std::string strValue);
+
 		bool SetValue(UIAE * pAE, std::string strValue);
 
 		bool Invoke(UIAE * pAE);

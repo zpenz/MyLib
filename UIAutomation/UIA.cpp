@@ -131,6 +131,36 @@ std::string UIAManager::GetElementName(UIAE * pAE)
 	return _com_util::ConvertBSTRToString(name);
 }
 
+std::string UIAManager::GetValue(UIAE * pAE)
+{
+	UIAUP * pPattern = nullptr;
+	IS_FAILED(pAE->GetCurrentPatternAs(UIA_ValuePatternId, IID_PPV_ARGS(&pPattern)), nullptr);
+	BSTR  pRet;
+	IS_RETURN(!pPattern, "");
+	pPattern->get_CurrentValue(&pRet);
+	return _com_util::ConvertBSTRToString(pRet);
+}
+
+bool UIAManager::CopyValueToElement(UIAE * pAE,std::string strValue)
+{
+	IS_RETURN(!pAE, false);
+	IS_FAILED_ERROR(::OpenClipboard(NULL),false,"´ò¿ª¼ôÇÐ°åÊ§°Ü!");
+	::EmptyClipboard();
+	auto Clip = ::GlobalAlloc(GMEM_MOVEABLE, strValue.length() + 1);
+	char * pbuf = (char *)GlobalLock(Clip);
+	strcpy(pbuf,strValue.c_str());
+	GlobalUnlock(Clip);
+	SetClipboardData(CF_TEXT, Clip);
+	CloseClipboard();
+	 
+	UIA_HWND uHwnd;
+	pAE->get_CachedNativeWindowHandle(&uHwnd);
+	::SendMessage((HWND)uHwnd, WM_PASTE, 0, 0);
+
+	EmptyClipboard();
+	return true;
+}
+
 bool UIAManager::SetValue(UIAE * pAE,std::string strValue)
 {
 	UIAUP * pPattern = NULL;
