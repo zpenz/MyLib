@@ -25,3 +25,10 @@
 *.exp
 *.ilk
 *.idb
+*.db
+*.json
+*.opendb
+*.db-shm
+*.db-wal
+*.suo
+*.sqlite

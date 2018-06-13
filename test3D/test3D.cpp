@@ -18,7 +18,7 @@ int main()
 	UIA_HWND uHwnd;
 	child->get_CurrentNativeWindowHandle(&uHwnd);
 	auto name = UIA.GetElementName(child); 
-	UIA.SetValue(child,"\\192.168")
+	UIA.SetValue(child, "\\192.168");
     return 0;
 }
 

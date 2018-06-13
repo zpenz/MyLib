@@ -1,1 +1,16 @@
-﻿  lib.vcxproj -> D:\software\repository\MyLib\Debug\lib.lib
+﻿  2Draw.cpp
+  Caret.cpp
+  CommonDialog.cpp
+  Control.cpp
+d:\software\rep\mylib\mylib\control.cpp(1031): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
+d:\software\rep\mylib\mylib\control.cpp(1030): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
+d:\software\rep\mylib\mylib\control.cpp(1029): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
+d:\software\rep\mylib\mylib\control.cpp(1028): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
+  MyLayout.cpp
+  Macros.cpp
+  reflect.cpp
+  SemaphoreManager.cpp
+  Sprite.cpp
+  lib.cpp
+  正在生成代码...
+  lib.vcxproj -> D:\software\rep\MyLib\Debug\lib.lib
