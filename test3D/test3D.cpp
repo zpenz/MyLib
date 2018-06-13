@@ -17,7 +17,8 @@ int main()
 	auto root = UIA.ElementFromHwnd(hWnd);
 	auto child = UIA.FindChildElementByAID(root,"12298");
 	auto Edit = UIA.FindChildElementByAID(child,"1001");
-	UIA.SetValue(Edit, "\\\\192.168.1.188");
+	//UIA.SetValue(Edit, "\\\\192.168.1.188");
+	UIA.CopyValueToElement(Edit,"\\\\192.168.1.188");
 	auto strValue = UIA.GetValue(Edit);
 	auto RightButton = UIA.FindChildElementByAID(root, "1");
 	UIA.Invoke(RightButton);

@@ -105,6 +105,7 @@ UIAE * UIAManager::GetLastChildElement(UIAE * pAE)
 
 UIAE * UIAManager::FindChildElementByAID(UIAE * pAE, std::string strAID)
 {
+	IS_RETURN(!pAE, nullptr);
 	UIAC * pCondition = NULL;
 	VARIANT vt;
 	vt.vt = VT_BSTR;
@@ -119,6 +120,7 @@ UIAE * UIAManager::FindChildElementByAID(UIAE * pAE, std::string strAID)
 
 UIAIP * UIAManager::ConvertoPattern(UIAE * pAE)
 {
+	IS_RETURN(!pAE, nullptr);
 	UIAIP * pPattern = NULL;
 	IS_FAILED(pAE->GetCurrentPatternAs(UIA_InvokePatternId, IID_PPV_ARGS(&pPattern)), nullptr);
 	return pPattern;
@@ -126,6 +128,7 @@ UIAIP * UIAManager::ConvertoPattern(UIAE * pAE)
 
 std::string UIAManager::GetElementName(UIAE * pAE)
 {
+	IS_RETURN(!pAE, "");
 	BSTR name;
 	pAE->get_CurrentName(&name);
 	return _com_util::ConvertBSTRToString(name);
@@ -133,6 +136,7 @@ std::string UIAManager::GetElementName(UIAE * pAE)
 
 std::string UIAManager::GetValue(UIAE * pAE)
 {
+	IS_RETURN(!pAE, "");
 	UIAUP * pPattern = nullptr;
 	IS_FAILED(pAE->GetCurrentPatternAs(UIA_ValuePatternId, IID_PPV_ARGS(&pPattern)), nullptr);
 	BSTR  pRet;
@@ -154,15 +158,18 @@ bool UIAManager::CopyValueToElement(UIAE * pAE,std::string strValue)
 	CloseClipboard();
 	 
 	UIA_HWND uHwnd;
-	pAE->get_CachedNativeWindowHandle(&uHwnd);
+	pAE->get_CurrentNativeWindowHandle(&uHwnd);
 	::SendMessage((HWND)uHwnd, WM_PASTE, 0, 0);
 
+	OpenClipboard(NULL);
 	EmptyClipboard();
+	CloseClipboard();
 	return true;
 }
 
 bool UIAManager::SetValue(UIAE * pAE,std::string strValue)
 {
+	IS_RETURN(!pAE, false);
 	UIAUP * pPattern = NULL;
 	IS_FAILED(pAE->GetCurrentPatternAs(UIA_ValuePatternId, IID_PPV_ARGS(&pPattern)), nullptr);
 	pPattern->SetValue(_com_util::ConvertStringToBSTR(strValue.c_str()));
@@ -186,6 +193,7 @@ bool UIAManager::Invoke(UIAE * pAE)
 
 bool UIAManager::SetForce(UIAE * pAE)
 {
+	IS_RETURN(!pAE, false);
 	UIA_HWND hWnd;
 	pAE->get_CurrentNativeWindowHandle(&hWnd);
 	IS_RETURN(!hWnd, false);
