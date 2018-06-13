@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Inject">
+      <UniqueIdentifier>{8f8ac93b-58be-4ac6-a692-2b18524279c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -27,6 +30,9 @@
     <ClInclude Include="soft.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Inject.h">
+      <Filter>Inject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -40,6 +46,9 @@
     </ClCompile>
     <ClCompile Include="soft.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Inject.cpp">
+      <Filter>Inject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
