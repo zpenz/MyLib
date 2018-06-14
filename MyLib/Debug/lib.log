@@ -6,11 +6,11 @@ d:\software\repos\mylib\mylib\control.cpp(1031): warning C4244: “参数”: �
 d:\software\repos\mylib\mylib\control.cpp(1030): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
 d:\software\repos\mylib\mylib\control.cpp(1029): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
 d:\software\repos\mylib\mylib\control.cpp(1028): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
-  MyLayout.cpp
   Macros.cpp
-  reflect.cpp
+  MyLayout.cpp
   SemaphoreManager.cpp
   Sprite.cpp
   lib.cpp
+  reflect.cpp
   正在生成代码...
   lib.vcxproj -> d:\software\Repos\MyLib\Debug\lib.lib

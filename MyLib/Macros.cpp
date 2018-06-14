@@ -138,7 +138,17 @@ namespace Conver
 		va_list va;
 		va_start(va, format);
 		char buf[256];
-		vsprintf_s(buf,format,va);
+		vsprintf_s(buf, format, va);
+		va_end(va);
+		return buf;
+	}
+
+	string Format(const char * format, ...)
+	{
+		va_list va;
+		va_start(va, format);
+		char buf[256];
+		vsprintf_s(buf, format, va);
 		va_end(va);
 		return buf;
 	}

@@ -190,7 +190,9 @@ namespace Conver
 
 	using namespace std;
 
-	string Format(char * format,...);
+	//string Format(char * format,...);
+
+	string Format(const char * format, ...);
 
 	wstring Format(wchar_t * format, ...);
 
