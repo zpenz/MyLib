@@ -54,14 +54,8 @@ int CALLBACK WinMain(HINSTANCE hInstance,
 	baseWindow.AddClickFuncByID(158, [&]() {
 		Log(L"载入中...");
 		auto path = DlgManager.ShowOpenFileDialog();
-	    baseWindow.Close();
-		CloseHandle(ThreadHandle);   
-
-		BaseWindow bsNew(Conver::WCharToAChar(path));
-		auto newHandle = bsNew.Show();
-		ThreadHandle = newHandle;
-
-		WaitForSingleObject(newHandle,INFINITE);
+		
+		drawable->LoadControl("");
 		Log(L"载入完毕...");
 	});
 

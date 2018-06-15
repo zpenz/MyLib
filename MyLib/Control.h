@@ -508,6 +508,8 @@ namespace LIB_CONTROL
 
 		bool SaveControl(float widthSacle,float heightSacle,Control * pControl);
 
+		bool LoadControl(string strFileName);
+
 		bool UpdateRectByID(UINT id,int iWidht,int iHeight);
 
 		Control * pForcedControl;

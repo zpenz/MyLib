@@ -1,5 +1,5 @@
 #include "Control.h"
-
+#include "MyLayout.h"
 
 namespace LIB_CONTROL
 {
@@ -1067,8 +1067,26 @@ namespace LIB_CONTROL
 			pForm->SetBackColor(mBackColor);
 			mSaveSet.push_front(pForm);
 		}
-
 		return true;
+	}
+
+	bool DrawAbleLabel::LoadControl(string strFileName)
+	{
+		Listener pTempListener;
+		Layout::ControlLayout.LoadLayoutFile(strFileName.empty() ? DEFAULT_LAYOUT : strFileName.c_str(), &pTempListener);
+		mSaveSet = pTempListener.Obj();
+		mDrawSet = pTempListener.Obj();
+		for_each(mSaveSet.begin(), mSaveSet.end(), [&](Control * pControl) {
+
+			auto internalRect = pControl->getRect();
+			pControl->AdjustRect(
+				MyRect((internalRect.left + mRect.left),
+				(internalRect.top + mRect.top),
+					(internalRect.right + mRect.left),
+					(internalRect.bottom + mRect.top))
+			);
+		});
+		return false;
 	}
 
 	bool DrawAbleLabel::UpdateRectByID(UINT id, int iWidht, int iHeight)
