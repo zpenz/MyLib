@@ -1,6 +1,8 @@
 ﻿  Control.cpp
-d:\software\repos\mylib\mylib\control.cpp(1051): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
 d:\software\repos\mylib\mylib\control.cpp(1050): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
 d:\software\repos\mylib\mylib\control.cpp(1049): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
 d:\software\repos\mylib\mylib\control.cpp(1048): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
+d:\software\repos\mylib\mylib\control.cpp(1047): warning C4244: “参数”: 从“float”转换到“INT”，可能丢失数据
+  lib.cpp
+  正在生成代码...
   lib.vcxproj -> d:\software\Repos\MyLib\Debug\lib.lib

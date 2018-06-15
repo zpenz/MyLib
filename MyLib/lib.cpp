@@ -56,7 +56,7 @@ namespace LIB_WINDOW
 bool BaseWindow::ShowThisWindow()
 {
 	using namespace Conver;
-	WNDCLASSEX wndcls;
+	WNDCLASSEXW wndcls;
 	ZeroMemory(&wndcls,sizeof(wndcls));
 
 	wndcls.cbClsExtra = 0;
@@ -73,12 +73,12 @@ bool BaseWindow::ShowThisWindow()
 	if(!mCallBackFunc) 	wndcls.lpfnWndProc = WinProc;
 	else wndcls.lpfnWndProc = mCallBackFunc;
 
-	wndcls.lpszClassName = WCharToAChar(mClassname.c_str());
+	wndcls.lpszClassName = mClassname.c_str();
 	wndcls.lpszMenuName = NULL;
 
 	wndcls.style = CS_HREDRAW | CS_VREDRAW;
 	
-	RegisterClassEx(&wndcls);
+	RegisterClassExW(&wndcls);
 
 	InitBeforeCreate();
 	MoveCenterWindow();
@@ -89,8 +89,8 @@ bool BaseWindow::ShowThisWindow()
 	mWindowStyle =  WS_CAPTION | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
 		WS_SYSMENU | WS_THICKFRAME| WS_OVERLAPPED | WS_MINIMIZEBOX |WS_MAXIMIZEBOX ;
 
-	mBaseHwnd = CreateWindowEx(mWindowStyleEx, WCharToAChar(mClassname.c_str()), 
-		WCharToAChar(mWindowname.c_str()),
+	mBaseHwnd = CreateWindowExW(mWindowStyleEx, mClassname.c_str(), 
+		mWindowname.c_str(),
 		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
 
 	if(!mBaseHwnd)
@@ -566,6 +566,7 @@ void BaseWindow::Destory()
  UINT BaseWindow::OnUnicodeChar(WPARAM wParam, LPARAM lParam)
  {
 	 if (mListener.Obj().empty()) return 0;
+	 auto pressAchar = (char)wParam;
 	 auto pressChar = (wchar_t)wParam;
 	 mListener.InputChar(pressChar);
 	 return 0;
@@ -587,7 +588,6 @@ void BaseWindow::Destory()
 		 mMouseState = MOUSE_STATE_IDLE;
 	 }
  }
-
  }
 
 

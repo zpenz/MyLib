@@ -1024,7 +1024,6 @@ namespace LIB_CONTROL
 		pBufferControl = pForcedControl =  nullptr;
 		mStartDrawPoint = nullPoint;
 		mSubID = DEFAULT_CONTROL_ID;
-
 	}
 
 	DrawAbleLabel::~DrawAbleLabel()
@@ -1068,7 +1067,6 @@ namespace LIB_CONTROL
 			pForm->SetBackColor(mBackColor);
 			mSaveSet.push_front(pForm);
 		}
-
 		return true;
 	}
 
