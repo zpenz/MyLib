@@ -182,7 +182,7 @@ int CALLBACK WinMain(HINSTANCE hInstance,
 		UpdateData(*findControl);
 		UpdateData(pControl);
 			
-		drawable->SaveControl(1024.0f/drawable->width(),768.0f/drawable->height(),pControl);
+		drawable->SaveControl(1,1,pControl);
 		Log(L"¸üĞÂÍê±Ï...");
 	});
 
