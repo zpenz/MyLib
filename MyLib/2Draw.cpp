@@ -180,6 +180,33 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 	return nullptr;
 }
 
+ID2D1Bitmap * My2DDraw::CreateBitmap(BYTE * byteBitmap, UINT uCount,UINT uWidth,UINT uHeight)
+{
+	ID2D1Bitmap * pD2DBitmap = nullptr;
+	CoInitialize(NULL);
+	
+	IWICImagingFactory * pImagingFactory = nullptr;
+	auto hr = CoCreateInstance(CLSID_WICImagingFactory1, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pImagingFactory));
+	IS_RETURN_ERROR(FAILED(hr), nullptr, "创建IWICImagingFactory接口Instance失败!");
+
+	IWICBitmap * pImage = nullptr;
+	pImagingFactory->CreateBitmapFromMemory(uWidth, uHeight, GUID_WICPixelFormat24bppRGB, sizeof(BYTE), uCount, byteBitmap, &pImage);
+
+	auto retCode = GetLastError();
+
+	IS_FAILED_ERROR(mRenderTarget->CreateBitmapFromWicBitmap(pImage, NULL, &pD2DBitmap),
+		nullptr,
+		"CreateBitmapFromWicBitmap 失败!");
+
+	std::shared_ptr<void> pExit(NULL, [&](void *) {
+		CoUninitialize();
+		SAFE_RELEASE(pImage);
+		SAFE_RELEASE(pImagingFactory);
+	});
+
+	return pD2DBitmap;
+}
+
 ID2D1RenderTarget * My2DDraw::getRenderTarget()
 {
 	return mRenderTarget; 

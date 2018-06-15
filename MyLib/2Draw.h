@@ -95,6 +95,8 @@ public:
 	/// pClipRect 裁剪区域 从图片的左上角开始 不能超过图片区域 否则结果是未定义的
 	ID2D1Bitmap * CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth = 0, UINT dstHeight = 0,RECT * pClipRect = nullptr); 
 
+	ID2D1Bitmap * CreateBitmap(BYTE * byteBitmap,UINT uCount,UINT uWidth,UINT uHeight);
+
 	ID2D1RenderTarget * getRenderTarget();
 
 	~My2DDraw();

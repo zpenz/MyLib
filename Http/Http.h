@@ -15,9 +15,9 @@ extern "C"
 	{
 	public:
 
-		void test();
+		bool Post(std::string strHostUrl,std::string strParams,std::string & strRetData);
 
-		void test2();
+		bool DownLoadImage(std::string strImageUrl,std::string strSavePath="image.png");
 
 		SINGLE_INSTANCE(HttpClass)
 	};

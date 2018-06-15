@@ -418,10 +418,8 @@ void BaseWindow::Destory()
  void BaseWindow::AfterCreate()
  {
 	 //初始化D2D1.0
-	 auto ret = DrawManager.InitManager();  
-	 IS_RETURN_ERROR(!ret, , "初始化D2D错误!");
-	 ret = DrawManager.SetRenderTarget(mBaseHwnd);
-	 IS_RETURN_ERROR(!ret, , "设置RenderTarget失败!");
+	 IS_RETURN_ERROR(!DrawManager.InitManager(),,"初始化D2D错误!");
+	 IS_RETURN_ERROR(!DrawManager.SetRenderTarget(mBaseHwnd),,"设置RenderTarget失败!");
 	 DrawManager.UseTempRenderTarget();
 
 	 CaretManager.attrach(mBaseHwnd);
