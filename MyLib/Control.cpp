@@ -140,7 +140,7 @@ namespace LIB_CONTROL
 	}
 
 	void Listener::Hover(POINT pt)
-	{
+	{ 
 		Control * pTempControl = NULL;
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * pControl) {
 			pControl->SetInternal(false);
@@ -148,6 +148,12 @@ namespace LIB_CONTROL
 			{
 				pTempControl = pControl;
 				pControl->SetInternal(true);
+			}
+			else
+			{
+				//把鼠标之外的所有控件设置为没有鼠标形状
+				if (pControl->mbHaveShaper)
+					pControl->mbHaveShaper = false;
 			}
 			pControl->Hover(this, pt);
 		});
@@ -250,9 +256,23 @@ namespace LIB_CONTROL
 
 	void Control::Hover(Listener * pListener, POINT pt)
 	{
-		if (!mOwnCaret) return;
-		if (mMouseInternal) SetCursor(ArrowShape::SHAPE_I);
-		else SetCursor(ArrowShape::SHAPE_ARROW);
+		if (!mOwnCaret)
+		{
+			if (mMouseInternal)
+			{
+				if (!mbHaveShaper) SetCursor(ArrowShape::SHAPE_ARROW);
+				mbHaveShaper = true;
+			}
+			return;
+		};
+		if (mMouseInternal)
+		{
+			if (!mbHaveShaper)
+			{
+				SetCursor(ArrowShape::SHAPE_I);
+				mbHaveShaper = true;
+			}
+		}
 	}
 
 	UINT Control::LButtonDown(Listener * pListener,POINT pt)
@@ -517,7 +537,7 @@ namespace LIB_CONTROL
 
 	Control::Control(wstring text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
-		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr),mFocusCaret(false)
+		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr),mFocusCaret(false),mbHaveShaper(false)
 	{
 	}
 

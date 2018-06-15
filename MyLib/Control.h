@@ -131,6 +131,8 @@ namespace LIB_CONTROL
 
 	public:
 
+		bool mbHaveShaper;
+
 		void SetClassName(wstring className);
 
 		wstring getClassName();

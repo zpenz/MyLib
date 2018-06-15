@@ -363,7 +363,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_IME_CHAR:
 			return window->OnUnicodeChar(wParam,lParam);
 		case WM_SETCURSOR:
-			//return true; ///阻止window自动还原cursor shape
+			return true; ///阻止window自动还原cursor shape
 			break;
 		case WM_MOUSEMOVE:
 			window->OnMouseMove(wParam,lParam);
