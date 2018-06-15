@@ -1043,10 +1043,10 @@ namespace LIB_CONTROL
 		Control * newControl = (itControl == mSaveSet.end())?new Control(*pControl):*itControl;
 
 		newControl->AdjustRect(
-			MyRect((internalRect.left - mRect.left)*widthSacle,
-				(internalRect.top - mRect.top)*heightSacle,
-				(internalRect.right - mRect.left)*widthSacle,
-				(internalRect.bottom - mRect.top)*heightSacle)
+			MyRect(STCAST(INT,(internalRect.left - mRect.left)*widthSacle),
+				STCAST(INT,(internalRect.top - mRect.top)*heightSacle),
+				STCAST(INT,(internalRect.right - mRect.left)*widthSacle),
+				STCAST(INT,(internalRect.bottom - mRect.top)*heightSacle))
 		);
 
 		newControl->Enable();

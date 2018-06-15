@@ -164,12 +164,12 @@ ID2D1Bitmap * My2DDraw::CreateBitmap(wchar_t * BitmapFileName, UINT dstWidth, UI
 	hr = mRenderTarget->CreateBitmapFromWicBitmap(pFormatConverter,NULL,&pD2DBitmap);
 
 	std::shared_ptr<void> pExit(NULL, [&](void *) {
-		CoUninitialize();
-		SAFE_RELEASE(pScaler);
 		SAFE_RELEASE(pFormatConverter);
+		SAFE_RELEASE(pScaler);
 		SAFE_RELEASE(pFrameDecode);
 		SAFE_RELEASE(pDecoder);
 		SAFE_RELEASE(pImagingFactory);
+		CoUninitialize();
 	});
 
 	auto time = GetTickCount();

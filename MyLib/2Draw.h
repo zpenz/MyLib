@@ -40,7 +40,9 @@ public:
 
 	bool SetRenderTarget(HWND hTargetWindowHwnd, RECT * pRect = NULL);
 
-	bool UseTempRenderTarget(); // "double" buffer
+	/*use double buffer
+	must call present to render.*/
+	bool UseTempRenderTarget(); 
 
 	bool SetCurrentRenderTarget(ID2D1RenderTarget * thisRenderTarget);
 
