@@ -462,7 +462,6 @@ void BaseWindow::Destory()
 
  void BaseWindow::OnNcPaint(HRGN rgn)
  {
-	
  }
 
  void BaseWindow::OnNcCalcSize(WPARAM wParam,LPARAM lParam)
@@ -480,7 +479,7 @@ void BaseWindow::Destory()
 	 if (mListener.Obj().empty()) return 0;
 	 auto newWidth  =  LOWORD(lParam);
 	 auto newHeight =  HIWORD(lParam);
-	 mListener.ChangeSize(Conver::MyRect(mLeftTop.x,mLeftTop.y,mLeftTop.x+newWidth,mLeftTop.y+newHeight));
+	 //mListener.ChangeSize(Conver::MyRect(mLeftTop.x,mLeftTop.y,mLeftTop.x+newWidth,mLeftTop.y+newHeight));
 	 return 0;
  }
 
@@ -488,7 +487,7 @@ void BaseWindow::Destory()
  {
 	 if (mListener.Obj().empty()) return true;
 	 RECT * pNewRect = reinterpret_cast<RECT *>(lParam);
-	 mListener.ChangeSize(*pNewRect);
+	// mListener.ChangeSize(*pNewRect);
 	 return true;
  }
 

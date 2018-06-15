@@ -192,7 +192,6 @@ namespace LIB_CONTROL
 		return ret;
 	}
 
-
 	void Listener::MouseMove(POINT pt)
 	{
 		for_each(mpControl.begin(), mpControl.end(), [&](Control * ItControl) {
@@ -1045,9 +1044,10 @@ namespace LIB_CONTROL
 
 		newControl->AdjustRect(
 			MyRect((internalRect.left - mRect.left)*widthSacle,
-				(internalRect.top - mRect.top)/heightSacle,
-				((internalRect.left - mRect.left)*widthSacle + pControl->width()*widthSacle),
-				((internalRect.top - mRect.top)/heightSacle + pControl->height()*heightSacle)));
+				(internalRect.top - mRect.top)*heightSacle,
+				(internalRect.right - mRect.left)*widthSacle,
+				(internalRect.bottom - mRect.top)*heightSacle)
+		);
 
 		newControl->Enable();
 		newControl->SetDrag(false);
@@ -1067,6 +1067,7 @@ namespace LIB_CONTROL
 			pForm->SetBackColor(mBackColor);
 			mSaveSet.push_front(pForm);
 		}
+
 		return true;
 	}
 
