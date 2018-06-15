@@ -696,7 +696,9 @@ namespace LIB_CONTROL
 
 	void CloseButton::Draw(Listener * pListener)
 	{
-		RECT drawRect = Conver::ClipRectBoard(mRect, 10, 10);
+		auto dx = (UINT)(2.0 / 3 * width());
+		auto dy = (UINT)(2.0 / 3 * height());
+		RECT drawRect = Conver::ClipRectBoard(mRect, dx, dy);
 
 		if (!mMouseInternal)
 		{
@@ -744,7 +746,9 @@ namespace LIB_CONTROL
 
 	void MiniButton::Draw(Listener * pListener)
 	{
-		RECT drawRect = ClipRectBoard(mRect, 10, 24);
+		float dx = (1.0 / 3)*width();
+		float dy = (2.0 / 3)*height();
+		RECT drawRect = ClipRectBoard(mRect, dx, dy);
 		if (!mMouseInternal)
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
@@ -773,7 +777,9 @@ namespace LIB_CONTROL
 
 	void MaxButton::DrawMaxImg()
 	{
-		RECT drawRect = ClipRectBoard(mRect, 12, 12);
+		auto dx = (UINT)(2.0 / 3 * width());
+		auto dy = (UINT)(2.0 / 3 * height());
+		RECT drawRect = ClipRectBoard(mRect, dx, dy);
 		if (!mMouseInternal)
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
@@ -790,7 +796,9 @@ namespace LIB_CONTROL
 
 	void MaxButton::DrawRestoreImg()
 	{
-		RECT drawRect = ClipRectBoard(mRect, 13, 13);
+		auto dx = (UINT)(2.0 / 3 * width());
+		auto dy = (UINT)(2.0 / 3 * height());
+		RECT drawRect = ClipRectBoard(mRect, dx, dy);
 		auto centerPt = CenterPoint(drawRect);
 		RECT rightTopRect = { centerPt.x , centerPt.y - 9, centerPt.x + 9,centerPt.y };
 		if (!mMouseInternal)

@@ -252,7 +252,7 @@ namespace Conver
 
 	bool VaildRect(RECT targetRect); //矩形是否合理
 
-	RECT ClipRectBoard(RECT srcRect,LONG dx,LONG dy);
+	RECT ClipRectBoard(RECT srcRect,UINT dx,UINT dy);
 
 	RECT SubRect(RECT srcRect,RECT desRect); // sub Rect
 

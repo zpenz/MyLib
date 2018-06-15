@@ -64,10 +64,11 @@ namespace Conver
 		return true;
 	}
 
-	RECT ClipRectBoard(RECT srcRect, LONG dx, LONG dy)
+	RECT ClipRectBoard(RECT srcRect, UINT dx, UINT dy)
 	{
 		return MyRect(srcRect.left + dx, srcRect.top + dy, srcRect.right - dx, srcRect.bottom - dy);
 	}
+
 
 	RECT SubRect(RECT srcRect, RECT desRect)
 	{
