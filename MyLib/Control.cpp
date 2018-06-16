@@ -760,7 +760,7 @@ namespace LIB_CONTROL
 			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
 			DrawManager.DrawLine(LeftTopPoint(drawRect),RightTopPoint(drawRect), COLOREX(mHoverForceColor));
 			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
-		}s
+		}
 	}
 
 	UINT MiniButton::LButtonUp(Listener * pListener,POINT pt)
@@ -892,7 +892,6 @@ namespace LIB_CONTROL
 	{
 		SAFE_RELEASE(pHonverImage);
 	}
-
 
 	void ImageButton::Draw(Listener * pListener)
 	{
@@ -1210,7 +1209,6 @@ namespace LIB_CONTROL
 		{
 			DrawManager.DrawRectWithTextW(mRect, mText, COLOREX(mBackColor), COLOREX(mForceColor), &mpTextpLayout, true, ALIGN_TEXT_LEFT);
 		}
-		
 	}
 
 	bool DisableAdapter::IsDisable()
