@@ -607,7 +607,7 @@ namespace LIB_CONTROL
 	void TitleBar::Sizing(RECT newRect)
 	{
 		auto titleBarHeight = height();
-		AdjustRect(MyRect(0, 0, RECTWIDTH(newRect)-3*titleBarHeight, titleBarHeight));
+		//AdjustRect(MyRect(0, 0, RECTWIDTH(newRect)-3*titleBarHeight, titleBarHeight));
 	}
 
 	TitleBar::TitleBar()
@@ -746,8 +746,8 @@ namespace LIB_CONTROL
 
 	void MiniButton::Draw(Listener * pListener)
 	{
-		float dx = (1.0 / 3)*width();
-		float dy = (2.0 / 3)*height();
+		auto dx = (UINT)((1.0 / 3)*width());
+		auto dy = (UINT)((2.0 / 3)*height());
 		RECT drawRect = ClipRectBoard(mRect, dx, dy);
 		if (!mMouseInternal)
 		{
@@ -760,7 +760,7 @@ namespace LIB_CONTROL
 			DrawManager.DrawRectangle(mRect, COLOREX(mHonverBackColor), true);
 			DrawManager.DrawLine(LeftTopPoint(drawRect),RightTopPoint(drawRect), COLOREX(mHoverForceColor));
 			if (mDrawBoard) DrawManager.DrawRectangle(mRect, COLOREX(mBoardColor), false);
-		}
+		}s
 	}
 
 	UINT MiniButton::LButtonUp(Listener * pListener,POINT pt)
@@ -800,7 +800,9 @@ namespace LIB_CONTROL
 		auto dy = (UINT)(2.0 / 3 * height());
 		RECT drawRect = ClipRectBoard(mRect, dx, dy);
 		auto centerPt = CenterPoint(drawRect);
-		RECT rightTopRect = { centerPt.x , centerPt.y - 9, centerPt.x + 9,centerPt.y };
+		dx = (UINT)(1.0 / 3 * width());
+		dy = (UINT)(1.0 / 3 * height());
+		RECT rightTopRect = { centerPt.x , centerPt.y - dy, centerPt.x + dx,centerPt.y };
 		if (!mMouseInternal)
 		{
 			DrawManager.DrawRectangle(mRect, COLOREX(mBackColor), true);
@@ -1076,6 +1078,15 @@ namespace LIB_CONTROL
 			mSaveSet.push_front(pForm);
 		}
 		return true;
+	}
+
+	bool DrawAbleLabel::SaveRangleControlByID(UINT uStartId, UINT uEndId, Listener * pListener)
+	{
+		for (auto id = uStartId; id <=uEndId; id++)
+		{
+			SaveControl(1, 1, pListener->findElementByID(id));
+		}
+		return false;
 	}
 
 	bool DrawAbleLabel::LoadControl(string strFileName)

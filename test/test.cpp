@@ -31,6 +31,7 @@ int CALLBACK WinMain(HINSTANCE hInstance,
 	Sleep(2000);
 
 	auto drawable = DYCAST(DrawAbleLabel *, baseWindow.findElementByID(125));
+	drawable->SaveRangleControlByID(160, 163, &baseWindow.mListener);
 
 	auto Log = [&](wstring info) {
 		//״̬..
