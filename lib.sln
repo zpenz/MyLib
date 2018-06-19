@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UIAutomation", "UIAutomatio
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Http", "Http\Http.vcxproj", "{B77EDFC8-F25A-4738-B94D-1735D02CE93C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Steam", "Steam\Steam.vcxproj", "{3BF48D6A-5D5A-4434-A204-8A55AFCADFE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -79,6 +81,14 @@ Global
 		{B77EDFC8-F25A-4738-B94D-1735D02CE93C}.Release|Win32.Build.0 = Release|Win32
 		{B77EDFC8-F25A-4738-B94D-1735D02CE93C}.Release|x64.ActiveCfg = Release|x64
 		{B77EDFC8-F25A-4738-B94D-1735D02CE93C}.Release|x64.Build.0 = Release|x64
+		{3BF48D6A-5D5A-4434-A204-8A55AFCADFE3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3BF48D6A-5D5A-4434-A204-8A55AFCADFE3}.Debug|Win32.Build.0 = Debug|Win32
+		{3BF48D6A-5D5A-4434-A204-8A55AFCADFE3}.Debug|x64.ActiveCfg = Debug|x64
+		{3BF48D6A-5D5A-4434-A204-8A55AFCADFE3}.Debug|x64.Build.0 = Debug|x64
+		{3BF48D6A-5D5A-4434-A204-8A55AFCADFE3}.Release|Win32.ActiveCfg = Release|Win32
+		{3BF48D6A-5D5A-4434-A204-8A55AFCADFE3}.Release|Win32.Build.0 = Release|Win32
+		{3BF48D6A-5D5A-4434-A204-8A55AFCADFE3}.Release|x64.ActiveCfg = Release|x64
+		{3BF48D6A-5D5A-4434-A204-8A55AFCADFE3}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

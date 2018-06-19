@@ -1,3 +1,13 @@
-﻿  Control.cpp
+﻿  2Draw.cpp
+  Caret.cpp
+  CommonDialog.cpp
+  Control.cpp
 d:\software\repos\mylib\mylib\control.cpp(805): warning C4838: 从“unsigned long”转换到“LONG”需要收缩转换
+  MyLayout.cpp
+  Macros.cpp
+  reflect.cpp
+  SemaphoreManager.cpp
+  Sprite.cpp
+  lib.cpp
+  正在生成代码...
   lib.vcxproj -> d:\software\Repos\MyLib\Debug\lib.lib
