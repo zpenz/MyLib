@@ -29,7 +29,7 @@ extern "C"
 		UIAManager();
 
 		bool init();
-
+		
 	public:
 		void SetRoot(UIAE * pe) { m_pRoot = pe; }
 
