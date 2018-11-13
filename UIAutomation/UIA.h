@@ -1,6 +1,7 @@
 #pragma once
 #include <UIAutomation.h>
 #include <string>
+#include <vector>
 
 #ifdef UIAAPI
 #define UIAAPI _declspec(dllimport)
@@ -29,6 +30,8 @@ extern "C"
 		UIAManager();
 
 		bool init();
+
+		std::vector<std::string> * Split(std::string strOldString,char splitChar = '/');
 		
 	public:
 		void SetRoot(UIAE * pe) { m_pRoot = pe; }
@@ -42,6 +45,10 @@ extern "C"
 		UIAE  * ElementFromHwnd(HWND hwnd);
 
 		UIAE * GetElementByAID(std::string strAid);
+
+		UIAE * GetElementByAIDEx(std::string strAid, UIAE * pAE);
+
+		UIAE * GetElementByAidPath(std::string strAidPath);
 
 		UIAIP * GetElementByCondition(UIAC * uiac);
 

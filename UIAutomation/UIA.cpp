@@ -4,9 +4,11 @@
 #include <comutil.h>
 
 #pragma comment(lib,"../debug/lib.lib")
-#pragma comment(lib, "comsuppw.lib") 
+#pragma comment(lib, "comsuppw.lib")
 
 UIAManager * UIAManager::pInstance = NULL;
+
+using namespace std;
 
 UIAManager * UIAManager::getInstance()
 {
@@ -42,6 +44,34 @@ UIAE * UIAManager::GetElementByAID(std::string strAid)
 	IS_FAILED(GetRoot()->FindFirst(TreeScope_Subtree, pCondition, &pFound),nullptr);
 
 	IS_RETURN_ERROR(!pFound, nullptr, "找不到UIAE元素");
+	return pFound;
+}
+
+
+UIAE * UIAManager::GetElementByAIDEx(std::string strAid, UIAE * pAE)
+{
+	IS_RETURN_ERROR(!pAE,nullptr,"GetElementByAIDEx pAE为空!");
+	UIAC * pCondition = NULL;
+	VARIANT vt;
+	vt.vt = VT_BSTR;
+	vt.bstrVal = _com_util::ConvertStringToBSTR(strAid.c_str());
+	IS_FAILED_ERROR(m_pIUAutomation->CreatePropertyCondition(UIA_AutomationIdPropertyId, vt, &pCondition), nullptr, "创建UIA条件失败");
+	UIAE * pFound = NULL;
+	IS_FAILED(pAE->FindFirst(TreeScope_Subtree, pCondition, &pFound), nullptr);
+
+	IS_RETURN_ERROR(!pFound, nullptr, "找不到UIAE元素");
+	return pFound;
+}
+
+
+UIAE * UIAManager::GetElementByAidPath(std::string strAidPath)
+{
+	auto pList = this->Split(strAidPath);
+	UIAE * pFound = GetElementByAID(*pList->begin());
+	for (auto it = pList->begin()+1; it != pList->end(); it++) {
+		pFound = GetElementByAIDEx(*it,pFound);
+		if (!pFound) break;
+	}
 	return pFound;
 }
 
@@ -248,6 +278,23 @@ UIAManager::UIAManager(void)
 UIAManager::~UIAManager(void)
 {
 	CoUninitialize();
+}
+
+std::vector<std::string> * UIAManager::Split(std::string strOldString, char splitChar /*= '/'*/)
+{
+	std::vector<std::string> * pRet = new std::vector<std::string>();
+	std::string strTempValue = "";
+	for (int index = 0; index < strOldString.length(); index++) {
+		if (strOldString.c_str()[index] == splitChar) {
+			pRet->push_back(strTempValue);
+			strTempValue = "";
+			continue;
+		}
+		strTempValue += strOldString.c_str()[index];
+	}
+
+	pRet->push_back(strTempValue);
+	return pRet;
 }
 
 
