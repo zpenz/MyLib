@@ -52,7 +52,7 @@ extern "C"
 
 		UIAE  * ElementFromHwnd(HWND hwnd);
 
-		UIAEA * GetAllElementFromElement(UIAE * pAE);
+		UIAEA * GetAllElementFromElement(UIAE * pAE, TreeScope findScope = TreeScope_Descendants);
 
 		UIAE * GetElementByAID(std::string strAid);
 
@@ -83,6 +83,8 @@ extern "C"
 		std::string GetElementName(UIAE * pAE);
 
 		std::string GetValue(UIAE * pAE);
+
+		std::string GetAid(UIAE * pAE);
 
 		bool CopyValueToElement(UIAE * pAE,std::string strValue);
 

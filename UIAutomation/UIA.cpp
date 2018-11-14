@@ -187,6 +187,19 @@ std::string UIAManager::GetValue(UIAE * pAE)
 	return _com_util::ConvertBSTRToString(pRet);
 }
 
+std::string UIAManager::GetAid(UIAE * pAE)
+{
+	IS_RETURN(!pAE, "");
+	//UIAUP * pPattern = nullptr;
+	//IS_FAILED(pAE->GetCurrentPatternAs(UIA_AutomationIdPropertyId, IID_PPV_ARGS(&pPattern)), nullptr);
+	//BSTR  pRet;
+	//IS_RETURN(!pPattern, "");
+	//pPattern->get_CurrentValue(&pRet);
+	BSTR pRet;
+	pAE->get_CurrentAutomationId(&pRet);
+	return _com_util::ConvertBSTRToString(pRet);
+}
+
 bool UIAManager::CopyValueToElement(UIAE * pAE,std::string strValue)
 {
 	IS_RETURN(!pAE, false);
@@ -226,13 +239,13 @@ UIAE * UIAManager::ElementFromHwnd(HWND hwnd)
 	return pe;
 }
 
-UIAEA * UIAManager::GetAllElementFromElement(UIAE * pAE)
+UIAEA * UIAManager::GetAllElementFromElement(UIAE * pAE,TreeScope findScope)
 {
 	IS_RETURN(!pAE,nullptr);
 	UIAC * pCondition = NULL;
 	IS_FAILED_ERROR(m_pIUAutomation->CreateTrueCondition(&pCondition), nullptr, "GetAllElementFromElement 创建UIA条件失败");
 	UIAEA * pFound = NULL;
-	IS_FAILED(pAE->FindAll(TreeScope_Subtree, pCondition, &pFound), nullptr);
+	IS_FAILED(pAE->FindAll(findScope, pCondition, &pFound), nullptr);
 	return pFound;
 }
 
