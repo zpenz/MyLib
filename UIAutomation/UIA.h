@@ -14,6 +14,7 @@
 #define UIAIP IUIAutomationInvokePattern
 #define UIAUP IUIAutomationValuePattern
 #define UIATW IUIAutomationTreeWalker
+#define UIAEA IUIAutomationElementArray
 
 extern "C"
 {
@@ -50,6 +51,8 @@ extern "C"
 		bool SetForce(UIAE * pae);
 
 		UIAE  * ElementFromHwnd(HWND hwnd);
+
+		UIAEA * GetAllElementFromElement(UIAE * pAE);
 
 		UIAE * GetElementByAID(std::string strAid);
 

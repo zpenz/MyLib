@@ -159,6 +159,7 @@ UIAE * UIAManager::FindChildElementByAID(UIAE * pAE, std::string strAID)
 	return pFound;
 }
 
+
 UIAIP * UIAManager::ConvertoPattern(UIAE * pAE)
 {
 	IS_RETURN(!pAE, nullptr);
@@ -223,6 +224,16 @@ UIAE * UIAManager::ElementFromHwnd(HWND hwnd)
 	UIAC * pCondition = NULL;
 	m_pIUAutomation->ElementFromHandle(hwnd, &pe);
 	return pe;
+}
+
+UIAEA * UIAManager::GetAllElementFromElement(UIAE * pAE)
+{
+	IS_RETURN(!pAE,nullptr);
+	UIAC * pCondition = NULL;
+	IS_FAILED_ERROR(m_pIUAutomation->CreateTrueCondition(&pCondition), nullptr, "GetAllElementFromElement 创建UIA条件失败");
+	UIAEA * pFound = NULL;
+	IS_FAILED(pAE->FindAll(TreeScope_Subtree, pCondition, &pFound), nullptr);
+	return pFound;
 }
 
 bool UIAManager::Invoke(UIAE * pAE)
