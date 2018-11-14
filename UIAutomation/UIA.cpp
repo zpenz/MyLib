@@ -122,6 +122,11 @@ UIAE * UIAManager::GetFirstChildElement(UIAE * pAE)
 	return pRE;
 }
 
+UIAE * UIAManager::GetFirstChildElement(HWND hWnd)
+{
+	return GetFirstChildElement(this->ElementFromHwnd(hWnd));
+}
+
 UIAE * UIAManager::GetLastChildElement(UIAE * pAE)
 {
 	UIATW * pTW = nullptr;
@@ -132,6 +137,11 @@ UIAE * UIAManager::GetLastChildElement(UIAE * pAE)
 	UIAE * pRE = nullptr;
 	pTW->GetLastChildElement(pAE, &pRE);
 	return pRE;
+}
+
+UIAE * UIAManager::GetLastChildElement(HWND hWnd)
+{
+	return GetLastChildElement(ElementFromHwnd(hWnd));
 }
 
 UIAE * UIAManager::FindChildElementByAID(UIAE * pAE, std::string strAID)

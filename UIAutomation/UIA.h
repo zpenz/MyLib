@@ -67,7 +67,11 @@ extern "C"
 
 		UIAE * GetFirstChildElement(UIAE * pAE);
 
+		UIAE * GetFirstChildElement(HWND hWnd);
+
 		UIAE * GetLastChildElement(UIAE * pAE);
+
+		UIAE * GetLastChildElement(HWND hWnd);
 
 		UIAE * FindChildElementByAID(UIAE * pAE,std::string strAID);
 
