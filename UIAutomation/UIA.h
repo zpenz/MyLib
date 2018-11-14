@@ -41,6 +41,8 @@ extern "C"
 
 		void SetRoot(UIAE * pe) { m_pRoot = pe; }
 
+		void SetRoot(HWND hWnd) { SetRoot(ElementFromHwnd(hWnd)); }
+
 		static UIAManager* getInstance();
 
 		bool ClickElement(UIAE * pae);

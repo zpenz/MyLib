@@ -308,6 +308,7 @@ HWND UIAManager::GetWindowByClassPath(std::string strClassPath)
 	IS_RETURN_ERROR(!pFound,nullptr,"Find First Failed!");
 	for (auto index = pRet->begin() + 1; index != pRet->end(); index++) {
 		pFound = FindWindowExA(pFound, nullptr, &*index->c_str(), nullptr);
+		IS_RETURN_ERROR(!pFound,nullptr, ("GetWindowByClassPath获取class为<"+*index+">的窗口失败!").c_str());
 	}
 	return pFound;
 }
