@@ -68,6 +68,7 @@ UIAE * UIAManager::GetElementByAidPath(std::string strAidPath)
 {
 	auto pList = this->Split(strAidPath);
 	UIAE * pFound = GetElementByAID(*pList->begin());
+	IS_RETURN(!pFound, nullptr);
 	for (auto it = pList->begin()+1; it != pList->end(); it++) {
 		pFound = GetElementByAIDEx(*it,pFound);
 		if (!pFound) break;
