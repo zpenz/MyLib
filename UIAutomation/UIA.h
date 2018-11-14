@@ -34,6 +34,11 @@ extern "C"
 		std::vector<std::string> * Split(std::string strOldString,char splitChar = '/');
 		
 	public:
+
+		HWND GetWindowByClassPath(std::string strClassPath);
+
+		HWND GetWindowByNamePath(std::string strNamePath);
+
 		void SetRoot(UIAE * pe) { m_pRoot = pe; }
 
 		static UIAManager* getInstance();
@@ -77,6 +82,7 @@ extern "C"
 		bool Invoke(UIAE * pAE);
 
 		~UIAManager(void);
+
 	};
 
 #define UIA (*UIAManager::getInstance())

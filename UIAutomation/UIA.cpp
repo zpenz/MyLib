@@ -298,4 +298,30 @@ std::vector<std::string> * UIAManager::Split(std::string strOldString, char spli
 	return pRet;
 }
 
+HWND UIAManager::GetWindowByClassPath(std::string strClassPath)
+{
+	auto pRet = Split(strClassPath);
+	UIA_HWND hRootHwnd;
+	GetRoot()->get_CurrentNativeWindowHandle(&hRootHwnd);
+	HWND pFound = FindWindowExA((HWND)hRootHwnd,nullptr,&*pRet->begin()->c_str(),
+		nullptr);
+	IS_RETURN_ERROR(!pFound,nullptr,"Find First Failed!");
+	for (auto index = pRet->begin() + 1; index != pRet->end(); index++) {
+		pFound = FindWindowExA(pFound, nullptr, &*index->c_str(), nullptr);
+	}
+	return pFound;
+}
+
+HWND UIAManager::GetWindowByNamePath(std::string strNamePath)
+{
+	auto pRet = Split(strNamePath);
+	UIA_HWND hRootHwnd;
+	GetRoot()->get_CurrentNativeWindowHandle(&hRootHwnd);
+	HWND pFound = FindWindowExA((HWND)hRootHwnd, nullptr, nullptr, &*pRet->begin()->c_str());
+	IS_RETURN_ERROR(!pFound, nullptr, "Find First Failed!");
+	for (auto index = pRet->begin() + 1; index != pRet->end(); index++) {
+		pFound = FindWindowExA(pFound, nullptr,nullptr, &*index->c_str());
+	}
+	return pFound;
+}
 
