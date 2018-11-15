@@ -318,7 +318,7 @@ UIAManager::UIAManager(void)
 
 UIAManager::~UIAManager(void)
 {
-	CoUninitialize();
+	CoUninitialize(); 
 }
 
 std::vector<std::string> * UIAManager::Split(std::string strOldString, char splitChar /*= '/'*/)
