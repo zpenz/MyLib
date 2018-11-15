@@ -48,6 +48,8 @@ extern "C"
 
 		bool ClickElement(UIAE * pae);
 
+		bool SetForce(HWND hWnd) { return SetForce(ElementFromHwnd(hWnd)); }
+
 		bool SetForce(UIAE * pae);
 
 		UIAE  * ElementFromHwnd(HWND hwnd);
@@ -87,6 +89,8 @@ extern "C"
 		std::string GetAid(UIAE * pAE);
 
 		bool CopyValueToElement(UIAE * pAE,std::string strValue);
+
+		bool CopyValueToElement(HWND hWnd, std::string strValue);
 
 		bool SetValue(UIAE * pAE, std::string strValue);
 

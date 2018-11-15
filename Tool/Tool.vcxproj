@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inject.h" />
+    <ClInclude Include="SimpleFile.h" />
     <ClInclude Include="soft.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -166,6 +167,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Inject.cpp" />
+    <ClCompile Include="SimpleFile.cpp" />
     <ClCompile Include="soft.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Tool.cpp" />

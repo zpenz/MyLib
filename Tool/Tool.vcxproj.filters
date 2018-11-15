@@ -33,6 +33,9 @@
     <ClInclude Include="Inject.h">
       <Filter>Inject</Filter>
     </ClInclude>
+    <ClInclude Include="SimpleFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="Inject.cpp">
       <Filter>Inject</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleFile.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

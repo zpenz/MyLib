@@ -203,18 +203,24 @@ std::string UIAManager::GetAid(UIAE * pAE)
 bool UIAManager::CopyValueToElement(UIAE * pAE,std::string strValue)
 {
 	IS_RETURN(!pAE, false);
-	IS_FAILED_ERROR(::OpenClipboard(NULL),false,"´ò¿ª¼ôÇÐ°åÊ§°Ü!");
+	UIA_HWND uHwnd = nullptr;
+	pAE->get_CurrentNativeWindowHandle(&uHwnd);
+	return CopyValueToElement(HWND(uHwnd),strValue);
+}
+
+bool UIAManager::CopyValueToElement(HWND hWnd, std::string strValue)
+{
+	IS_RETURN(!hWnd, false);
+	IS_FAILED_ERROR(::OpenClipboard(NULL), false, "´ò¿ª¼ôÇÐ°åÊ§°Ü!");
 	::EmptyClipboard();
 	auto Clip = ::GlobalAlloc(GMEM_MOVEABLE, strValue.length() + 1);
 	char * pbuf = (char *)GlobalLock(Clip);
-	strcpy(pbuf,strValue.c_str());
+	//strcpy(pbuf, strValue.c_str());
+	strcpy_s(pbuf,strValue.size(),strValue.c_str());
 	GlobalUnlock(Clip);
 	SetClipboardData(CF_TEXT, Clip);
 	CloseClipboard();
-	 
-	UIA_HWND uHwnd;
-	pAE->get_CurrentNativeWindowHandle(&uHwnd);
-	::SendMessage((HWND)uHwnd, WM_PASTE, 0, 0);
+	::SendMessage(hWnd, WM_PASTE, 0, 0);
 
 	OpenClipboard(NULL);
 	EmptyClipboard();
@@ -319,7 +325,7 @@ std::vector<std::string> * UIAManager::Split(std::string strOldString, char spli
 {
 	std::vector<std::string> * pRet = new std::vector<std::string>();
 	std::string strTempValue = "";
-	for (int index = 0; index < strOldString.length(); index++) {
+	for (size_t index = 0; index < strOldString.length(); index++) {
 		if (strOldString.c_str()[index] == splitChar) {
 			pRet->push_back(strTempValue);
 			strTempValue = "";

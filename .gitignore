@@ -33,3 +33,5 @@
 *.suo
 *.sqlite
 *.pch
+/Debug/unitTest.bat
+*.enc
