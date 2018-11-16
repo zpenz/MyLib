@@ -3,7 +3,11 @@
 #include "../MyLib/Macros.h"
 #include <comutil.h>
 
+#ifdef DEBUG
 #pragma comment(lib,"../debug/lib.lib")
+#else 
+#pragma comment(lib,"../release/lib.lib")
+#endif
 #pragma comment(lib, "comsuppw.lib")
 
 UIAManager * UIAManager::pInstance = NULL;
@@ -62,7 +66,6 @@ UIAE * UIAManager::GetElementByAIDEx(std::string strAid, UIAE * pAE)
 	IS_RETURN_ERROR(!pFound, nullptr, "ÕÒ²»µ½UIAEÔªËØ");
 	return pFound;
 }
-
 
 UIAE * UIAManager::GetElementByAidPath(std::string strAidPath)
 {

@@ -1,1 +1,13 @@
-﻿  lib.vcxproj -> C:\Users\szp20\OneDrive\MyLib\Debug\lib.lib
+﻿  2Draw.cpp
+  Caret.cpp
+  CommonDialog.cpp
+  Control.cpp
+c:\users\szp20\onedrive\mylib\mylib\control.cpp(805): warning C4838: 从“unsigned long”转换到“LONG”需要收缩转换
+  Macros.cpp
+  MyLayout.cpp
+  SemaphoreManager.cpp
+  Sprite.cpp
+  lib.cpp
+  reflect.cpp
+  正在生成代码...
+  lib.vcxproj -> C:\Users\szp20\OneDrive\MyLib\Debug\lib.lib
