@@ -100,6 +100,11 @@ extern "C"
 
 	};
 
+	namespace SimpleWin 
+	{
+		bool UIAAPI WaitForWindow(HWND & findWindow, const char * cClassName, const char * cWindowName, size_t iMaxWaitTime = 10 * 1000);
+	}
+
 #define UIA (*UIAManager::getInstance())
 }
 

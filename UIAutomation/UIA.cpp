@@ -3,7 +3,7 @@
 #include "../MyLib/Macros.h"
 #include <comutil.h>
 
-#ifdef DEBUG
+#ifdef _DEBUG
 #pragma comment(lib,"../debug/lib.lib")
 #else 
 #pragma comment(lib,"../release/lib.lib")
@@ -368,4 +368,32 @@ HWND UIAManager::GetWindowByNamePath(std::string strNamePath)
 	}
 	return pFound;
 }
+
+bool SimpleWin::WaitForWindow(HWND & findWindow, const char * cClassName, const char * cWindowName, size_t iMaxWaitTime)
+{
+	DWORD startTime = GetTickCount();
+	bool bRet = false;
+	auto WaitWindow = [&]() {
+		while (1) {
+			if (NULL != (findWindow = FindWindowA(cClassName, cWindowName)))
+			{
+				printf_s("Successful Wait!");
+				bRet = true;
+				break;
+			}
+			Sleep(200);
+
+			DWORD elspaceTime = GetTickCount() - startTime;
+			if (elspaceTime >= iMaxWaitTime)
+			{
+				printf_s("Failed: TimeOut!");
+				break;
+			}
+		}
+	};
+	std::thread waitThread(WaitWindow);
+	waitThread.join();
+	return bRet;
+}
+
 
