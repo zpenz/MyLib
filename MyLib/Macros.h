@@ -7,6 +7,10 @@
 #include <d2d1.h>
 #include <mutex>
 
+//for static link
+#pragma comment(lib, "User32.lib") 
+#pragma comment(lib,"Gdi32.lib")
+
 #define DEFAULT_CONTROL_ID 678
 #define SCREEN_WIDTH  GetDeviceCaps(GetDC(NULL),HORZRES)
 #define SCREEN_HEIGHT GetDeviceCaps(GetDC(NULL),VERTRES)

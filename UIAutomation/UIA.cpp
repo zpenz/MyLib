@@ -8,6 +8,8 @@
 #else 
 #pragma comment(lib,"../release/lib.lib")
 #endif
+
+#pragma comment(lib, "User32.lib") 
 #pragma comment(lib, "comsuppw.lib")
 
 UIAManager * UIAManager::pInstance = NULL;
