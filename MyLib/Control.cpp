@@ -57,12 +57,30 @@ namespace LIB_CONTROL
 		 return *tempControl;
 	}
 
+	const Control Listener::findElementByName(const wstring &strName)
+	{
+		auto pFindControl=find_if(mpControl.begin(), mpControl.end(), [&strName](Control * pControl)->bool {
+				return (strName == pControl->NickName()) ? true : false;
+			});
+		if (pFindControl == mpControl.end()) return *Control::EMPTY;
+		return **pFindControl;
+	}
+
 	bool Listener::AddClickFuncByID(UINT id,function<void(void)> pFunc,bool rewrite)
 	{
 		auto pControl = findElementByID(id);
 		IS_RETURN_ERROR(!pControl,false,"AddClickFuncByID找不到指定的控件");
 		IS_RETURN(!rewrite && pControl->mClickFunc != nullptr, false);
 		pControl->mClickFunc = pFunc;
+		return true;
+	}
+
+	bool Listener::AddClickFuncByName(const wstring & strName, function<void(void)> pFunc, bool rewrite)
+	{
+		auto pControl = findElementByName(strName);
+		IS_RETURN_ERROR(&pControl==Control::EMPTY, false, "AddClickFuncByName找不到指定的控件");
+		IS_RETURN(!rewrite && pControl.mClickFunc != nullptr, false);
+		pControl.mClickFunc = pFunc;
 		return true;
 	}
 
@@ -224,6 +242,8 @@ namespace LIB_CONTROL
 	{
 		return mpControl;
 	}
+
+	Control * Control::EMPTY = new Control(true);
 
 	void Control::SetClassName(wstring className)
 	{
@@ -536,13 +556,16 @@ namespace LIB_CONTROL
 
 	Control::Control(wstring text, RECT rc):mRect(rc),mText(text),mVisible(true),mBackColor(RGB(45,45,48)),
 		mForceColor(RGB(110,110,112)), mHonverBackColor(RGB(63, 63, 65)),mHoverForceColor(RGB(110, 110, 112)),
-		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr),mFocusCaret(false),mbHaveShaper(false)
+		mCanStretch(false),mBDownInternal(false),mOwnCaret(false),mpTextpLayout(nullptr),mFocusCaret(false),mbHaveShaper(false),mNickName(L"null")
 	{
 	}
 
 	Control::Control():Control(L"",nullRect)
 	{
+
 	}
+
+	Control::Control(bool bEmpty):mEmpty(bEmpty){}
 
 	Control::Control(wstring text, RECT rc, COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor):Control(text,rc)
 	{

@@ -21,7 +21,7 @@ namespace Layout
 
 		LayoutParameter() {}
 
-		bool     mCanDrag;
+		bool mCanDrag;
 
 		wstring mControlType;
 
@@ -46,6 +46,7 @@ namespace Layout
 		ColorStruct mBoardColor;
 		
 		float mBoardSize;
+
 	};
 
 	class MyLayout

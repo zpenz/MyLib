@@ -103,6 +103,8 @@ namespace LIB_CONTROL
 
 		wstring mText;
 
+		wstring mNickName;
+
 		COLORREF mForceColor, mBackColor;
 
 		COLORREF mHonverBackColor, mHoverForceColor;
@@ -129,7 +131,11 @@ namespace LIB_CONTROL
 
 		wstring mClassName;
 
+		bool mEmpty;
+
 	public:
+
+		static Control* EMPTY;
 
 		bool mbHaveShaper;
 
@@ -215,11 +221,19 @@ namespace LIB_CONTROL
 
 		Control();
 
+		Control(bool bEmpty);
+
 		Control(wstring text, RECT rc = {0,0});
 
 		Control(wstring text, RECT rc,COLORREF forceColor, COLORREF backColor, COLORREF hoverForceColor, COLORREF hoverBackColor);
 
 		virtual ~Control();
+		
+		void NickName(std::wstring val) { mNickName = val; }
+		std::wstring NickName() const { return mNickName; }
+
+		bool Empty() const { return mEmpty; }
+		void Empty(bool val) { mEmpty = val; }
 	};
 
 	template<class StackType>
@@ -254,7 +268,11 @@ namespace LIB_CONTROL
 
 		Control * findElementByID(UINT id);
 
+		const Control findElementByName(const wstring & strName);
+
 		bool AddClickFuncByID(UINT id,function<void(void)> pFunc,bool rewrite = false);
+
+		bool AddClickFuncByName(const wstring & strName, function<void(void)> pFunc, bool rewrite = false);
 
 		bool SetValueByID(UINT id,wstring stringValue);
 

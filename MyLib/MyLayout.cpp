@@ -225,7 +225,8 @@ namespace Layout
 		fprintf_s(pfile, "%d ", pControl->HaveBoard() ? 1 : 0);
 		tempColor = pControl->getBoardColor();
 		fprintf_s(pfile, "RGB(%d %d %d) ", GetRValue(tempColor), GetGValue(tempColor), GetBValue(tempColor));
-		fprintf_s(pfile, "%f\n", pControl->getBoardSize());
+		fprintf_s(pfile, "%f ", pControl->getBoardSize());
+		fprintf_s(pfile, "%ls\n", pControl->NickName().c_str());
 		return true;
 	}
 
