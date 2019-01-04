@@ -31,7 +31,7 @@ protected:
 
 	bool mDefaultWrapper;
 
-	RECT mWindowRect; ///<包括标题栏和边框>
+	RECT mWindowRect;
 
 	wstring mClassname; 
 
@@ -138,6 +138,8 @@ public:
 	virtual void OnDraw();	//default draw operate
 
 	virtual void OnCreate();
+
+	virtual bool OnSetCursor(WPARAM wParam,LPARAM lParam); //set cursor event
 
 	virtual void OnNcPaint(HRGN rgn);	///<rgn>重绘区域</rgn>
 

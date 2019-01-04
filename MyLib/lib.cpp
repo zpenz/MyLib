@@ -58,21 +58,16 @@ bool BaseWindow::ShowThisWindow()
 	using namespace Conver;
 	WNDCLASSEXW wndcls;
 	ZeroMemory(&wndcls,sizeof(wndcls));
-
 	wndcls.cbClsExtra = 0;
-	wndcls.cbSize     = sizeof(WNDCLASSEX);
+	wndcls.cbSize     = sizeof(WNDCLASSEXW);
 	wndcls.cbWndExtra = 0;
 	wndcls.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndcls.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-
 	wndcls.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-
 	if(mInstance) 	wndcls.hInstance = mInstance;
 	else wndcls.hInstance = NULL;
-	
 	if(!mCallBackFunc) 	wndcls.lpfnWndProc = WinProc;
 	else wndcls.lpfnWndProc = mCallBackFunc;
-
 	wndcls.lpszClassName = mClassname.c_str();
 	wndcls.lpszMenuName = NULL;
 
@@ -86,12 +81,11 @@ bool BaseWindow::ShowThisWindow()
 	//Style
 	mWindowStyleEx = WS_EX_LEFT | WS_EX_LTRREADING| WS_EX_RIGHTSCROLLBAR|WS_EX_WINDOWEDGE;
 
-	mWindowStyle =  WS_CAPTION | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
-		WS_SYSMENU | WS_THICKFRAME| WS_OVERLAPPED | WS_MINIMIZEBOX |WS_MAXIMIZEBOX ;
+	mWindowStyle = WS_CAPTION | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
+		WS_SYSMENU | WS_THICKFRAME | WS_OVERLAPPED | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
-	mBaseHwnd = CreateWindowExW(mWindowStyleEx, mClassname.c_str(), 
-		mWindowname.c_str(),
-		mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
+	mBaseHwnd = CreateWindowExW(mWindowStyleEx, TEXT(mClassname.c_str()), 
+		TEXT(mWindowname.c_str()),mWindowStyle,mLeftTop.x,mLeftTop.y,mWidth,mHeight,NULL,NULL,NULL,this);
 
 	if(!mBaseHwnd)
 	{
@@ -112,7 +106,6 @@ bool BaseWindow::ShowThisWindow()
 void BaseWindow::UpdateSize() const
 {
 	if (mBaseHwnd)
-		//::MoveWindow(mBaseHwnd, mLeftTop.x, mLeftTop.y, mWidth, mHeight, false);
 		::SetWindowPos(mBaseHwnd,NULL,mLeftTop.x,mLeftTop.y,mWidth,mHeight, SWP_NOMOVE);
 }
 
@@ -333,13 +326,13 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			window = (BaseWindow*)(((CREATESTRUCT *)lParam)->lpCreateParams);
 			break;
 		case WM_NCPAINT:
-			if(window->IsDefaultWrapper()) break;
+			if (window->IsDefaultWrapper()) break;
 			window->OnNcPaint((HRGN)wParam);
 			return 0;
 			break;
 		case WM_NCCALCSIZE:
 			if (window->IsDefaultWrapper()) break;
-			window->OnNcCalcSize(wParam,lParam);
+			window->OnNcCalcSize(wParam, lParam);
 			if ((BOOL)wParam) return 0;
 			break;
 		case WM_NCHITTEST:
@@ -347,7 +340,7 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			return window->OnHitTest(lParam);
 		case WM_NCACTIVATE:
 			if (window->IsDefaultWrapper()) break;
-			return window->OnNcActive(wParam,lParam);
+			return window->OnNcActive(wParam, lParam);
 			break;
 		case WM_ERASEBKGND: 
 			return 1; // 不擦除背景
@@ -363,7 +356,8 @@ LRESULT CALLBACK WinProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		case WM_IME_CHAR:
 			return window->OnUnicodeChar(wParam,lParam);
 		case WM_SETCURSOR:
-			return true; ///阻止window自动还原cursor shape
+			/*return true; ///阻止window自动还原cursor shape*/
+			window->OnSetCursor(wParam, lParam);
 			break;
 		case WM_MOUSEMOVE:
 			window->OnMouseMove(wParam,lParam);
@@ -405,6 +399,11 @@ void BaseWindow::Destory()
  { 
  }
 
+ bool BaseWindow::OnSetCursor(WPARAM wParam, LPARAM lParam)
+ {
+	 return false;
+ }
+
  void BaseWindow::InitBeforeCreate()
  {
 
@@ -417,38 +416,12 @@ void BaseWindow::Destory()
 
  void BaseWindow::AfterCreate()
  {
-	 //初始化D2D1.0
-	 IS_RETURN_ERROR(!DrawManager.InitManager(),,"初始化D2D错误!");
-	 IS_RETURN_ERROR(!DrawManager.SetRenderTarget(mBaseHwnd),,"设置RenderTarget失败!");
-	 DrawManager.UseTempRenderTarget();
-
-	 CaretManager.attrach(mBaseHwnd);
-	 CaretManager.Color(RGB(0,0,0));
-
-	 //窗口完全矩形..
-	 //auto Rgn = CreateRectRgn(0,0,mWidth,mHeight);
-	 //SetWindowRgn(mBaseHwnd, Rgn,true);
-	 //DeleteObject(Rgn);
-
-	 mListener.attachWindow(mBaseHwnd);
-	 //加载所有控件
-	 IS_ERROR_EXIT(!Layout::ControlLayout.LoadLayoutFile(mLayoutFileName.empty()?DEFAULT_LAYOUT: mLayoutFileName.c_str(),&mListener),"加载布局文件失败...");
-	 auto background = mListener.findElementByID(0);
-	 IS_ERROR_EXIT(!background, "没有找到背景控件!");
-	 SetWidth(background->width());
-	 SetHeight(background->height());
-	 DrawManager.ReSize(background->width(),background->height());
+	 
  }
 
  void BaseWindow::OnDraw()
  {
-	 DrawManager.Clear(MyColor::Black);
-	 mListener.Draw();
-	 RECT windowRect;
-	 GetWindowRect(mBaseHwnd, &windowRect);
-	 Conver::ScreenToClientRc(mBaseHwnd, windowRect);
-	 DrawManager.DrawRectangle(windowRect, COLOREX(RGB(57, 130, 255)), false);
-	 DrawManager.Present(&windowRect);
+
  }
 
  void BaseWindow::Update(float delta)
@@ -479,7 +452,6 @@ void BaseWindow::Destory()
 	 if (mListener.Obj().empty()) return 0;
 	 auto newWidth  =  LOWORD(lParam);
 	 auto newHeight =  HIWORD(lParam);
-	 //mListener.ChangeSize(Conver::MyRect(mLeftTop.x,mLeftTop.y,mLeftTop.x+newWidth,mLeftTop.y+newHeight));
 	 return 0;
  }
 
@@ -487,7 +459,6 @@ void BaseWindow::Destory()
  {
 	 if (mListener.Obj().empty()) return true;
 	 RECT * pNewRect = reinterpret_cast<RECT *>(lParam);
-	// mListener.ChangeSize(*pNewRect);
 	 return true;
  }
 

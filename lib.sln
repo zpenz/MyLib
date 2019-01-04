@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "token", "token\token.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinTest", "WinTest\WinTest.vcxproj", "{6016EF82-42FD-4782-9293-0BAEFC246F33}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testLib", "testLib\testLib.vcxproj", "{D225867D-CC56-4A61-BFD0-29079C655418}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -89,6 +91,14 @@ Global
 		{6016EF82-42FD-4782-9293-0BAEFC246F33}.Release|Win32.Build.0 = Release|Win32
 		{6016EF82-42FD-4782-9293-0BAEFC246F33}.Release|x64.ActiveCfg = Release|x64
 		{6016EF82-42FD-4782-9293-0BAEFC246F33}.Release|x64.Build.0 = Release|x64
+		{D225867D-CC56-4A61-BFD0-29079C655418}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D225867D-CC56-4A61-BFD0-29079C655418}.Debug|Win32.Build.0 = Debug|Win32
+		{D225867D-CC56-4A61-BFD0-29079C655418}.Debug|x64.ActiveCfg = Debug|x64
+		{D225867D-CC56-4A61-BFD0-29079C655418}.Debug|x64.Build.0 = Debug|x64
+		{D225867D-CC56-4A61-BFD0-29079C655418}.Release|Win32.ActiveCfg = Release|Win32
+		{D225867D-CC56-4A61-BFD0-29079C655418}.Release|Win32.Build.0 = Release|Win32
+		{D225867D-CC56-4A61-BFD0-29079C655418}.Release|x64.ActiveCfg = Release|x64
+		{D225867D-CC56-4A61-BFD0-29079C655418}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
